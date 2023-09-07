@@ -3,3 +3,7 @@
 
 # Python Folders
 *__pycache__/
+
+# Other files
+*.docx
+*.doc
