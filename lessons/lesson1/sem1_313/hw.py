@@ -1,1 +1,1 @@
-print('Hello, world!')
+print(f"{'Hello, world!':~^80}")
