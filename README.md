@@ -4,7 +4,7 @@
 
 ## Осенний семестр
 
-Эта часть курса будет посвящена знакомству с языком Python, его основам и базовым концепциям. 
+Эта часть курса будет посвящена знакомству с языком Python, его основам и базовым концепциям.
 
 **Содержание:**
 
@@ -17,6 +17,6 @@
 
 Данный курс во многом основан на материале следующих источников:
 
-- `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;    
-- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;    
+- `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;
+- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;
 - [Real Python](https://realpython.com/);
