@@ -1,3 +1,4 @@
+print("Hello world!")
 print('1000-7??')
 k=1000
 
