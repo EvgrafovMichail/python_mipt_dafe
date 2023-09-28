@@ -4,6 +4,9 @@
 # Python Folders
 *__pycache__/
 
+# Python files
+*solved.ipynb
+
 # Other files
 *.docx
 *.doc
