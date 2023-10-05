@@ -42,3 +42,7 @@ def is_scolarship_correct(best_students, active_students, delinquent_studens, la
                 True - если правила соблюдены, а иначе False.
     """
     pass
+
+
+if __name__ == "__main__":
+    pass
