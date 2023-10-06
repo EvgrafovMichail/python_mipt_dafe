@@ -1,6 +1,5 @@
 """
 Задача 6: самая длинная подстрока без повторяющихся символов
-оригинал: https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
 Вам дана строка s. 
 Найдите длину ДЛИННЕЙШЕЙШЕГО ПОДСЛОВА, 
