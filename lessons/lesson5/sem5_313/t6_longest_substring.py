@@ -20,19 +20,15 @@ def2:
 """
 
 def lengthOfLongestSubstring(s: str) -> int:
-    """ Подсчёт длины самого длинного подслова
-        без повторяющихся символов
-
-        Вход:
-            s : str
-                исходная строка, в которой ищется особое подслово
-        
-        Выход:
-            subs_len: int
-                длина максимального особого подслова 
-    """
-    pass
-
+    i = j = 1 # Смотрим на подстроку от s[i] до s[j]
+    mx = 0 # самое длинное слово
+    while j!= len(s):
+        if len( s[i:j] ) == len( { s[i:j] } ):
+            mx = max(mx, j-i)
+            j += 1
+        else: 
+            i += 1
+    return mx
 
 if __name__ == "__main__":
     assert lengthOfLongestSubstring('abcabcbb') == 3

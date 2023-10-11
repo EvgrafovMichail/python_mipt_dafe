@@ -3,16 +3,8 @@
 """
 
 def unique(string: str) -> int:
-    """ Подсчёт количества уникальных символов в строке
+    return len(set(string))
 
-        Вход:
-            string: str
-                исследуемая строка
-        
-        Выход:
-            count: int
-                количество уникальных символов в строке
-    """
     pass
 
 if __name__ == "__main__":
