@@ -1,13 +1,5 @@
 from testcases import testcases
 
-class test_arg:
-    def __init__(self, string, val_pairs, ans):
-        self.string = string
-        self.val_pairs = val_pairs
-        self.ans = ans
-
-
-
 def parser(string, valid_pairs):
     corr_str = string.replace('>', '> ')
     corr_str = corr_str.replace('<', ' <')
@@ -21,22 +13,24 @@ def parser(string, valid_pairs):
 
 
 
-
+testcases_list = testcases["parser"]
+work_function = parser
 
 
 ########################################################
 if __name__ == "__main__":
     success_count = 0
-    testcases_list = testcases["parser"]
-    for case in testcases_list:
-        string = case["input"][0]
-        valid_pairs = case["input"][1]
+    cases_faild = []
+
+    for case_num, case in enumerate(testcases_list):
+        args = case["input"].copy()
         case_ans = case["output"]
 
-        print(f"string: {string}")
-        print(f"val_pairs: {valid_pairs}")
+        print(f"case {case_num+1}/{len(testcases_list)}")
+        for i, arg in enumerate(args):
+            print(f"arg_{i+1}: {arg}")
         
-        output = parser(string, valid_pairs)
+        output = work_function(*args)
         print(f"\texpected: {case_ans}")
         print(f"\tgot: {output}")
 
@@ -45,5 +39,7 @@ if __name__ == "__main__":
             success_count += 1
         else:
             print("NOT".center(20,"~"), end="\n\n")
+            cases_faild.append(case_num+1)
     
     print(f"tests passed: {success_count}/{len(testcases_list)}")
+    print(f"cases faild: {cases_faild}")

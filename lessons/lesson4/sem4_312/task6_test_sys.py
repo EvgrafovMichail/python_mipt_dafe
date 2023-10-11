@@ -1,8 +1,4 @@
-class test_arg:
-    def __init__(self, user_comand, comands, ans):
-        self.user_comand = user_comand
-        self.comands = comands
-        self.ans = ans
+from testcases import testcases
 
 def check_comand(user_comand: str, comands: list[str]) -> bool:
     cnt = 0
@@ -50,33 +46,33 @@ def check_comand(user_comand: str, comands: list[str]) -> bool:
 
 
 
-####################################################################
+testcases_list = testcases["check_comand"]
+work_function = check_comand
+
+
+########################################################
 if __name__ == "__main__":
-    print()
-
-    test_cases = [
-        test_arg(user_comand="gt",
-                 comands=['cd', 'ls', 'git'],
-                 ans=True),
-
-        test_arg(user_comand="gt",
-                 comands=['cd', 'ls', 'git', 'get'],
-                 ans=False),
-    ]
-
     success_count = 0
-    for case in test_cases:
-        print(f"user_comand: {case.user_comand}")
-        print(f"comands: {case.comands}")
+    cases_faild = []
+
+    for case_num, case in enumerate(testcases_list):
+        args = case["input"].copy()
+        case_ans = case["output"]
+
+        print(f"case {case_num+1}/{len(testcases_list)}")
+        for i, arg in enumerate(args):
+            print(f"arg_{i+1}: {arg}")
         
-        output = check_comand(case.user_comand, case.comands)
-        print(f"\texpected: {case.ans}")
+        output = work_function(*args)
+        print(f"\texpected: {case_ans}")
         print(f"\tgot: {output}")
 
-        if  output == case.ans:
+        if  output == case_ans:
             print("OK".center(20,"="), end="\n\n")
             success_count += 1
         else:
             print("NOT".center(20,"~"), end="\n\n")
+            cases_faild.append(case_num+1)
     
-    print(f"tests passed: {success_count}/{len(test_cases)}")
+    print(f"tests passed: {success_count}/{len(testcases_list)}")
+    print(f"cases faild: {cases_faild}")
