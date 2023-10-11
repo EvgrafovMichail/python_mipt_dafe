@@ -1,3 +1,5 @@
+from testcases import testcases
+
 class test_arg:
     def __init__(self, string, val_pairs, ans):
         self.string = string
@@ -24,43 +26,24 @@ def parser(string, valid_pairs):
 
 ########################################################
 if __name__ == "__main__":
-    print()
-
-    test_cases = [
-        test_arg(string='</p><p><a>float</b></p><p><b>frozenset</b></p><p><c>list</c></p><p><b>list</b>',
-                 val_pairs=[("<a>", "</a>"), ("<b>", "</b>"), ("<c>", "</c>")],
-                 ans=["frozenset", "list"]),
-        
-        test_arg(string='<\a>float<\b>double<\c>complex<c><b><a>',
-                 val_pairs=[("<a>", "</a>"), ("<b>", "</b>"), ("<c>", "</c>")],
-                 ans=[]),
-
-        test_arg(string="</p>this_is_float<p>",
-                 val_pairs=[("</p>", "<p>")],
-                 ans=["this_is_float"]),
-
-        test_arg(string="</a>this<a></b>is<b><a>good</a><c>example</c>",
-                 val_pairs=[("<a>", "</a>"),("</a>", "<a>"),("</b>", "<b>"),("<c>", "</c>")],
-                 ans=["this", "is", "good", "example"]),
-        
-        test_arg(string="</a>this<c></b>is<b><a>good</a><a>example</c>",
-                 val_pairs=[("<a>", "</a>"),("</a>", "<a>"),("</b>", "<b>"),("<c>", "</c>")],
-                 ans=["is", "good"]),
-    ]
-
     success_count = 0
-    for case in test_cases:
-        print(f"string: {case.string}")
-        print(f"val_pairs: {case.val_pairs}")
+    testcases_list = testcases["parser"]
+    for case in testcases_list:
+        string = case["input"][0]
+        valid_pairs = case["input"][1]
+        case_ans = case["output"]
+
+        print(f"string: {string}")
+        print(f"val_pairs: {valid_pairs}")
         
-        output = parser(case.string, case.val_pairs)
-        print(f"\texpected: {case.ans}")
+        output = parser(string, valid_pairs)
+        print(f"\texpected: {case_ans}")
         print(f"\tgot: {output}")
 
-        if  output == case.ans:
+        if  output == case_ans:
             print("OK".center(20,"="), end="\n\n")
             success_count += 1
         else:
             print("NOT".center(20,"~"), end="\n\n")
     
-    print(f"tests passed: {success_count}/{len(test_cases)}")
+    print(f"tests passed: {success_count}/{len(testcases_list)}")
