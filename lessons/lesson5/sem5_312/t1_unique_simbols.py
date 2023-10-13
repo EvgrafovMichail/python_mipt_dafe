@@ -13,7 +13,10 @@ def unique(string: str) -> int:
             count: int
                 количество уникальных символов в строке
     """
-    pass
+    return len(set(string))
 
 if __name__ == "__main__":
-    pass
+    assert unique("мама") == 2
+    assert unique("qwerty") == 6
+    assert unique("aaa") == 1
+
