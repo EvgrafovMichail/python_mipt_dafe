@@ -20,28 +20,35 @@
 """
 
 def is_scolarship_correct(best_students, active_students, delinquent_studens, lagging_students, all_students, scolarships):
-    """ Проверка корректности распределения стипендий по соц.группам студентов.
-        
-        Вход:
-            best_students: list
-                список лучших студентов
-            active_students: list
-                список социально активных студентов
-            delinquent_students: list
-                список студентов с дисциплинарками
-            lagging_students: list
-                список отстающих студентов
-            all_students: list
-                список всех студентов университета
-            scolarships: list
-                список студентов, выдвинутых на получение стипендии
-        
-        Выход:
-            is_correct: bool
-                Отчёт о корректности распределения стипендий.
-                True - если правила соблюдены, а иначе False.
-    """
-    pass
+    active_students_counter=0
+    delinquent_studens_counter=0
+    all_students_counter=0
+    kolvo_active=0
+    for i in active_students:
+        if i not in best_students:
+            kolvo_active+=1
+
+
+
+    for i in scolarships:
+        if i in lagging_students:
+            return False
+        if i in best_students:
+            continue
+        if i in active_students:
+            active_students_counter+=1
+            if active_students_counter>(kolvo_active/2):  
+                return False
+        if i in delinquent_studens:
+            delinquent_studens_counter+=1
+            if delinquent_studens_counter>1:
+                return False
+        if i in all_students:
+            all_students_counter+=1
+            if all_students_counter>3:
+                return False
+            
+    return True
 
 
 if __name__ == "__main__":

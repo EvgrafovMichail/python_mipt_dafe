@@ -20,22 +20,22 @@ def2:
 """
 
 def lengthOfLongestSubstring(s: str) -> int:
-    """ Подсчёт длины самого длинного подслова
-        без повторяющихся символов
+    stroka_now=s[0]
+    max_dl=0
+    for i in range(1,len(s)):
+       
+        if s[i] not in stroka_now:
+            stroka_now+=s[i]
+        else:
+            max_dl=max(max_dl,len(stroka_now))
+            stroka_now=stroka_now.split(s[i])
+            stroka_now=stroka_now[1]+s[i]
+            
+    return(max(max_dl,len(stroka_now)))
 
-        Вход:
-            s : str
-                исходная строка, в которой ищется особое подслово
-        
-        Выход:
-            subs_len: int
-                длина максимального особого подслова 
-    """
-    pass
-
-
-if __name__ == "__main__":
-    assert lengthOfLongestSubstring('abcabcbb') == 3
-    assert lengthOfLongestSubstring('bbbbb') == 1
-    assert lengthOfLongestSubstring('pwwkew') == 3     # 'pwke' является подпоследовательностью, 
+print(lengthOfLongestSubstring('abcabcbb'))
+# if __name__ == "__main__":
+#     assert lengthOfLongestSubstring('abcabcbb') == 3
+#     assert lengthOfLongestSubstring('bbbbb') == 1
+#     assert lengthOfLongestSubstring('pwwkew') == 3     # 'pwke' является подпоследовательностью, 
                                                        # но не подсловом
