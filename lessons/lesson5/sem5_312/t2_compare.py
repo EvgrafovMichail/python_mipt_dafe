@@ -22,8 +22,12 @@ def is_anagram(word1: str, word2: str) -> bool:
                 True, если слово word2 можно составить 
                 из уникальных букв слова word1. Иначе, False 
     """
-    pass
+    set1 = set(word1)
+    set2 = set(word2)
+    return set2.issubset(set1)
 
 
 if __name__ == "__main__":
-    pass
+    assert is_anagram("abc", "aabc") == True
+    assert is_anagram("aac", "aabc") == False
+    assert is_anagram("abc", "aa") == True
