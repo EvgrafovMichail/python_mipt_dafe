@@ -3,9 +3,11 @@
 
 # Python Folders
 *__pycache__/
+venv
 
-# Python files
+# Solution data
 *solved.ipynb
+solved
 
 # Other files
 *.docx
