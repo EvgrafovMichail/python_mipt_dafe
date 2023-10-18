@@ -1,8 +1,14 @@
+"""
+В этом модуле хранится специальны класс для логирования
+"""
+
+
 import logging
 
 from enum import Enum
 
 
+# уровни логирования 
 class Levels(Enum):
     debug = logging.DEBUG
     info = logging.INFO
@@ -33,13 +39,25 @@ class EventLogger:
         self._logger.addHandler(handler)
 
     def debug(self, message: str) -> None:
+        """
+        Функция для вывода отладочной информации
+        """
         self._logger.debug(message)
 
     def info(self, message: str) -> None:
+        """
+        Функция для вывода информации по ходу выполнения
+        """
         self._logger.info(message)
 
     def warning(self, message: str) -> None:
+        """
+        Функция для вывода информации о предупреждениях
+        """
         self._logger.warning(message)
 
     def error(self, message: str) -> None:
+        """
+        Функция для вывода информации об ошибках
+        """
         self._logger.error(message)
