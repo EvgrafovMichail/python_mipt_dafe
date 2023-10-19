@@ -6,10 +6,10 @@
 from typing import Optional
 # from numbers import Real       # раскомментируйте при необходимости
 
-from event_logger.event_logger import EventLogger
+from lsm_project.event_logger.event_logger import EventLogger
 
-from lsm.enumerations import MismatchStrategies
-from lsm.models import (
+from lsm_project.lsm.enumerations import MismatchStrategies
+from lsm_project.lsm.models import (
     LSMDescription,
     LSMStatistics,
     LSMLines,

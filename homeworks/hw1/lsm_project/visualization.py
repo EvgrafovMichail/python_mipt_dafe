@@ -7,7 +7,7 @@ import contextlib
 
 import matplotlib.pyplot as plt
 
-from lsm.models import LSMLines
+from lsm_project.lsm.models import LSMLines
 
 
 @contextlib.contextmanager

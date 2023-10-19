@@ -1,12 +1,12 @@
 import json
 import os
 
-from lsm.functions import get_lsm_lines, get_lsm_description, get_report
-from visualization import switch_to_ggplot, visualize_lines
+from lsm_project.lsm.functions import get_lsm_lines, get_lsm_description, get_report
+from lsm_project.visualization import switch_to_ggplot, visualize_lines
 
 
 if __name__ == '__main__':
-    path_to_data = os.path.join('..', 'measurments.json')
+    path_to_data = os.path.join('.', 'measurments.json')
 
     # загружаем данные эксперимента из json-файла
     with open(path_to_data, 'r') as file:
@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     # получаем зависимость с помощью МНК
     lsm_description = get_lsm_description(abscissa, ordinates)
-    lines = get_lsm_lines(abscissa, ordinates, lsm_description)
+    lines = get_lsm_lines(abscissa,ordinates,)
 
     # визуализируем результаты
     with switch_to_ggplot():
