@@ -19,12 +19,13 @@ def2:
 Нужно найти длину самого длинного особого подслова
 """
 
+
 def lengthOfLongestSubstring(s: str) -> int:
     if len(set(s)) == 1:
         return 1
     elif len(set(s)) == len(s):
         return len(s)
-    
+
     l = []
     max_lenght = 1
     for symbol in s:
@@ -41,9 +42,11 @@ def lengthOfLongestSubstring(s: str) -> int:
 
 
 if __name__ == "__main__":
-    assert lengthOfLongestSubstring('abcabcbb') == 3
-    assert lengthOfLongestSubstring('bbbbb') == 1
-    assert lengthOfLongestSubstring('bcdefg') == 6
-    assert lengthOfLongestSubstring('asdfghdjefhkss') == 7
-    assert lengthOfLongestSubstring('pwwkew') == 3     # 'pwke' является подпоследовательностью, 
-                                                       # но не подсловом
+    assert lengthOfLongestSubstring("abcabcbb") == 3
+    assert lengthOfLongestSubstring("bbbbb") == 1
+    assert lengthOfLongestSubstring("bcdefg") == 6
+    assert lengthOfLongestSubstring("asdfghdjefhkss") == 7
+    assert (
+        lengthOfLongestSubstring("pwwkew") == 3
+    )  # 'pwke' является подпоследовательностью,
+    # но не подсловом
