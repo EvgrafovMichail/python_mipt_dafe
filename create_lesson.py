@@ -15,9 +15,9 @@ def create_lesson_folders(lesson_id: int) -> None:
 
     if os.path.exists(path_to_lesson):
         raise RuntimeError(f'{path_to_lesson} is already exist;')
-    
+
     groups = ['312', '313', '314']
-    
+
     for group in groups:
         path_to_sem = os.path.join(
             path_to_lesson, f'sem{lesson_id}_{group}'
