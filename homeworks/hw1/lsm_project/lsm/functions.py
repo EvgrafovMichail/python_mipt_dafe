@@ -33,16 +33,37 @@ def get_lsm_description(
 
     :return: структура типа LSMDescription
     """
+    # Проверки
+    # 1) Оба входа - листы, по возможности привести к листу
+    # 2) Длина одинакова
 
-    global event_logger
+    # Вычисления <xy> <x> <y> <x^2>
+    sumx = sumy = sumxy = sumx2 = 0
 
-    # ваш код
-    # эту строчку можно менять
+    leninput = len(abscissa)
+    for iter in range(leninput): # считывание среднего из всех данных
+        sumx += abscissa[iter] / leninput
+        sumy += ordinates[iter] / leninput
+        sumxy += abscissa[iter] * ordinates[iter] / leninput
+        sumx2 += abscissa[iter] ** 2 / leninput
+    
+    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2) # a
+    Shift = sumy - Incline * sumx # b
+    
+    sumDispy = 0
+    for iter in range(leninput): # счёт оценки дисперсии зависимой величины
+        sumDispy += (ordinates[iter] - Incline * abscissa[iter] - Shift) ** 2 / (leninput-2)
+    
+    DispIncline = sumDispy / (leninput * (sumx2 - sumx ** 2)) # Дельта a
+    DispShift = DispIncline * sumx2 / (leninput * (sumx2 - sumx ** 2)) # Дельта b
+
+    global event_logger # ???
+    
     return LSMDescription(
-        incline=0,
-        shift=0,
-        incline_error=0,
-        shift_error=0
+        incline=Incline,
+        shift=Shift,
+        incline_error=DispIncline,
+        shift_error=DispShift
     )
 
 
@@ -60,14 +81,37 @@ def get_lsm_lines(
     :return: структура типа LSMLines
     """
 
-    # ваш код
-    # эту строчку можно менять
+    # Проверки
+    # 1) Необязательный аргумент
+    # Вычисления
+    data = get_lsm_description(abscissa, ordinates, True) # Изменить True на что-то из проверки
+
+    Incline = data.incline
+    Shift = data.shift
+
+    def value(arg): # Функция определяет значение f(x)
+        nonlocal Incline, Shift
+        return Incline * arg + Shift
+
+    leninput = len(abscissa)
+    incline_error = data.incline_error
+    shift_error = data.shift_error
+
+    Line_Predict = [0] * leninput
+    Line_Above = [0] * leninput
+    Line_Under = [0] * leninput
+
+    for iter in range(leninput): # Счет значений функций с входных данных
+        Line_Predict[iter] = value(abscissa[iter])
+        Line_Above[iter] = value(abscissa[iter] + incline_error) + shift_error
+        Line_Under[iter] = value(abscissa[iter] - incline_error) - shift_error
+
     return LSMLines(
         abscissa=abscissa,
         ordinates=ordinates,
-        line_predicted=ordinates,
-        line_above=ordinates,
-        line_under=ordinates
+        line_predicted=Line_Predict,
+        line_above=Line_Above,
+        line_under=Line_Under
     )
 
 
