@@ -8,7 +8,7 @@ import logging
 from enum import Enum
 
 
-# уровни логирования 
+# уровни логирования
 class Levels(Enum):
     debug = logging.DEBUG
     info = logging.INFO
