@@ -3,6 +3,12 @@
 
 # Python Folders
 *__pycache__/
+*.pytest_cache
+venv
+
+# Solution data
+*solved.ipynb
+solved
 
 # Other files
 *.docx
