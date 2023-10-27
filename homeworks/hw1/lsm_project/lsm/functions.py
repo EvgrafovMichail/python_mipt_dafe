@@ -35,23 +35,35 @@ def get_lsm_description(
     """
     # Проверки
     # 1) Оба входа - листы, по возможности привести к листу
+    if isinstance(abscissa, tuple):
+        abscissa = list(abscissa)
+    if isinstance(ordinates, tuple):
+        ordinates = list(ordinates)                         # Преобразовываю только тип tuple
+    
+    if (isinstance(abscissa, list) and isinstance(ordinates, list)) == 0:
+        TypeError
+    
     # 2) Длина одинакова
+    if len(abscissa) < len(ordinates):                      # Приравнивание их размеров
+        del ordinates[len(abscissa):]
+    elif len(ordinates) < len(abscissa):
+        del abscissa[len(ordinates):]
 
     # Вычисления <xy> <x> <y> <x^2>
     sumx = sumy = sumxy = sumx2 = 0
 
     leninput = len(abscissa)
-    for iter in range(leninput): # считывание среднего из всех данных
+    for iter in range(leninput):                            # считывание среднего из всех данных
         sumx += abscissa[iter] / leninput
         sumy += ordinates[iter] / leninput
         sumxy += abscissa[iter] * ordinates[iter] / leninput
         sumx2 += abscissa[iter] ** 2 / leninput
     
-    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2) # a
-    Shift = sumy - Incline * sumx # b
+    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2)   # a
+    Shift = sumy - Incline * sumx                           # b
     
     sumDispy = 0
-    for iter in range(leninput): # счёт оценки дисперсии зависимой величины
+    for iter in range(leninput):                            # счёт оценки дисперсии зависимой величины
         sumDispy += (ordinates[iter] - Incline * abscissa[iter] - Shift) ** 2 / (leninput-2)
     
     DispIncline = sumDispy / (leninput * (sumx2 - sumx ** 2)) # Дельта a
