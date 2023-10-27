@@ -16,7 +16,7 @@ class LSMStatistics:
     abscissa_mean: float            # среднее значение абсциссы
     ordinate_mean: float            # среднее значение ординаты
     product_mean: float             # среднее значение произведения
-    abs_squared_mean: float         # среднее значения квадрата абсциссы
+    abscissa_squared_mean: float         # среднее значения квадрата абсциссы
 
 
 # структура данных для описания расчитанных линий
