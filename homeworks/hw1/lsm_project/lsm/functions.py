@@ -123,12 +123,12 @@ def get_report(
     """
     global PRECISION
 
-    s = ("="*40 + "LSM computing result========================================\n\n"
+    s = ("="*40 + "LSM computing result" + "="*40 + "\n\n"
          f"[INFO]: incline: {lsm_description.incline:.3f};\n"
          f"[INFO]: shift: {lsm_description.shift:.3f};\n"
          f"[INFO]: incline error: {lsm_description.incline_error:.3f};\n"
          f"[INFO]: shift error: {lsm_description.shift_error:.3f};\n\n"
-         "="+"="*99)
+         "=" + "="*99)
     if path_to_save != '':
         with open(path_to_save, 'w') as f:
             f.write(s)
