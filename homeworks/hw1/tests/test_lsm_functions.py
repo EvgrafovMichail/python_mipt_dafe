@@ -21,7 +21,7 @@ from tests.data import (
 
 
 @pytest.mark.parametrize(
-    'abscissa,ordinates,exception', 
+    'abscissa,ordinates,exception',
     zip(
         wrong_abscissa, wrong_ordinates, wrong_args_exceptions
     ),
@@ -108,7 +108,7 @@ def test_get_report():
 
 
 def test_get_report_save_report(mock_builtin_open):
-    open_mock= mock_builtin_open
+    open_mock = mock_builtin_open
 
     lsm_description = LSMDescription(
         incline=5.070,
