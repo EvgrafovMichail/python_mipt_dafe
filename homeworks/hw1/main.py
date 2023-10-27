@@ -6,6 +6,7 @@ from lsm_project.visualization import switch_to_ggplot, visualize_lines
 
 
 if __name__ == '__main__':
+    # path_to_data = os.path.join('.', 'measurments.json')
     path_to_data = os.path.join('.', 'measurments.json')
 
     # загружаем данные эксперимента из json-файла

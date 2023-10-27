@@ -19,16 +19,16 @@ from lsm_project.lsm.models import (
 PRECISION = 3                   # константа для точности вывода
 event_logger = EventLogger()    # для логирования
 
-#done
+
 def get_lsm_description(
-    abscissa: list[float], ordinates: list[float],
+    absc: list[float], ords: list[float],
     mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
 ) -> LSMDescription:
     """
     Функции для получения описания рассчитаной зависимости
 
-    :param: abscissa - значения абсцисс
-    :param: ordinates - значение ординат
+    :param: absc - значения абсцисс
+    :param: ord - значение ординат
     :param: mismatch_strategy - стратегия обработки несовпадения
 
     :return: структура типа LSMDescription
@@ -36,79 +36,80 @@ def get_lsm_description(
 
     global event_logger
 
-    # ваш код
+    _is_valid_measurments(absc)
+    _is_valid_measurments(ords)
+    _process_mismatch(absc, ords, mismatch_strategy)
 
-    _is_valid_measurments(abscissa)
-    _is_valid_measurments(ordinates)
-    _process_mismatch(abscissa, ordinates, mismatch_strategy)
+    avr_x = sum(absc)/len(absc)
+    avr_y = sum(ords)/len(ords)
 
-    avrx = sum(abscissa)/len(abscissa)
-    avry = sum(ordinates)/len(ordinates)
+    avr_xy = 0
+    avr_sqr_x = 0
+    avr_sqr_y = 0
 
-    avrxy = 0
-    avrsqrx = 0
-    avrsqry = 0
+    for i in range(len(absc)):
+        avr_xy += absc[i]*ords[i]
+        avr_sqr_x += absc[i]**2
+        avr_sqr_y += ords[i]**2
 
-    for i in range(len(abscissa)):
-        avrxy += abscissa[i]*ordinates[i]
-        avrsqrx += abscissa[i]**2
-        avrsqry += ordinates[i]**2
+    avr_xy /= len(absc)
+    avr_sqr_x /= len(absc)
+    avr_sqr_y /= len(absc)
 
-    avrxy /= len(abscissa)
-    avrsqrx /= len(abscissa)
-    avrsqry /= len(abscissa)
+    k = (avr_xy - avr_x*avr_y)/(avr_sqr_x - avr_x**2)
+    b = avr_y - k*avr_x
 
-    incline_ = (avrxy - avrx*avry)/(avrsqrx - avrx**2)
-    shift_ = avry - incline_*avrx
+    n = len(absc)
 
-    ordinates_error = (sum([(ordinates[i]-(incline_*abscissa[i]+shift_))**2 for i in range(len(abscissa))])/(len(abscissa)-2))**0.5
-    incline_error_ = ((ordinates_error**2)/(len(abscissa)*(avrsqrx - avrx**2)))**0.5
-    shift_error_ = ((ordinates_error**2) * avrsqrx /(len(abscissa)*(avrsqrx - avrx**2)))**0.5
+    y_error = (sum([(ords[i]-(k*absc[i] + b))**2 for i in range(n)])/(n-2))**0.5
+    k_error = ((y_error ** 2) / (n * (avr_sqr_x - avr_x ** 2))) ** 0.5
+    b_error = ((y_error ** 2) * avr_sqr_x / (n * (avr_sqr_x - avr_x**2)))**0.5
 
-    # эту строчку можно менять
     return LSMDescription(
-        incline=incline_,
-        shift=shift_,
-        incline_error=incline_error_,
-        shift_error=shift_error_
+        incline=k,
+        shift=b,
+        incline_error=k_error,
+        shift_error=b_error
     )
 
-#done
+
 def get_lsm_lines(
-    abscissa: list[float], ordinates: list[float],
+    absc: list[float], ords: list[float],
     lsm_description: Optional[LSMDescription] = None
 ) -> LSMLines:
     """
     Функция для расчета значений функций с помощью результатов МНК
 
-    :param: abscissa - значения абсцисс
-    :param: ordinates - значение ординат
+    :param: absc - значения абсцисс
+    :param: ords - значение ординат
     :param: lsm_description - описание МНК
 
     :return: структура типа LSMLines
     """
 
-    # ваш код
-
     if not lsm_description:
-        lsm_description = _get_lsm_description(abscissa, ordinates)
+        lsm_description = _get_lsm_description(absc, ords)
     elif not isinstance(lsm_description, LSMDescription):
         raise TypeError("invalid \"lsm_description\"")
 
-    line_above_ = [lsm_description.shift + lsm_description.shift_error + (lsm_description.incline + lsm_description.incline_error)*x for x in abscissa]
-    line_under_ = [lsm_description.shift - lsm_description.shift_error + (lsm_description.incline - lsm_description.incline_error)*x for x in abscissa]
-    line_predicted_ = [lsm_description.shift + lsm_description.incline*x for x in abscissa]
+    b = lsm_description.shift
+    b_error = lsm_description.shift_error
+    k = lsm_description.incline
+    k_error = lsm_description.incline_error
 
-    # эту строчку можно менять
+    line_above_ = [b + b_error + (k + k_error)*x for x in absc]
+    line_under_ = [b - b_error + (k - k_error)*x for x in absc]
+    line_predicted_ = [b + k*x for x in absc]
+
     return LSMLines(
-        abscissa=abscissa,
-        ordinates=ordinates,
+        abscissa=absc,
+        ordinates=ords,
         line_predicted=line_predicted_,
         line_above=line_above_,
         line_under=line_under_
     )
 
-#done
+
 def get_report(
     lsm_description: LSMDescription, path_to_save: str = ''
 ) -> str:
@@ -122,8 +123,6 @@ def get_report(
     """
     global PRECISION
 
-    # ваш код
-    
     s = ("="*40 + "LSM computing result========================================\n\n"
          f"[INFO]: incline: {lsm_description.incline:.3f};\n"
          f"[INFO]: shift: {lsm_description.shift:.3f};\n"
@@ -133,111 +132,108 @@ def get_report(
     if path_to_save != '':
         with open(path_to_save, 'w') as f:
             f.write(s)
-    # эту строчку можно менять
+
     return s
 
 
 # служебная функция для валидации #done
 def _is_valid_measurments(measurments: list[float]) -> None:
-    # ваш код
-    
-    iter(measurments) #Проверка на итерируемый объект
+
+    iter(measurments)  # Проверка на итерируемый объект
 
     chkr = 1
 
     for i in measurments:
-        chkr *= (isinstance(i, Real) or isinstance(i, int)) #Проверка на то, что в итерируемом объекте только числа
+        chkr *= (isinstance(i, Real))  # Проверка на то, что в итерируемом объекте только числа
 
     if chkr == 0:
         raise ValueError("Values in measurments should be numbers")
-    
+
     if len(measurments) < 3:
         raise ValueError("The amount of measurments should be atleast 3")
 
-    # эту строчку можно менять
     return None
 
 
-# служебная функция для обработки несоответствия размеров #done
-def _process_mismatch(abscissa: list[float], ordinates: list[float], mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
-) -> tuple[list[float], list[float]]:
+# служебная функция для обработки несоответствия размеров
+def _process_mismatch(absc: list[float], ords: list[float],
+                      mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
+                      ) -> tuple[list[float], list[float]]:
     global event_logger
 
-    # ваш код
-
-    if len(abscissa) != len(ordinates):
+    if len(absc) != len(ords):
         if mismatch_strategy == MismatchStrategies.FALL:
             raise RuntimeError("Unable to fix mismatch of measurments")
         elif mismatch_strategy == MismatchStrategies.CUT:
-            if len(abscissa) > len(ordinates):
-                del abscissa[len(ordinates):len(abscissa)]
+            if len(absc) > len(ords):
+                del absc[len(ords):len(absc)]
             else:
-                del ordinates[len(abscissa):len(ordinates)]
+                del ords[len(absc):len(ords)]
         else:
             raise ValueError("Unpredicted value")
 
-    # эту строчку можно менять
-    return [abscissa], [ordinates]
+    return [absc], [ords]
 
 
-# служебная функция для получения статистик #done
+# служебная функция для получения статистик
 def _get_lsm_statistics(
-    abscissa: list[float], ordinates: list[float], mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
-) -> LSMStatistics:
+    absc: list[float], ords: list[float],
+    mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
+                        ) -> LSMStatistics:
     global event_logger, PRECISION
 
-    # ваш код
+    if len(absc) != len(ords):
+        absc, ords = _process_mismatch(absc, ords, mismatch_strategy)
 
-    if len(abscissa) != len(ordinates):
-        abscissa, ordinates = _process_mismatch(abscissa, ordinates, mismatch_strategy)
+    _is_valid_measurments(absc)
+    _is_valid_measurments(ords)
 
-    _is_valid_measurments(abscissa)
-    _is_valid_measurments(ordinates)
+    avr_x = sum(absc)/len(absc)
+    avr_y = sum(ords)/len(ords)
 
-    avrx = sum(abscissa)/len(abscissa)
-    avry = sum(ordinates)/len(ordinates)
+    avr_xy = 0
+    avr_sqr_x = 0
 
-    avrxy = 0
-    avrsqrx = 0
+    for i in range(len(absc)):
+        avr_xy += absc[i]*ords[i]
+        avr_sqr_x += absc[i]**2
 
-    for i in range(len(abscissa)):
-        avrxy += abscissa[i]*ordinates[i]
-        avrsqrx += abscissa[i]**2
+    avr_xy /= len(absc)
+    avr_sqr_x /= len(absc)
 
-    avrxy /= len(abscissa)
-    avrsqrx /= len(abscissa)
-
-    # эту строчку можно менять
     return LSMStatistics(
-        abscissa_mean=avrx,
-        ordinate_mean=avry,
-        product_mean=avrxy,
-        abs_squared_mean=avrsqrx
+        abscissa_mean=avr_x,
+        ordinate_mean=avr_y,
+        product_mean=avr_xy,
+        abs_squared_mean=avr_sqr_x
     )
 
 
-# служебная функция для получения описания МНК #done
+# служебная функция для получения описания МНК
 def _get_lsm_description(
-    abscissa: list[float], ordinates: list[float], mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
-) -> LSMDescription:
+    absc: list[float], ords: list[float],
+    mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
+                         ) -> LSMDescription:
     global event_logger, PRECISION
 
-    # ваш код
+    stat = _get_lsm_statistics(absc, ords, mismatch_strategy)
 
-    stat = _get_lsm_statistics(abscissa, ordinates, mismatch_strategy)
+    avr_x = stat.abscissa_mean
+    avr_y = stat.ordinate_mean
+    avr_sqr_x = stat.abs_squared_mean
+    avr_xy = stat.product_mean
 
-    incline_ = (stat.product_mean - stat.abscissa_mean*stat.ordinate_mean)/(stat.abs_squared_mean - stat.abscissa_mean**2)
-    shift_ = stat.ordinate_mean - incline_*stat.abscissa_mean
+    k = (avr_xy - avr_x*avr_y)/(avr_sqr_x - avr_x**2)
+    b = avr_y - k*avr_x
+    n = len(absc)
 
-    ordinates_error_ = (sum([(ordinates[i]-(incline_*abscissa[i]+shift_))**2 for i in range(len(abscissa))])/(len(abscissa)-2))**0.5
-    incline_error_ = ((ordinates_error_**2)/(len(abscissa)*(stat.abs_squared_mean - stat.abscissa_mean**2)))**0.5
-    shift_error_ = ((ordinates_error_**2) * stat.abs_squared_mean /(len(abscissa)*(stat.abs_squared_mean - stat.abscissa_mean**2)))**0.5
-
-    # эту строчку можно менять
+    y_error = (sum([(ords[i]-(k*absc[i]+b))**2 for i in range(n)])/(n-2))**0.5
+    k_error = ((y_error**2)/(n*(avr_sqr_x - avr_x**2)))**0.5
+    b_error = ((y_error**2) * avr_sqr_x / (n*(avr_sqr_x - avr_x**2))) ** 0.5
 
     return LSMDescription(
-        incline=incline_,
-        shift=shift_,
-        incline_error=incline_error_,
-        shift_error=shift_error_
+        incline=k,
+        shift=b,
+        incline_error=k_error,
+        shift_error=b_error
     )
