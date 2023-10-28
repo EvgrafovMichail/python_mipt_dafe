@@ -2,9 +2,10 @@
 В этом модуле хранятся функции для применения МНК
 """
 
-
 from typing import Optional
-from numbers import Real       # раскомментируйте при необходимости
+from numbers import Real
+from pathlib import Path
+from inspect import stack
 
 from lsm_project.lsm.enumerations import MismatchStrategies
 from lsm_project.lsm.models import (
@@ -13,14 +14,16 @@ from lsm_project.lsm.models import (
     LSMLines,
 )
 
-from lsm_project.utils.math import mean, line
-from lsm_project.utils.error import log_errors
+from lsm_project.lsm.math import mean, line
+from lsm_project.event_logger.event_logger import EventLogger
+from lsm_project.event_logger.utils import log_errors
 
 
-PRECISION = 3   # константа для точности вывода
+PRECISION = 3                 # константа для точности вывода
+event_loger = EventLogger()
 
 
-@log_errors
+@log_errors(event_loger)
 def get_lsm_description(
     abscissa: list[float], ordinates: list[float],
     mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
@@ -36,8 +39,10 @@ def get_lsm_description(
     """
 
     if not isinstance(mismatch_strategy, MismatchStrategies):
-        raise ValueError(f"unexpected mismatch strategy type: "
-                         f"{type(mismatch_strategy).__name__}")
+        raise ValueError(
+            f"unexpected mismatch strategy type: "
+            f"{type(mismatch_strategy).__name__}"
+        )
 
     try:
         abscissa, ordinates = _process_mismatch(
@@ -47,11 +52,24 @@ def get_lsm_description(
         )
     except (ValueError, RuntimeError) as e:
         raise e
+    else:
+        event_loger.debug(
+            f"{stack()[0][3]} || "
+            f"mismatch was successfully processed: "
+            f"{abscissa=} length={len(abscissa)}; "
+            f"{ordinates=} length={len(ordinates)};"
+        )
 
-    return _get_lsm_description(abscissa, ordinates)
+    description = _get_lsm_description(abscissa, ordinates)
+    event_loger.debug(
+        f"{stack()[0][3]} || "
+        f"description was successfully created: {description}"
+    )
+
+    return description
 
 
-@log_errors
+@log_errors(event_loger)
 def get_lsm_lines(
     abscissa: list[float], ordinates: list[float],
     lsm_description: Optional[LSMDescription] = None
@@ -66,6 +84,8 @@ def get_lsm_lines(
     :return: структура типа LSMLines
     """
 
+    func_name = stack()[0][3]
+
     if not lsm_description:
         try:
             lsm_description = _get_lsm_description(abscissa, ordinates)
@@ -73,17 +93,41 @@ def get_lsm_lines(
             raise e
 
     if not isinstance(lsm_description, LSMDescription):
-        raise TypeError(f"invalid lsm description: "
-                        f"{type(lsm_description).__name__}")
-
-    try:
-        abscissa, ordinates = _process_mismatch(
-            abscissa=abscissa,
-            ordinates=ordinates,
-            mismatch_strategy=MismatchStrategies.CUT
+        raise TypeError(
+            f"invalid lsm description: "
+            f"{type(lsm_description).__name__}"
         )
-    except (ValueError, RuntimeError) as e:
-        raise e
+
+    if not _is_valid_data(abscissa, ordinates):
+        raise ValueError(
+            "invalid data: expected 3 or more real number measurement but got "
+            f"abscissa: {len(abscissa)}; "
+            f"ordinates: {len(ordinates)};"
+        )
+
+    if len(abscissa) != len(ordinates):
+        event_loger.debug(
+            f"{stack()[0][3]} || "
+            f"mismatch length of abscissa and ordinates: "
+            f"{abscissa=} length={len(abscissa)}; "
+            f"{ordinates=} length={len(ordinates)};"
+        )
+
+        try:
+            abscissa, ordinates = _process_mismatch(
+                abscissa=abscissa,
+                ordinates=ordinates,
+                mismatch_strategy=MismatchStrategies.CUT
+            )
+        except (ValueError, RuntimeError) as e:
+            raise e
+        else:
+            event_loger.debug(
+                f"{stack()[0][3]} || "
+                f"mismatch was successfully processed: "
+                f"{abscissa=} length={len(abscissa)}; "
+                f"{ordinates=} length={len(ordinates)};"
+            )
 
     line_predicted = line(
         lsm_description.incline,
@@ -103,16 +147,22 @@ def get_lsm_lines(
         abscissa
     )
 
-    return LSMLines(
+    lsm_line = LSMLines(
         abscissa=abscissa,
         ordinates=ordinates,
         line_predicted=line_predicted,
         line_above=line_above,
         line_under=line_under,
     )
+    event_loger.debug(
+        f"{func_name} || "
+        f"lsm line was successfully created: {lsm_line}"
+    )
+
+    return lsm_line
 
 
-@log_errors
+@log_errors(event_loger)
 def get_report(
     lsm_description: LSMDescription, path_to_save: str = ''
 ) -> str:
@@ -128,14 +178,30 @@ def get_report(
     label = "LSM computing result"
     footer = ""
     report = (
-        f"{label:.^100}"
-        f"[INFO]: incline:{lsm_description.incline}"
-        f"[INFO]: shift:{lsm_description.incline}"
-        f"[INFO]: incline:{lsm_description.incline}"
-        f"[INFO]: incline:{lsm_description.incline}"
-        f"{footer:.^100}"
+        f"{label:=^100}\n"
+        "\n"
+        f"[INFO]: incline: {lsm_description.incline:.{PRECISION}f};\n"
+        f"[INFO]: shift: {lsm_description.shift:.{PRECISION}f};\n"
+        f"[INFO]: incline error: {lsm_description.incline_error:.{PRECISION}f};\n"
+        f"[INFO]: shift error: {lsm_description.shift_error:.{PRECISION}f};\n"
+        "\n"
+        f"{footer:=^100}"
     )
-    return 'report'
+
+    if path_to_save:
+        path_to_save = Path(path_to_save)
+        exist = path_to_save.exists()
+
+        with open(path_to_save.absolute(), "w") as file:
+            if not exist:
+                event_loger.info(
+                    f"{stack()[0][3]} || "
+                    f"{path_to_save.absolute()} was successfully created"
+                )
+
+            file.write(report)
+
+    return report
 
 
 # служебная функция для валидации измерения
@@ -158,21 +224,28 @@ def _is_valid_data(
 
 
 # служебная функция для обработки несоответствия размеров
-@log_errors
+@log_errors(event_loger)
 def _process_mismatch(
     abscissa: list[float], ordinates: list[float],
     mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
 ) -> tuple[list[float], list[float]]:
     if not _is_valid_data(abscissa, ordinates):
-        raise ValueError("invalid data: expected 3 or more real number measurement")
+        raise ValueError(
+            "invalid data: expected 3 or more real number measurement but got "
+            f"abscissa: {len(abscissa)}; "
+            f"ordinates: {len(ordinates)};"
+        )
 
     if len(abscissa) == len(ordinates):
         return abscissa, ordinates
 
     match mismatch_strategy:
         case MismatchStrategies.FALL:
-            raise RuntimeError(f"quantity of abscissa and ordinates isn`t equal: "
-                               f"{len(abscissa)=} {len(ordinates)=}")
+            raise RuntimeError(
+                f"quantity of abscissa and ordinates isn`t equal: "
+                f"abscissa: {len(abscissa)}; "
+                f"ordinates: {len(ordinates)}"
+            )
 
         case MismatchStrategies.CUT:
             if len(abscissa) > len(ordinates):
@@ -181,12 +254,14 @@ def _process_mismatch(
             return abscissa, ordinates[:len(abscissa)]
 
         case _:
-            raise ValueError("unexpected mismatch strategy type: "
-                             f"{type(mismatch_strategy).__name__}")
+            raise ValueError(
+                "unexpected mismatch strategy type: "
+                f"{type(mismatch_strategy).__name__}"
+            )
 
 
 # служебная функция для получения статистик
-@log_errors
+@log_errors(event_loger)
 def _get_lsm_statistics(
     abscissa: list[float], ordinates: list[float]
 ) -> LSMStatistics:
@@ -205,70 +280,69 @@ def _get_lsm_statistics(
     except ZeroDivisionError:
         raise ValueError("empty or zero measurements")
 
-    return LSMStatistics(
+    statistics = LSMStatistics(
         abscissa_mean=abscissa_mean,
         ordinate_mean=ordinates_mean,
         product_mean=product_mean,
         abscissa_squared_mean=abscissa_squared_mean,
     )
 
+    return statistics
+
 
 # служебная функция для получения описания МНК
-@log_errors
+@log_errors(event_loger)
 def _get_lsm_description(
     abscissa: list[float], ordinates: list[float]
 ) -> LSMDescription:
     if not abscissa or not ordinates:
         raise ValueError("empty measurements")
     if len(abscissa) != len(ordinates):
-        raise RuntimeError(f"quantity of abscissa and ordinates isn`t equal: "
-                           f"{len(abscissa)=} {len(ordinates)=}")
+        raise RuntimeError(
+                f"quantity of abscissa and ordinates isn`t equal: "
+                f"abscissa: {len(abscissa)}; "
+                f"ordinates: {len(ordinates)}"
+        )
 
     try:
         statistics = _get_lsm_statistics(abscissa, ordinates)
+        event_loger.debug(
+            f"{stack()[0][3]} || "
+            f"statistics was successfully created: {statistics}"
+        )
+
+        coefficients = _calculate_coefficients(statistics, abscissa, ordinates)
+        event_loger.debug(
+            f"{stack()[0][3]} || "
+            f"coefficients was successfully calculated"
+        )
     except ValueError as e:
         raise e
     else:
-        return _calculate_coefficients(statistics, abscissa, ordinates)
+        return LSMDescription(*coefficients)
 
 
 # служебная функция для расчета коэффициентов МНК
 def _calculate_coefficients(
         data: LSMStatistics, abscissa: list[float], ordinates: list[float]
-) -> LSMDescription:
-    global PRECISION
-
-    incline = round(
-        (data.product_mean - data.abscissa_mean*data.ordinate_mean) /
-        (data.abscissa_squared_mean - data.abscissa_mean**2),
-        PRECISION,
+) -> tuple[float, float, float, float]:
+    incline = (
+            (data.product_mean - data.abscissa_mean*data.ordinate_mean) /
+            (data.abscissa_squared_mean - data.abscissa_mean**2)
     )
 
-    shift = round(
-        data.ordinate_mean - incline * data.abscissa_mean,
-        PRECISION,
+    shift = data.ordinate_mean - incline * data.abscissa_mean
+
+    ordinates_dispersion = (
+            sum([(y - incline*x - shift)**2 for x, y in zip(abscissa, ordinates)]) /
+            (len(abscissa) - 2)
     )
 
-    ordinates_dispersion = round(
-        sum([(y - incline*x - shift)**2 for x, y in zip(abscissa, ordinates)]) /
-        (len(abscissa) - 2),
-        PRECISION,
+    incline_dispersion = (
+            ordinates_dispersion /
+            (len(abscissa) * (data.abscissa_squared_mean - data.abscissa_mean**2))
     )
 
-    incline_dispersion = round(
-        ordinates_dispersion /
-        len(abscissa) * (data.abscissa_squared_mean - data.abscissa_mean**2),
-        PRECISION,
-    )
+    shift_dispersion = incline_dispersion * data.abscissa_squared_mean
 
-    shift_dispersion = round(
-        incline_dispersion * data.abscissa_squared_mean,
-        PRECISION,
-    )
-
-    return LSMDescription(
-        incline=incline,
-        shift=shift,
-        incline_error=incline_dispersion**0.5,
-        shift_error=shift_dispersion**0.5,
-    )
+    return incline, shift, incline_dispersion**0.5, shift_dispersion**0.5

@@ -3,6 +3,7 @@ import os
 
 from lsm_project.lsm.functions import get_lsm_lines, get_lsm_description, get_report
 from lsm_project.visualization import switch_to_ggplot, visualize_lines
+from lsm_project.lsm.enumerations import MismatchStrategies
 
 
 if __name__ == '__main__':
@@ -15,8 +16,8 @@ if __name__ == '__main__':
         ordinates = measurments.get('ordinates', [])
 
     # получаем зависимость с помощью МНК
-    lsm_description = get_lsm_description(abscissa, ordinates)
-    lines = get_lsm_lines(abscissa, ordinates, )
+    lsm_description = get_lsm_description(abscissa, ordinates, MismatchStrategies.CUT)
+    lines = get_lsm_lines(abscissa, ordinates)
 
     # визуализируем результаты
     with switch_to_ggplot():
