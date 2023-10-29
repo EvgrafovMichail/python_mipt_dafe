@@ -34,12 +34,11 @@ def get_lsm_description(
     :return: структура типа LSMDescription
     """
 
-    abscissa = _is_valid_measurments(abscissa)
-    ordinates = _is_valid_measurments(ordinates)
+    Measurments = _is_valid_measurments(abscissa, ordinates)
 
-    measurments = _process_mismatch(abscissa, ordinates, mismatch_strategy)
+    Measurments = _process_mismatch(Measurments[0], Measurments[1], mismatch_strategy)
 
-    return get_lsm_description(measurments[0], measurments[1])
+    return _get_lsm_description(Measurments[0], Measurments[1])
 
 
 def get_lsm_lines(
@@ -55,7 +54,6 @@ def get_lsm_lines(
 
     :return: структура типа LSMLines
     """
-
     if not (isinstance(lsm_description, LSMDescription) or lsm_description is None):
         raise TypeError
     if lsm_description is None:
@@ -70,8 +68,8 @@ def get_lsm_lines(
         abscissa=abscissa,
         ordinates=ordinates,
         line_predicted=[Incline * arg + Shift for arg in abscissa],
-        line_above=[(Incline + Incline_error) * arg + (Shift + Shift_error) for arg in abscissa],
-        line_under=[(Incline - Incline_error) * arg + (Shift - Shift_error) for arg in abscissa]
+        line_above=[((Incline + Incline_error) * arg + (Shift + Shift_error)) for arg in abscissa],
+        line_under=[((Incline - Incline_error) * arg + (Shift - Shift_error)) for arg in abscissa]
     )
 
 
@@ -105,57 +103,40 @@ def get_report(
 
 
 # служебная функция для валидации
-def _is_valid_measurments(measurments: list[float]) -> list[float]:
+def _is_valid_measurments(abscissa: list[float], ordinates: list[float]) -> list[float]:
     # ваш код
-    def real_number_chek(measurments: list[float]):
+    def real_number_check(measurments: list[float]):
         for number in measurments:
             if not (isinstance(number, Real)):
+                print(type(number))
                 raise ValueError
 
-    if isinstance(measurments, list):
-        real_number_chek(measurments)
-        if len(measurments) < 3:
-            raise ValueError
+    result = []
+    for measurments in [abscissa, ordinates]:
 
-    elif isinstance(measurments, tuple):
-        real_number_chek(measurments)
-        if len(measurments) < 3:
-            raise ValueError
-        measurments = list(measurments)
-
-    elif isinstance(measurments, dict):
-        keys = measurments.keys()
-        values = measurments.values()
-        measurments_in_keys = True
-
-        if len(keys) < 3:
-            raise ValueError
-
-        # исключительная real_number_check
-        for number in keys:
-            if not (isinstance(number, Real)):
-                measurments_in_keys = False
-                break                               # измерения в ключах?
-
-        if measurments_in_keys:
-            measurments = list(keys)                # Если да, то ок
-        else:                                       # иначе искать измерения стоит в значениях
-            for number in values:
-                if not (isinstance(number, Real)):
-                    raise TypeError
-            measurments = list(values)
-
-    else:                                           # despair = отчаяние
-        try:
-            despair_measurments = list(measurments)
-            if len(despair_measurments) < 3:
+        if type(measurments) is list:               # если лист
+            real_number_check(measurments)
+            if len(measurments) < 3:
                 raise ValueError
-            real_number_chek(despair_measurments)
-            measurments = despair_measurments
-        except:
-            raise TypeError
+
+        elif type(measurments) is tuple:            # если тюпл
+            if len(measurments) < 3:
+                raise ValueError
+            measurments = list(measurments)
+            real_number_check(measurments)          # словари не получилось(
+
+        else:                                           # despair = отчаяние
+            try:
+                despair_measurments = list(measurments)
+                if len(despair_measurments) < 3:
+                    raise ValueError
+                real_number_check(despair_measurments)
+                measurments = despair_measurments
+            except:
+                raise TypeError
+        result.append(measurments)
     # эту строчку можно менять
-    return measurments
+    return result
 
 
 # служебная функция для обработки несоответствия размеров
@@ -179,7 +160,7 @@ def _process_mismatch(
         else:
             raise ValueError
 
-    result = tuple[abscissa, ordinates]
+    result = [abscissa, ordinates]
     # эту строчку можно менять
     return result
 
@@ -191,21 +172,21 @@ def _get_lsm_statistics(
     global event_logger, PRECISION
 
     # ваш код
-    sumx = sumy = sumxy = sumx2 = 0                         # sumx = <x>
-    leninput = len(abscissa)
+    average_x = average_y = average_xy = average_x2 = 0                         # average_x = <x>
+    len_input = len(abscissa)
 
-    for iter in range(leninput):                            # считывание среднего из всех данных
-        sumx += abscissa[iter] / leninput
-        sumy += ordinates[iter] / leninput
-        sumxy += abscissa[iter] * ordinates[iter] / leninput
-        sumx2 += abscissa[iter] ** 2 / leninput
+    for iter in range(len_input):                            # считывание среднего из всех данных
+        average_x += abscissa[iter] / len_input
+        average_y += ordinates[iter] / len_input
+        average_xy += abscissa[iter] * ordinates[iter] / len_input
+        average_x2 += abscissa[iter] ** 2 / len_input
 
     # эту строчку можно менять
     return LSMStatistics(
-        abscissa_mean=sumx,
-        ordinate_mean=sumy,
-        product_mean=sumxy,
-        abs_squared_mean=sumx2
+        abscissa_mean=average_x,
+        ordinate_mean=average_y,
+        product_mean=average_xy,
+        abs_squared_mean=average_x2
     )
 
 
@@ -216,26 +197,53 @@ def _get_lsm_description(
     global event_logger, PRECISION
 
     # ваш код
-    statistics = _get_lsm_statistics(abscissa, ordinates)
-    sumx = statistics.abscissa_mean
-    sumy = statistics.ordinate_mean
-    sumxy = statistics.product_mean
-    sumx2 = statistics.abs_squared_mean
-    leninput = len(abscissa)        # можно использовать ординату
+    statistic = _get_lsm_statistics(abscissa, ordinates)
+    average_x = statistic.abscissa_mean
+    average_y = statistic.ordinate_mean
+    average_xy = statistic.product_mean
+    average_x2 = statistic.abs_squared_mean
+    len_input = len(abscissa)
 
-    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2)   # a
-    Shift = sumy - Incline * sumx                           # b
+    Incline = (average_xy - average_x * average_y) / (average_x2 - average_x ** 2)
+    Shift = average_y-Incline*average_x
 
-    sumDispy = 0
-    for iter in range(leninput):           # счёт оценки дисперсии зависимой величины
-        sumDispy += (ordinates[iter] - Incline * abscissa[iter] - Shift) ** 2 / (leninput-2)
+    delta_y2 = 0
 
-    DispIncline = sumDispy / (leninput * (sumx2 - sumx ** 2))               # Дельта a
-    DispShift = DispIncline * sumx2 / (leninput * (sumx2 - sumx ** 2))      # Дельта b
+    for i in range(len(abscissa)):
+        delta_y2 += ((ordinates[i] - (Incline * abscissa[i] + Shift)) ** 2) / (len_input - 2)
 
+    delta_Incline = (delta_y2 / (len_input * (average_x2 - average_x ** 2))) ** 0.5
+    delta_Shift = (delta_y2 * average_x2 / (len_input * (average_x2 - average_x ** 2))) ** 0.5
+
+    # эту строчку можно менять
     return LSMDescription(
         incline=Incline,
         shift=Shift,
-        incline_error=DispIncline,
-        shift_error=DispShift
+        incline_error=delta_Incline,
+        shift_error=delta_Shift
     )
+
+'''
+Попытка чекать словари
+    elif type(measurments) is dict:
+        keys = measurments.keys()
+        values = measurments.values()
+        measurments_in_keys = True
+
+        if len(keys) < 3:
+            raise ValueError
+
+        # исключительная real_number_check
+        for number in keys:
+            if not (isinstance(number, Real)):
+                measurments_in_keys = False
+                break                               # измерения в ключах?
+
+        if measurments_in_keys:
+            measurments = list(keys)                # Если да, то ок
+        else:                                       # иначе искать измерения стоит в значениях
+            for number in values:
+                if not (isinstance(number, Real)):
+                    raise TypeError
+            measurments = list(values)
+'''
