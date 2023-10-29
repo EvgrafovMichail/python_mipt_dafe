@@ -4,7 +4,7 @@
 
 
 from typing import Optional
-# from numbers import Real       # раскомментируйте при необходимости
+from numbers import Real       # раскомментируйте при необходимости
 
 from lsm_project.event_logger.event_logger import EventLogger
 
@@ -33,50 +33,13 @@ def get_lsm_description(
 
     :return: структура типа LSMDescription
     """
-    # Проверки
-    # 1) Оба входа - листы, по возможности привести к листу
-    if isinstance(abscissa, tuple):
-        abscissa = list(abscissa)
-    if isinstance(ordinates, tuple):
-        ordinates = list(ordinates)                         # Преобразовываю только тип tuple
-    
-    if (isinstance(abscissa, list) and isinstance(ordinates, list)) == 0:
-        TypeError
-    
-    # 2) Длина одинакова
-    if len(abscissa) < len(ordinates):                      # Приравнивание их размеров
-        del ordinates[len(abscissa):]
-    elif len(ordinates) < len(abscissa):
-        del abscissa[len(ordinates):]
 
-    # Вычисления <xy> <x> <y> <x^2>
-    sumx = sumy = sumxy = sumx2 = 0
+    abscissa = _is_valid_measurments(abscissa)
+    ordinates = _is_valid_measurments(ordinates)
 
-    leninput = len(abscissa)
-    for iter in range(leninput):                            # считывание среднего из всех данных
-        sumx += abscissa[iter] / leninput
-        sumy += ordinates[iter] / leninput
-        sumxy += abscissa[iter] * ordinates[iter] / leninput
-        sumx2 += abscissa[iter] ** 2 / leninput
-    
-    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2)   # a
-    Shift = sumy - Incline * sumx                           # b
-    
-    sumDispy = 0
-    for iter in range(leninput):                            # счёт оценки дисперсии зависимой величины
-        sumDispy += (ordinates[iter] - Incline * abscissa[iter] - Shift) ** 2 / (leninput-2)
-    
-    DispIncline = sumDispy / (leninput * (sumx2 - sumx ** 2)) # Дельта a
-    DispShift = DispIncline * sumx2 / (leninput * (sumx2 - sumx ** 2)) # Дельта b
+    measurments = _process_mismatch(abscissa, ordinates, mismatch_strategy)
 
-    global event_logger # ???
-    
-    return LSMDescription(
-        incline=Incline,
-        shift=Shift,
-        incline_error=DispIncline,
-        shift_error=DispShift
-    )
+    return get_lsm_description(measurments[0], measurments[1])
 
 
 def get_lsm_lines(
@@ -93,37 +56,22 @@ def get_lsm_lines(
     :return: структура типа LSMLines
     """
 
-    # Проверки
-    # 1) Необязательный аргумент
-    # Вычисления
-    data = get_lsm_description(abscissa, ordinates, True) # Изменить True на что-то из проверки
+    if not (isinstance(lsm_description, LSMDescription) or lsm_description is None):
+        raise TypeError
+    if lsm_description is None:
+        lsm_description = get_lsm_description(abscissa, ordinates)
 
-    Incline = data.incline
-    Shift = data.shift
-
-    def value(arg): # Функция определяет значение f(x)
-        nonlocal Incline, Shift
-        return Incline * arg + Shift
-
-    leninput = len(abscissa)
-    incline_error = data.incline_error
-    shift_error = data.shift_error
-
-    Line_Predict = [0] * leninput
-    Line_Above = [0] * leninput
-    Line_Under = [0] * leninput
-
-    for iter in range(leninput): # Счет значений функций с входных данных
-        Line_Predict[iter] = value(abscissa[iter])
-        Line_Above[iter] = value(abscissa[iter] + incline_error) + shift_error
-        Line_Under[iter] = value(abscissa[iter] - incline_error) - shift_error
+    Incline = lsm_description.incline
+    Shift = lsm_description.shift
+    Incline_error = lsm_description.incline_error
+    Shift_error = lsm_description.shift_error
 
     return LSMLines(
         abscissa=abscissa,
         ordinates=ordinates,
-        line_predicted=Line_Predict,
-        line_above=Line_Above,
-        line_under=Line_Under
+        line_predicted=[Incline * arg + Shift for arg in abscissa],
+        line_above=[(Incline + Incline_error) * arg + (Shift + Shift_error) for arg in abscissa],
+        line_under=[(Incline - Incline_error) * arg + (Shift - Shift_error) for arg in abscissa]
     )
 
 
@@ -140,16 +88,74 @@ def get_report(
     """
     global PRECISION
 
-    # ваш код
-    # эту строчку можно менять
-    return 'report'
+    report = '\n'.join([
+        'LSM computing result'.center(100, "="), '',
+        f'[INFO]: incline: {lsm_description.incline:.{PRECISION}f};',
+        f'[INFO]: shift: {lsm_description.shift:.{PRECISION}f};',
+        f'[INFO]: incline error: {lsm_description.incline_error:.{PRECISION}f};',
+        f'[INFO]: shift error: {lsm_description.shift_error:.{PRECISION}f};',
+        '', ''.center(100, "=")
+    ])
+
+    if path_to_save != '':
+        with open(path_to_save, 'w') as f:
+            f.write(report)
+
+    return report
 
 
 # служебная функция для валидации
-def _is_valid_measurments(measurments: list[float]) -> bool:
+def _is_valid_measurments(measurments: list[float]) -> list[float]:
     # ваш код
+    def real_number_chek(measurments: list[float]):
+        for number in measurments:
+            if not (isinstance(number, Real)):
+                raise ValueError
+
+    if isinstance(measurments, list):
+        real_number_chek(measurments)
+        if len(measurments) < 3:
+            raise ValueError
+
+    elif isinstance(measurments, tuple):
+        real_number_chek(measurments)
+        if len(measurments) < 3:
+            raise ValueError
+        measurments = list(measurments)
+
+    elif isinstance(measurments, dict):
+        keys = measurments.keys()
+        values = measurments.values()
+        measurments_in_keys = True
+
+        if len(keys) < 3:
+            raise ValueError
+
+        # исключительная real_number_check
+        for number in keys:
+            if not (isinstance(number, Real)):
+                measurments_in_keys = False
+                break                               # измерения в ключах?
+
+        if measurments_in_keys:
+            measurments = list(keys)                # Если да, то ок
+        else:                                       # иначе искать измерения стоит в значениях
+            for number in values:
+                if not (isinstance(number, Real)):
+                    raise TypeError
+            measurments = list(values)
+
+    else:                                           # despair = отчаяние
+        try:
+            despair_measurments = list(measurments)
+            if len(despair_measurments) < 3:
+                raise ValueError
+            real_number_chek(despair_measurments)
+            measurments = despair_measurments
+        except:
+            raise TypeError
     # эту строчку можно менять
-    return False
+    return measurments
 
 
 # служебная функция для обработки несоответствия размеров
@@ -160,8 +166,22 @@ def _process_mismatch(
     global event_logger
 
     # ваш код
+    if len(ordinates) != len(abscissa):
+        if mismatch_strategy == MismatchStrategies.FALL:
+            raise RuntimeError
+
+        elif mismatch_strategy == MismatchStrategies.CUT:
+            if len(abscissa) < len(ordinates):                      # Приравнивание их размеров
+                del ordinates[len(abscissa):]
+            elif len(ordinates) < len(abscissa):
+                del abscissa[len(ordinates):]
+
+        else:
+            raise ValueError
+
+    result = tuple[abscissa, ordinates]
     # эту строчку можно менять
-    return [], []
+    return result
 
 
 # служебная функция для получения статистик
@@ -171,12 +191,21 @@ def _get_lsm_statistics(
     global event_logger, PRECISION
 
     # ваш код
+    sumx = sumy = sumxy = sumx2 = 0                         # sumx = <x>
+    leninput = len(abscissa)
+
+    for iter in range(leninput):                            # считывание среднего из всех данных
+        sumx += abscissa[iter] / leninput
+        sumy += ordinates[iter] / leninput
+        sumxy += abscissa[iter] * ordinates[iter] / leninput
+        sumx2 += abscissa[iter] ** 2 / leninput
+
     # эту строчку можно менять
     return LSMStatistics(
-        abscissa_mean=0,
-        ordinate_mean=0,
-        product_mean=0,
-        abs_squared_mean=0
+        abscissa_mean=sumx,
+        ordinate_mean=sumy,
+        product_mean=sumxy,
+        abs_squared_mean=sumx2
     )
 
 
@@ -187,10 +216,26 @@ def _get_lsm_description(
     global event_logger, PRECISION
 
     # ваш код
-    # эту строчку можно менять
+    statistics = _get_lsm_statistics(abscissa, ordinates)
+    sumx = statistics.abscissa_mean
+    sumy = statistics.ordinate_mean
+    sumxy = statistics.product_mean
+    sumx2 = statistics.abs_squared_mean
+    leninput = len(abscissa)        # можно использовать ординату
+
+    Incline = (sumxy - sumx * sumy) / (sumx2 - sumx ** 2)   # a
+    Shift = sumy - Incline * sumx                           # b
+
+    sumDispy = 0
+    for iter in range(leninput):           # счёт оценки дисперсии зависимой величины
+        sumDispy += (ordinates[iter] - Incline * abscissa[iter] - Shift) ** 2 / (leninput-2)
+
+    DispIncline = sumDispy / (leninput * (sumx2 - sumx ** 2))               # Дельта a
+    DispShift = DispIncline * sumx2 / (leninput * (sumx2 - sumx ** 2))      # Дельта b
+
     return LSMDescription(
-        incline=0,
-        shift=0,
-        incline_error=0,
-        shift_error=0
+        incline=Incline,
+        shift=Shift,
+        incline_error=DispIncline,
+        shift_error=DispShift
     )
