@@ -38,39 +38,9 @@ def get_lsm_description(
 
     _is_valid_measurments(absc)
     _is_valid_measurments(ords)
-    _process_mismatch(absc, ords, mismatch_strategy)
+    absc, ords = _process_mismatch(absc, ords, mismatch_strategy)
 
-    avr_x = sum(absc)/len(absc)
-    avr_y = sum(ords)/len(ords)
-
-    avr_xy = 0
-    avr_sqr_x = 0
-    avr_sqr_y = 0
-
-    for i in range(len(absc)):
-        avr_xy += absc[i]*ords[i]
-        avr_sqr_x += absc[i]**2
-        avr_sqr_y += ords[i]**2
-
-    avr_xy /= len(absc)
-    avr_sqr_x /= len(absc)
-    avr_sqr_y /= len(absc)
-
-    k = (avr_xy - avr_x*avr_y)/(avr_sqr_x - avr_x**2)
-    b = avr_y - k*avr_x
-
-    n = len(absc)
-
-    y_error = (sum([(ords[i]-(k*absc[i] + b))**2 for i in range(n)])/(n-2))**0.5
-    k_error = ((y_error ** 2) / (n * (avr_sqr_x - avr_x ** 2))) ** 0.5
-    b_error = ((y_error ** 2) * avr_sqr_x / (n * (avr_sqr_x - avr_x**2)))**0.5
-
-    return LSMDescription(
-        incline=k,
-        shift=b,
-        incline_error=k_error,
-        shift_error=b_error
-    )
+    return _get_lsm_description(absc, ords, mismatch_strategy)
 
 
 def get_lsm_lines(
@@ -123,12 +93,13 @@ def get_report(
     """
     global PRECISION
 
-    s = ("="*40 + "LSM computing result" + "="*40 + "\n\n"
-         f"[INFO]: incline: {lsm_description.incline:.3f};\n"
-         f"[INFO]: shift: {lsm_description.shift:.3f};\n"
-         f"[INFO]: incline error: {lsm_description.incline_error:.3f};\n"
-         f"[INFO]: shift error: {lsm_description.shift_error:.3f};\n\n"
-         "=" + "="*99)
+    s = "="*40 + "LSM computing result" + "="*40 + "\n\n" + \
+        f"[INFO]: incline: {lsm_description.incline:.3f};\n" + \
+        f"[INFO]: shift: {lsm_description.shift:.3f};\n" + \
+        f"[INFO]: incline error: {lsm_description.incline_error:.3f};\n" + \
+        f"[INFO]: shift error: {lsm_description.shift_error:.3f};\n\n" + \
+        100*"="
+
     if path_to_save != '':
         with open(path_to_save, 'w') as f:
             f.write(s)
@@ -141,16 +112,11 @@ def _is_valid_measurments(measurments: list[float]) -> None:
 
     iter(measurments)  # Проверка на итерируемый объект
 
-    chkr = 1
+    if any((isinstance(i, Real) == 0) for i in measurments):
+        raise ValueError("Values in measurments should be real numbers")
 
-    for i in measurments:
-        chkr *= (isinstance(i, Real))  # Проверка на то, что в итерируемом объекте только числа
-
-    if chkr == 0:
-        raise ValueError("Values in measurments should be numbers")
-
-    if len(measurments) < 3:
-        raise ValueError("The amount of measurments should be atleast 3")
+    if len(set(measurments)) < 3:
+        raise ValueError("The amount of unique measurments should be atleast 3")
 
     return None
 
@@ -172,7 +138,7 @@ def _process_mismatch(absc: list[float], ords: list[float],
         else:
             raise ValueError("Unpredicted value")
 
-    return [absc], [ords]
+    return absc, ords
 
 
 # служебная функция для получения статистик
@@ -181,12 +147,6 @@ def _get_lsm_statistics(
     mismatch_strategy: MismatchStrategies = MismatchStrategies.FALL
                         ) -> LSMStatistics:
     global event_logger, PRECISION
-
-    if len(absc) != len(ords):
-        absc, ords = _process_mismatch(absc, ords, mismatch_strategy)
-
-    _is_valid_measurments(absc)
-    _is_valid_measurments(ords)
 
     avr_x = sum(absc)/len(absc)
     avr_y = sum(ords)/len(ords)
