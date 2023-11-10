@@ -86,14 +86,13 @@ def get_report(
     """
     global PRECISION
 
-    font = "="
     report = '\n'.join([
-        'LSM computing result'.center(100, font), '',
+        'LSM computing result'.center(100, "="), '',
         f'[INFO]: incline: {lsm_description.incline:.{PRECISION}f};',
         f'[INFO]: shift: {lsm_description.shift:.{PRECISION}f};',
         f'[INFO]: incline error: {lsm_description.incline_error:.{PRECISION}f};',
         f'[INFO]: shift error: {lsm_description.shift_error:.{PRECISION}f};',
-        '', ''.center(100, font)
+        '', ''.center(100, "=")
     ])
 
     if path_to_save != '':
@@ -113,15 +112,29 @@ def _is_valid_measurments(abscissa: list[float], ordinates: list[float]) -> list
                 raise ValueError
 
     result = []
+
     for measurments in [abscissa, ordinates]:
-        try:    # despair = отчаяние
-            despair_measurments = list(measurments)
-            if len(despair_measurments) < 3:
+
+        if type(measurments) is list:               # если лист
+            real_number_check(measurments)
+            if len(measurments) < 3:
                 raise ValueError
-            real_number_check(despair_measurments)
-            measurments = despair_measurments
-        except:
-            raise TypeError
+
+        elif type(measurments) is tuple:            # если тюпл
+            if len(measurments) < 3:
+                raise ValueError
+            measurments = list(measurments)
+            real_number_check(measurments)          # словари не получилось(
+
+        else:                                           # despair = отчаяние
+            try:
+                despair_measurments = list(measurments)
+                if len(despair_measurments) < 3:
+                    raise ValueError
+                real_number_check(despair_measurments)
+                measurments = despair_measurments
+            except:
+                raise TypeError
         result.append(measurments)
     # эту строчку можно менять
     return result
@@ -142,7 +155,7 @@ def _process_mismatch(
         elif mismatch_strategy == MismatchStrategies.CUT:
             if len(abscissa) < len(ordinates):                      # Приравнивание их размеров
                 del ordinates[len(abscissa):]
-            else:
+            elif len(ordinates) < len(abscissa):
                 del abscissa[len(ordinates):]
 
         else:
@@ -210,3 +223,28 @@ def _get_lsm_description(
         incline_error=delta_Incline,
         shift_error=delta_Shift
     )
+
+'''
+Попытка чекать словари
+    elif type(measurments) is dict:
+        keys = measurments.keys()
+        values = measurments.values()
+        measurments_in_keys = True
+
+        if len(keys) < 3:
+            raise ValueError
+
+        # исключительная real_number_check
+        for number in keys:
+            if not (isinstance(number, Real)):
+                measurments_in_keys = False
+                break                               # измерения в ключах?
+
+        if measurments_in_keys:
+            measurments = list(keys)                # Если да, то ок
+        else:                                       # иначе искать измерения стоит в значениях
+            for number in values:
+                if not (isinstance(number, Real)):
+                    raise TypeError
+            measurments = list(values)
+'''
