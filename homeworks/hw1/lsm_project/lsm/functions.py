@@ -45,6 +45,7 @@ def get_lsm_description(
     avg_y = sum(ordinates) / len_of_list
     avg_xy = 0
     avg_x_square = 0
+
     for x, y in zip(abscissa, ordinates):
         avg_xy += x * y
         avg_x_square += x**2
