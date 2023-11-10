@@ -51,7 +51,7 @@ def get_lsm_description(
             mismatch_strategy=mismatch_strategy
         )
     except (ValueError, RuntimeError) as e:
-        raise e
+        raise type(e) from e
     else:
         event_loger.debug(
             f"{stack()[0][3]} || "
@@ -208,7 +208,7 @@ def get_report(
 def _is_valid_measurements(
         measurements: list[float]
 ) -> bool:
-    return all([isinstance(m, Real) for m in measurements]) and measurements
+    return all(isinstance(m, Real) for m in measurements) and measurements
 
 
 # служебная функция для валидации данных
