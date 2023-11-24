@@ -10,7 +10,6 @@ from regressors.lsm_regressor import RegressorLSM
 from common.log import EventLogger
 
 
-K_NEIGHBOURS = 100
 POINTS_AMOUNT = 1000
 BOUNDS = (-10, 10)
 FIGSIZE = (16, 8)
@@ -63,7 +62,7 @@ def get_demonstration(
 
 def main() -> None:
     functions = [linear, linear_modulated]
-    regressors = [RegressorLSM(), NonparametricRegressor(K_NEIGHBOURS)]
+    regressors = [RegressorLSM(), NonparametricRegressor()]
 
     for function in functions:
         get_demonstration(function, regressors)
