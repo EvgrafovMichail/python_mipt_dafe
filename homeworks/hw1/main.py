@@ -15,7 +15,8 @@ if __name__ == '__main__':
         ordinates = measurments.get('ordinates', [])
 
     # получаем зависимость с помощью МНК
-    lsm_description = get_lsm_description(abscissa, ordinates, )
+
+    lsm_description = get_lsm_description(abscissa, ordinates)
     lines = get_lsm_lines(abscissa, ordinates, )
 
     # визуализируем результаты
