@@ -63,7 +63,7 @@ def get_demonstration(
 
 def main() -> None:
     functions = [linear, linear_modulated]
-    regressors = [RegressorLSM(), NonparametricRegressor()]
+    regressors = [RegressorLSM(), NonparametricRegressor(K_NEIGHBOURS)]
 
     for function in functions:
         get_demonstration(function, regressors)
