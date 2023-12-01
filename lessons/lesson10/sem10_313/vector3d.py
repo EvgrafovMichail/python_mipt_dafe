@@ -18,69 +18,111 @@
 - cross(other) - возвращает векторное произведение между векторами; 
 
 """
+import math
 from typing import Generator, Any
+from dataclasses import dataclass
 
-
+@dataclass
 class Vector3D:
-    _x: float
-    _y: float
-    _z: float
-    
-    def __init__(
-        self,
-        x: float = 0,
-        y: float = 0,
-        z: float =0
-    ) -> None:
-        pass
+    _x: float = 0
+    _y: float = 0
+    _z: float = 0
         
     def __iter__(self) -> Generator[float, None, None]:
-        pass
-    
-    def __repr__(self) -> str:
-        pass
+        yield from (self._x, self._y, self._z) 
     
     def __abs__(self) -> float:
-        pass
+        return sum(x_i ** 2 for x_i in self) ** 0.5
     
     def __bool__(self) -> bool:
-        pass
+        return abs(self) != 0
     
     def __eq__(self, other: Any) -> bool:    
-        pass
+        self.__cheak_type__('==', other)
+        
+        return all(x_i == x_j for x_i, x_j in zip(self, other))
     
     def __neg__(self):
-        pass
+        return self * -1
     
     def __add__(self, other):
-        pass
+        self.__cheak_type__('+', other)
+
+        return Vector3D(
+            *[x_i + x_j for x_i, x_j in zip(self, other)]
+        )
     
     def __sub__(self, other):
-        pass
+        self.__cheak_type__('-', other)
+
+        return self + -other
     
     def __mul__(self, scalar: float):
-        pass
+        scalar = float(scalar)
+
+        return Vector3D(
+            *[scalar * x_i  for x_i in self]
+        )
     
     def __rmul__(self, scalar: float):
-        pass
+        scalar = float(scalar)
+
+        return self * scalar
     
     def __truediv__(self, scalar):
-        pass
+        scalar = float(scalar)
+
+        return self * (1 / scalar)
     
+    def __cheak_type__(self, operation: str, other: Any) -> None:
+        if not isinstance(other, Vector3D):
+            raise TypeError(
+                f'objects of types Vector3D and {type(other).__name__}'
+                'do not support operation {operation}'
+            )
+
     def dot(self, other) -> float:
-        pass
+        self.__cheak_type__('dot', other)
+
+        return sum(x_i * x_j for x_i, x_j in zip(self, other))
     
     def cross(self, other):
-        pass
+        self.__cheak_type__('cross', other)
+
+        return Vector3D(
+            self._y * other._z - self._z * other._y,
+            self._z * other._x - self._x * other._z,
+            self._x * other._y - self._y * other._x
+        )
+    
+    def get_angle(self, other) -> float:
+        self.__cheak_type__('get_angle', other)
+
+        return math.acos((self.dot(other) / self.__abs__) / other.__abs__)
+    
+    def dist_to_seg(p1, p2, p3, p4 ):
+        v1 = Vector3D(p2 - p1)
+        v2 = Vector3D(p4 - p3)
+
+        return v1.dot(v1.cross(v2)) / v1.cross(v2).__abs__
+
         
     @property
     def x(self) -> float:
-        pass
+        return self._x
     
     @property
     def y(self) -> float:
-        pass
+        return self._y
     
     @property
     def z(self) -> float:
-        pass
+        return self._z
+    
+
+if __name__ == '__main__':
+    a = Vector3D(1, 1, 1)
+    a2 = Vector3D(2, 1, 1)
+    b = Vector3D(0, 0, 0)
+    b2 = Vector3D(1, 0, 0)
+    print(a.dist_to_seg(a2, b, b2))
