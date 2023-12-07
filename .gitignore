@@ -9,7 +9,7 @@ venv
 # Solution data
 *solved.ipynb
 *solved.py
-solved
+*solved
 
 # Other files
 *.docx
