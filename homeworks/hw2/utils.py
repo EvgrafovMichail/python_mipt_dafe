@@ -10,7 +10,7 @@ def print_game_state(game_state: GameState) -> None:
     if game_state.opponent_step:
         print(
             f'Bot removed {game_state.opponent_step.decrease} stones'
-            f' from {game_state.opponent_step.heap_id} heap;'
+            f' from {game_state.opponent_step.heap_id + 1} heap;'
         )
 
     if game_state.heaps_state:

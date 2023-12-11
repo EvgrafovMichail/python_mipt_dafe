@@ -8,75 +8,58 @@ class Agent:
     """
     В этом классе реализованы стратегии игры для уровней сложности
     """
-
     _level: AgentLevels         # уровень сложности
 
     def __init__(self, level: str) -> None:
-        level = str(level)  # level, который задается строковым литералом. level, будучи заданным строкой, может...
-
-        if level == "easy":
-            self._level = "easy"
-
-        elif level == "normal":
-            self._level = "normal"
-
-        elif level == "hard":
-            self._level = "hard"
-
-        else:
-            raise ValueError
+        if level == 'hard' \
+        or level == 'normal' \
+        or level == 'easy':
+            self._level = AgentLevels(level)
+        else: 
+            raise ValueError()
 
     def make_step(self, state_curr: list[int]) -> NimStateChange:
         """
         Сделать шаг, соотвутствующий уровню сложности
-
         :param state_curr: список целых чисел - состояние кучек
         :return: стуктуру NimStateChange - описание хода
-
-        НУЖНО ЛИ ДЕРЖАТЬ ПУСТЫЕ КУЧКИ??
-        ПОПРОБУЮ
         Подразумевается, что хотя бы в одной кучке есть хотя бы один камень
         """
-
-        def CalculateNimSum(state_curr: list[int]):
-            NimSum = state_curr[0]
-            for amount in state_curr[1:]:
-                NimSum ^= amount
-            return NimSum
-
-        def RandomMove(state_curr: list[int]):
-            while True:
-                heap_id = randint(0, len(state_curr)-1)
-                if state_curr[heap_id] > 0:
-                    decrease = randint(1, state_curr[heap_id])
-                    return NimStateChange(heap_id = heap_id, decrease = decrease)
-
-        def OptimalMove(state_curr: list[int]):
-            for heap_id in range(len(state_curr)):
-                if state_curr[heap_id] < 1: # кучка не пуста
-                    continue
-                else:
-                    for decrease in range(1, state_curr[heap_id]):
-                        state_curr[heap_id] -= decrease     # Трай мува
-                        if CalculateNimSum(state_curr) == 0:
-                            state_curr[heap_id] += decrease # Возврат вектора к исходному значению (не уверен, что необходимо, при необходимости стереть)
-                            return NimStateChange(heap_id=heap_id, decrease=decrease)
-                        state_curr[heap_id] += decrease
-
-            while True:
-                heap_id = randint(0, len(state_curr))   # Ну не нашлась норм стратегия :(
-                if state_curr[heap_id] > 0:
-                    return NimStateChange(heap_id=heap_id, decrease=1)
-
         if self._level == AgentLevels.EASY:
-            return RandomMove(state_curr)
+            return Agent._random_move(state_curr)
 
         elif self._level == AgentLevels.NORMAL:
-            strategy = randint(0, 1)    # Выбор стратегии
-            if strategy == 1:
-                return OptimalMove(state_curr)
-            else:
-                return RandomMove(state_curr)
+            if randint(0, 1):
+                return Agent._optimal_move(state_curr)
+            return Agent._random_move(state_curr)
 
         elif self._level == AgentLevels.HARD:
-            return OptimalMove(state_curr)
+            return Agent._optimal_move(state_curr)
+
+    @staticmethod
+    def _calculate_nim_sum(state_curr: list[int]) -> int: # Вычисляет ним-сумму для текущего состояния игры
+        nim_sum = state_curr[0]  # Можно было сдлеать сначала 0, потом вычислять, но так теоретически оптимизированнее
+        for amount in state_curr[1:]:
+            nim_sum ^= amount
+        return nim_sum  # вот бы была операция, как sum() для такого
+
+    @staticmethod
+    def _random_move(state_curr: list[int]):
+        heap_id = choice([i for i in range(len(state_curr)) if state_curr[i]])  # не пуст, т.к. хотя бы где-то есть камень
+        decrease = randint(1, state_curr[heap_id])  # всё-таки объявляю переменную Heap_id, чтобы сюда вставить
+        return NimStateChange(heap_id = heap_id, decrease = decrease)
+
+    @staticmethod
+    def _optimal_move(state_curr: list[int]):
+        for heap_id in range(len(state_curr)):
+            if state_curr[heap_id] < 1: # Можно поставить равенство 0
+                continue
+            for decrease in range(1, state_curr[heap_id]):
+                state_curr[heap_id] -= decrease     # Трай мува
+                if Agent._calculate_nim_sum(state_curr=state_curr) == 0:
+                    return NimStateChange(heap_id=heap_id, decrease=decrease)   # Такой мув найдется гарантированно
+                state_curr[heap_id] += decrease
+
+        return NimStateChange(
+            heap_id=choice([i for i in range(len(state_curr)) if state_curr[i]]),
+            decrease=1)

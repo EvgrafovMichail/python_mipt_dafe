@@ -27,13 +27,10 @@ def start_game_loop(path_to_config: str = PATH_TO_CONFIG) -> None:
             heap_id, decrease = tuple(map(int, user_enter.strip().split()))
             user_step = NimStateChange(heap_id=heap_id, decrease=decrease)
             game_state = game_nim.make_steps(user_step)
-
         except:
             print('invalid input')
             continue
-
         print_game_state(game_state)
 
         if game_state.winner is not None:
             break
-
