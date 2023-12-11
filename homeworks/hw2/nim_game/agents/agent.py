@@ -12,7 +12,7 @@ class Agent:
     _level: AgentLevels         # уровень сложности
 
     def __init__(self, level: str) -> None:
-        pass
+        self.level = level
 
     def make_step(state_curr: list[int]) -> NimStateChange:
         """
