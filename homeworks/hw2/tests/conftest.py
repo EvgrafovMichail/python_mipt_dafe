@@ -11,7 +11,7 @@ def mock_builtin_open(mocker):
             'heaps_amount': 5,
             'opponent_level': 'hard'
         }
-    )   
+    )
 
     mocker.patch(
         'builtins.open', open_mock

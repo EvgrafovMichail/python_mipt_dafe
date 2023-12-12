@@ -6,7 +6,7 @@ from nim_game.environments.environment_nim import (
     STONE_AMOUNT_MAX,
 )
 
-from tests.data import(
+from tests.data import (
     heaps_amounts,
     heaps_amounts_ids,
     state_changes,
