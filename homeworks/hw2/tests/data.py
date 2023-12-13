@@ -4,7 +4,7 @@ from nim_game.common.models import NimStateChange
 # test_init_raise_exception
 heaps_amounts = [1, 11]
 heaps_amounts_ids = [
-    'lower-than-zero', 
+    'lower-than-zero',
     'greater-than-ten',
 ]
 

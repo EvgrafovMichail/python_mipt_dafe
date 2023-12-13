@@ -36,4 +36,3 @@ def start_game_loop(path_to_config: str = PATH_TO_CONFIG) -> None:
 
         if game_state.winner is not None:
             break
-

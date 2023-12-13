@@ -17,4 +17,3 @@ class GameState:
     winner: Optional[Players] = None                # победитель
     opponent_step: Optional[NimStateChange] = None  # описание хода противника
     heaps_state: Optional[list[int]] = None         # состояния кучек
-
