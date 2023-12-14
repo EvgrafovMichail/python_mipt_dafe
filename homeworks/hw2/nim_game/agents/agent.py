@@ -12,10 +12,10 @@ class Agent:
 
     def __init__(self, level: str) -> None:
         if level == 'hard' \
-        or level == 'normal' \
-        or level == 'easy':
+            or level == 'normal' \
+                or level == 'easy':
             self._level = AgentLevels(level)
-        else: 
+        else:
             raise ValueError()
 
     def make_step(self, state_curr: list[int]) -> NimStateChange:
@@ -37,29 +37,29 @@ class Agent:
             return Agent._optimal_move(state_curr)
 
     @staticmethod
-    def _calculate_nim_sum(state_curr: list[int]) -> int: # Вычисляет ним-сумму для текущего состояния игры
-        nim_sum = state_curr[0]  # Можно было сдлеать сначала 0, потом вычислять, но так теоретически оптимизированнее
+    def _calculate_nim_sum(state_curr: list[int]) -> int:  # Вычисляет ним-сумму
+        nim_sum = state_curr[0]  # теоретически оптимизированнее, чем задавать 0 и считать
         for amount in state_curr[1:]:
             nim_sum ^= amount
         return nim_sum  # вот бы была операция, как sum() для такого
 
     @staticmethod
-    def _random_move(state_curr: list[int]):
-        heap_id = choice([i for i in range(len(state_curr)) if state_curr[i]])  # не пуст, т.к. хотя бы где-то есть камень
-        decrease = randint(1, state_curr[heap_id])  # всё-таки объявляю переменную Heap_id, чтобы сюда вставить
-        return NimStateChange(heap_id = heap_id, decrease = decrease)
+    def _random_move(state_curr: list[int]) -> NimStateChange:
+        heap_id = choice([i for i in range(len(state_curr)) if state_curr[i]])
+        decrease = randint(1, state_curr[heap_id])
+        return NimStateChange(heap_id=heap_id, decrease=decrease)
 
     @staticmethod
-    def _optimal_move(state_curr: list[int]):
+    def _optimal_move(state_curr: list[int]) -> NimStateChange:
         for heap_id in range(len(state_curr)):
-            if state_curr[heap_id] < 1: # Можно поставить равенство 0
+            if state_curr[heap_id] < 1:     # Можно поставить равенство 0
                 continue
             for decrease in range(1, state_curr[heap_id]):
                 state_curr[heap_id] -= decrease     # Трай мува
                 if Agent._calculate_nim_sum(state_curr=state_curr) == 0:
-                    return NimStateChange(heap_id=heap_id, decrease=decrease)   # Такой мув найдется гарантированно
-                state_curr[heap_id] += decrease
+                    return NimStateChange(heap_id=heap_id, decrease=decrease)
+                state_curr[heap_id] += decrease     # мув найдется гарантированно
 
-        return NimStateChange(
+        return NimStateChange(  # 1 камень из случайной кучки, как сказал Евграфов
             heap_id=choice([i for i in range(len(state_curr)) if state_curr[i]]),
             decrease=1)

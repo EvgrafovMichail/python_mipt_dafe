@@ -4,13 +4,13 @@ from nim_game.common.models import NimStateChange
 # test_init_raise_exception
 heaps_amounts = [1, 11]
 heaps_amounts_ids = [
-    'lower-than-zero', 
+    'lower-than-zero',
     'greater-than-ten',
 ]
 
 # test_change_state_raise_exception
 state_changes = [
-    NimStateChange(heap_id=0, decrease=1),
+    NimStateChange(heap_id=-1, decrease=1),
     NimStateChange(heap_id=6, decrease=1),
     NimStateChange(heap_id=10, decrease=1),
     NimStateChange(heap_id=3, decrease=0),
