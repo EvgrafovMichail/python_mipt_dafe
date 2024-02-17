@@ -71,7 +71,7 @@ class Agent:
     def make_step(self, state_curr: list[int]) -> NimStateChange:
 
         if self._level == AgentLevels.NORMAL:
-            return choice([self._easy_move(state_curr), self._hard_move(state_curr)])
+            self._level = choice([AgentLevels.HARD, AgentLevels.EASY])
 
         if self._level == AgentLevels.EASY:
             return self._easy_move(state_curr)

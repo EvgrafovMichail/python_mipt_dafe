@@ -1,5 +1,3 @@
-import pytest
-
 from nim_game.common.models import GameState, NimStateChange
 from nim_game.games.game_nim import GameNim
 

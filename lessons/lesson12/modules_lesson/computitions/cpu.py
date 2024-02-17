@@ -12,7 +12,7 @@ from modules_lesson.computitions.constants import (
 )
 
 
-CPU_TIME = 10               # время вычисления на GPU
+CPU_TIME = 10               # время вычисления на СPU
 
 
 def compute() -> None:
