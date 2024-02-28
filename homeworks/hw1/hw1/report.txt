@@ -1,0 +1,108 @@
+==============================LSM computing result==============================
+[INFO]: incline = 5.068;
+[INFO]: shift = 0.73;
+[INFO]: incline error = 0.035;
+[INFO]: shift error = 0.203;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 5.068;
+[INFO]: shift = 0.73;
+[INFO]: incline error = 0.035;
+[INFO]: shift error = 0.203;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.466;
+[INFO]: shift = 0.309;
+[INFO]: incline error = 0.068;
+[INFO]: shift error = 0.385;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.466;
+[INFO]: shift = 0.309;
+[INFO]: incline error = 0.068;
+[INFO]: shift error = 0.385;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 5.068;
+[INFO]: shift = 0.73;
+[INFO]: incline error = 0.035;
+[INFO]: shift error = 0.203;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.0;
+[INFO]: shift = 3.701;
+[INFO]: incline error = 0.0;
+[INFO]: shift error = 0.557;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 0.5;
+[INFO]: shift = 0.202;
+[INFO]: incline error = 0.037;
+[INFO]: shift error = 0.297;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 5.068;
+[INFO]: shift = 0.73;
+[INFO]: incline error = 0.035;
+[INFO]: shift error = 0.203;
+==============================Thats all for now!!!==============================
+==============================LSM computing result==============================
+[INFO]: incline = 5.07;
+[INFO]: shift = 0.016;
+[INFO]: incline error = 0.081;
+[INFO]: shift error = 0.099;
+==============================Thats all for now!!!==============================

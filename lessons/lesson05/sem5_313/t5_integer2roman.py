@@ -32,17 +32,20 @@ M      |   1000
 
 
 def intToRoman(num: int) -> str:
-    """ Перевод числа из десятичной системы записи в Римскую
+    
+    thousands=(num//1000)
+    five_hundred=(num//500-2*thousands)
+    hundreds= num//100 -thousands*10-five_hundred*5
+    fifty=(num%100)//50
+    tens=(num%100)//10 - fifty*5
+    fives=(num%10)//5
+    ones=(num%10)-5*fives
 
-        Вход:
-            num: int
-                натуральное число, которое нужно записать в Римской системе
-        
-        Выход:
-            roman: str
-                Римская запись входящего числа 
-    """
-    pass
+    stroka_num = "M"*thousands+"D"*five_hundred+"C"*hundreds+"L"*fifty+"X"*tens+"V"*fives+"I"*ones
+    
+    stroka_num=stroka_num.replace("DCCCC","CM").replace("LXXXX","XC").replace("VIIII","IX").replace("CCCC","CD").replace("XXXX","XL").replace("IIII","IV")
+
+    return(stroka_num)
 
 
 if __name__ == "__main__":

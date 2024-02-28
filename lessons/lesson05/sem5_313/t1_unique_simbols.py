@@ -3,17 +3,16 @@
 """
 
 def unique(string: str) -> int:
-    """ Подсчёт количества уникальных символов в строке
+    already_was=""
+    unique_counter=0
+    for i in string:
+        if (i not in already_was):
+            unique_counter+=1
+            already_was+=i
 
-        Вход:
-            string: str
-                исследуемая строка
-        
-        Выход:
-            count: int
-                количество уникальных символов в строке
-    """
-    pass
+
+    
+    return unique_counter
 
 if __name__ == "__main__":
     pass
