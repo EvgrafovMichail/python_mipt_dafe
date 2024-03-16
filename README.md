@@ -36,6 +36,7 @@
 - [Операции над массивами NumPy](./lessons/sem2_lesson03/sem3_313/)
 - [Агрегирование и сортировка](./lessons/sem2_lesson04/sem4_313/)
 - [Практика. Метрическая классификация](./lessons/sem2_lesson05/sem5_313/)
+- [Линейная алгебра в NumPy](./lessons/sem2_lesson06/sem6_313/)
 
 
 ## Источники
@@ -44,4 +45,6 @@
 
 - `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;    
 - `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;    
+- `Python Data Science Handbook`. Jake VanderPlas. O’Reilly. 2020;
 - [Real Python](https://realpython.com/);
+- [NumPy documentation](https://numpy.org/doc/stable/index.html);
