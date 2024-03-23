@@ -31,12 +31,13 @@
 
 **Содержание**:
 
-- [Менеджер пакетов и Виртуальное окружение](./lessons/sem2_lesson01/sem1_313/)
-- [Введение в NumPy](./lessons/sem2_lesson02/sem2_313/)
-- [Операции над массивами NumPy](./lessons/sem2_lesson03/sem3_313/)
-- [Агрегирование и сортировка](./lessons/sem2_lesson04/sem4_313/)
-- [Практика. Метрическая классификация](./lessons/sem2_lesson05/sem5_313/)
-- [Линейная алгебра в NumPy](./lessons/sem2_lesson06/sem6_313/)
+- [Менеджер пакетов и Виртуальное окружение](./lessons/sem2_lesson01/sem1_313/);
+- [Введение в NumPy](./lessons/sem2_lesson02/sem2_313/);
+- [Операции над массивами NumPy](./lessons/sem2_lesson03/sem3_313/);
+- [Агрегирование и сортировка](./lessons/sem2_lesson04/sem4_313/);
+- [Практика. Метрическая классификация](./lessons/sem2_lesson05/sem5_313/);
+- [Линейная алгебра в NumPy](./lessons/sem2_lesson06/sem6_313/);
+- [Введение в Matplotlib](./lessons/sem2_lesson07/sem7_313/);
 
 
 ## Источники
@@ -48,3 +49,4 @@
 - `Python Data Science Handbook`. Jake VanderPlas. O’Reilly. 2020;
 - [Real Python](https://realpython.com/);
 - [NumPy documentation](https://numpy.org/doc/stable/index.html);
+- [Matplotlib documentation](https://matplotlib.org/stable/);
