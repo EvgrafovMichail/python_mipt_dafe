@@ -1,0 +1,2 @@
+class ShapeMismatchError(Exception):
+    pass
