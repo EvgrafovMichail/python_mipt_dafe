@@ -100,7 +100,7 @@ class KNN(PredicatorABC):
         k_near_neighbours_labels = self._targets[k_near_neighbours_indeces]
 
         kernel_arguments = k_near_neighbours_distances / points_h
-        weights = 3/4 * (1 - kernel_arguments) * (np.absolute(kernel_arguments) <= 1)
+        weights = 3/4 * (1 - kernel_arguments ** 2) * (np.absolute(kernel_arguments) <= 1)
 
         k_near_neighbours_labels_with_weights = np.concatenate(
             (
