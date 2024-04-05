@@ -42,7 +42,39 @@ def intToRoman(num: int) -> str:
             roman: str
                 Римская запись входящего числа 
     """
-    pass
+    romane_map = {
+        0: "",
+        1: "I",
+        4: "IV",
+        5: "V",
+        9: "IX",
+        10: "X",
+        40: "XL",
+        50: "L",
+        90: "XC",
+        100: "C",
+        400: "CD",
+        500: "D",
+        900: "CM",
+        1000: "M",
+    }
+
+    result = ""
+    i = 0
+    while num > 0 and i < 3:
+        digit = num % 10
+        more_five = (digit // 5) * 5
+        less_five = digit % 5
+
+        if digit in [4, 9]:
+            result = romane_map[digit * 10**i] + result
+        else:
+            result = romane_map[more_five * 10**i] + romane_map[10**i] * less_five + result
+
+        num //= 10
+        i += 1
+
+    return "M" * num + result
 
 
 if __name__ == "__main__":
