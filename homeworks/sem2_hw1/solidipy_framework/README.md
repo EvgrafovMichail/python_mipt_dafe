@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="assets/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Solidipy</h3>
@@ -14,14 +14,11 @@
   <p align="center">
     Make your ML solid!
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">Examples</a>
+    <a href="https://github.com/Kynemallv/python_mipt_dafe/tree/main/homeworks/sem2_hw1/solidipy_framework/solidipy/example">Examples</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/Kynemallv/python_mipt_dafe/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/Kynemallv/python_mipt_dafe/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -67,9 +64,8 @@
 
 Major frameworks/libraries used to bootstrap solidipy.
 
-* [![Python][Python]][Python-url]
-* [![NumPy][NumPy]][NumPy-url]
-* [![Matplotlib][Matplotlib]][Matplotlib-url]
+* [NumPy](https://numpy.org/)
+* [Matplotlib](https://matplotlib.org/)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -102,7 +98,7 @@ pip install solidipy
 
 ...
 
-_For more examples, please refer to the [solidipy.examples](https://example.com)_
+_For more examples, please refer to the [solidipy.examples](https://github.com/Kynemallv/python_mipt_dafe/tree/main/homeworks/sem2_hw1/solidipy_framework/solidipy/example)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
