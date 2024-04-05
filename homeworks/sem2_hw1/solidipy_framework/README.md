@@ -23,13 +23,12 @@
 </div>
 
 
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      [About The Project](#about-the-project)
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>

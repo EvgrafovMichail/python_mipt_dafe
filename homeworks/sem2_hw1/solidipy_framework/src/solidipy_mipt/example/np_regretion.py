@@ -32,7 +32,7 @@ def start() -> None:
 
     abscissa = abscissa.reshape((POINTS_AMOUNT, 1))
 
-    np_regressor.fit(abscissa[::5], ordinates[::5])
+    np_regressor.fit(abscissa[::3], ordinates[::3])
 
     _, axes = plt.subplots(figsize=(16, 8))
 

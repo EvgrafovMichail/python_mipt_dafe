@@ -84,14 +84,13 @@ class NonparametricRegressor(PredicatorABC):
         
         check_size(points, self._points, axis=(-1, ))
 
-        distances = get_distances(self._points, points, self._metric)
-        
+        distances = get_distances(points, self._points, self._metric)
         points_h = np.sort(distances)[:, self._k_neighbour].reshape((distances.shape[0], 1))
 
         kernel_arguments = distances / points_h
-        weights = 3/4 * (1 - kernel_arguments) * (np.absolute(kernel_arguments) <= 1)
+        weights = 3/4 * (1 - kernel_arguments ** 2) * (np.absolute(kernel_arguments) <= 1)
 
-        targets = self._targets.reshape((self._targets.shape[0], 1))
-        coefficients = np.sum(targets * weights, axis=0) / np.sum(weights, axis=0)
+        targets = self._targets.reshape((1, self._targets.shape[0]))
+        coefficients = np.sum(targets * weights, axis=-1) / np.sum(weights, axis=-1)
 
         return coefficients
