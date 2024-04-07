@@ -1,21 +1,26 @@
-import sklearn.datasets as skd
-import matplotlib.pylab as plt
-# import scipy.stats as sps
-import numpy as np
-
 from error_classes import ShapeMismatchError
-from metric_classes import Metric
+from enum_classes import Metric
+import numpy as np
 
 
 def train_test_split(
     features: np.ndarray,
     targets: np.ndarray,
-    train_ratio: float
+    train_ratio: float,
+    shuffle: bool = False,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     if features.shape[0] != targets.shape[0]:
         raise ShapeMismatchError(
-            f"features shape {features.shape[0]} != targets shape {targets.shape}"
+            f"features' shape {features.shape[0]} != targets' shape {targets.shape}"
         )
+
+    if train_ratio <= 0 or train_ratio >= 1:
+        raise ValueError("train_ratio must be between 0 and 1")
+
+    if shuffle:
+        targets_with_features = np.hstack((targets, features[:, np.newaxis]))
+        np.random.shuffle(targets_with_features)
+        features, targets = targets_with_features[::, -1], targets_with_features[::, :-1]
 
     unique_features, unique_count = np.unique(features, return_counts=True)
 
@@ -46,139 +51,133 @@ def train_test_split(
                 axis=0
             )
 
-    # TODO: shuffle
-
     return train_targets, train_features, test_targets, test_features
 
 
-# TODO: get rid of same x (distance = 0)
-# TODO: proverka k
-# ДЛЯ ОДНОГО Х
-# def find_kernel(
-#         point: np.ndarray,
-#         x: int,
-#         k: int,
-#         metric: Metric,
-# ) -> float:
-#     if metric == Metric.CLASSIC:
-#         distances = np.sqrt(np.sum((points[x] - points) ** 2, axis=1))
-#     else:
-#         distances = np.abs((point[:, np.newaxis] - point))
-
-#     mask = distances != 0
-#     distances = distances[mask]
-#     print(distances)
-
-#     sorted_distances = np.sort(distances)
-#     print(sorted_distances)
-#     kernel_argument = distances / sorted_distances[k - 1]
-
-#     kernel = (np.abs(kernel_argument) <= 1) * (0.75 * (1 - kernel_argument ** 2))
-#     print(kernel)
-#     return kernel
-
-#  returns predicted y(x)
-# def nonparam_regression(
-#         points: np.ndarray,
-#         index_x,
-#         index_k: int,
-#         metric: Metric,
-# ) -> np.ndarray:
-#     abscissa, ordinates = points[::, 0], points[::, 1]
-#     kernel = find_kernel(points, index_x, index_k, metric)
-
-#     numerator = np.sum(ordinates[index_x] * kernel)
-#     denominator = np.sum(kernel)
-#     print(numerator)
-#     print(denominator)
-#     coefficients = numerator / denominator
-#     pred_ordinates = coefficients * abscissa[index_x]
-
-#     print(coefficients)
-#     print(f"of: {ordinates[index_x]} pr: {pred_ordinates}")
-#     return pred_ordinates
-
-def find_kernel(
-        point: np.ndarray,
-        k: int,
+def find_distances(
+        to_find_points: np.ndarray,
+        points: np.ndarray,
         metric: Metric,
-) -> float:
-    if metric == Metric.CLASSIC:
-        distances = np.sqrt(np.sum((points[:, np.newaxis] - points) ** 2, axis=2))
-    else:
-        distances = np.abs((point[:, np.newaxis] - point))
+):
+    if len(to_find_points.shape) != len(points.shape):
+        to_find_points = to_find_points[:, np.newaxis]
 
-    # mask = distances != 0
-    # distances = distances[mask].reshape(len(points), len(points) - 1)
-    # print(distances)
+    find_points_dim = to_find_points.shape[-1]
+    points = points[:, 0:find_points_dim]
+
+    if metric == Metric.CLASSIC:
+        distances = np.sqrt(np.sum((to_find_points[:, np.newaxis] - points) ** 2, axis=2))
+    else:
+        distances = np.abs((to_find_points[:, np.newaxis] - points))
 
     sorted_distances = np.sort(distances, axis=1)
-    mask = sorted_distances != 0
-    sorted_distances = sorted_distances[mask].reshape(len(points), len(points) - 1)
-    # print(sorted_distances)
-    k_element = sorted_distances[::1, k]
-    # print(sorted_distances)
-    k_element = k_element.reshape(len(k_element), 1)
-    print(k_element)
 
-    kernel_argument = distances / k_element
+    return (distances, sorted_distances)
 
-    kernel = (np.abs(kernel_argument) <= 1) * (0.75 * (1 - kernel_argument ** 2))
-    kernel = kernel[~np.eye(kernel.shape[0],dtype=bool)].reshape(kernel.shape[0],-1)
-    # print(kernel)
-    return kernel
 
-#  returns predicted y(x)
-def nonparam_regression(
+def find_kernel(
+        to_find_points: np.ndarray,
         points: np.ndarray,
         index_k: int,
         metric: Metric,
 ) -> np.ndarray:
-    abscissa, ordinates = points[::, 0], points[::, 1]
-    kernel = find_kernel(points, index_k, metric)
+    distances, sorted_distances = find_distances(to_find_points, points, metric)
 
-    # mask = np.eye(ordinates.shape[0], dtype=bool)
-    ordinates = ordinates[np.newaxis,:]
-    ordinates = np.repeat(ordinates, len(ordinates[0]), axis=0)
-    # print(f"ord: {ordinates}")
-    ordinates = ordinates[~np.eye(ordinates.shape[0],dtype=bool)].reshape(ordinates.shape[0],-1)
+    kernel_elem = sorted_distances[::, index_k - 1].reshape(len(sorted_distances), 1)
+    kernel_argument = distances / kernel_elem
+    kernel = (np.abs(kernel_argument) <= 1) * (0.75 * (1 - kernel_argument ** 2))
 
+    return kernel
+
+
+def nonparam_regression(
+        to_find_points: np.ndarray,
+        points: np.ndarray,
+        index_k: int,
+        metric: Metric,
+) -> np.ndarray:
+    if index_k >= len(points):
+        raise ValueError(f"{index_k = } is bigger than amount of points = {len(points)}")
+
+    if points is None or to_find_points is None:
+        raise ValueError("points and to_find_points cannot be empty")
+
+    if not (isinstance(index_k, int)):
+        raise TypeError("index_k must be int")
+
+    if not (isinstance(metric, Metric)):
+        raise TypeError("metric must be Metric class")
+
+    ordinates = points[::, 1]
+    kernel = find_kernel(to_find_points, points, index_k, metric)
 
     numerator = np.sum(ordinates * kernel, axis=1)
     denominator = np.sum(kernel, axis=1)
-    print(numerator)
-    print(denominator)
 
-    coefficients = numerator / denominator
-    pred_ordinates = coefficients
+    ordinates = numerator / denominator
+    pred_ordinates = np.hstack((to_find_points[:, np.newaxis], ordinates[:, np.newaxis]))
 
-    print(coefficients)
-    print(f"of: {ordinates} pr: {pred_ordinates}")
     return pred_ordinates
 
 
 def knn(
-        
+    to_predict_points: np.ndarray,
+    points: np.ndarray,
+    labels: np.ndarray,
+    index_k: int,
+    metric: Metric,
 ):
-    pass
+    if index_k >= len(points):
+        raise ValueError(f"{index_k = } is bigger than amount of points = {len(points)}")
 
-# seed(1)
-# generate two sets of univariate observations
-# data1 = 5 * np.random.randn(100) + 50
-# data2 = 5 * np.random.randn(100) + 51
+    if points is None or to_predict_points is None:
+        raise ValueError("points and to_predict_points cannot be empty")
 
-points, labels = skd.make_moons(n_samples=400, noise=0.3)
-train_test_split(labels, points, 0.8)
+    if labels.shape[0] != points.shape[0]:
+        raise ShapeMismatchError(
+            f"labels' shape {labels.shape[0]} != points' shape {points.shape}"
+        )
 
-points1 = np.linspace(0, 2 * np.pi, 5)
-points2 = np.sin(points1)
-points = np.append(points1[np.newaxis, ], points2, axis=1)
-print(points)
+    if not (isinstance(index_k, int)):
+        raise TypeError("index_k must be int")
 
-pred_ordinates = nonparam_regression(points, 3, Metric.CLASSIC)
+    if not (isinstance(metric, Metric)):
+        raise TypeError("metric must be Metric class")
 
-_, axis = plt.subplots(2, 1)
-axis[0].scatter(points[:,0], points[:,1])
-axis[1].scatter(points[:,0], pred_ordinates)
-axis[0].plot(points[:,0], pred_ordinates)
-plt.show()
+    distances = find_distances(to_predict_points, points, metric)[0]
+    kernel = find_kernel(to_predict_points, points, index_k, metric)
+    mask = np.argsort(distances)
+
+    labels = np.repeat(labels[np.newaxis, :], distances.shape[0], axis=0)
+    sorted_labels = np.take_along_axis(labels, mask, axis=1)[:, 0:index_k]
+
+    sorted_kernel = np.take_along_axis(kernel, mask, axis=1)[:, 0:index_k]
+    labels_with_weights = np.hstack((sorted_labels, sorted_kernel))
+
+    res_labels = np.apply_along_axis(
+            lambda slice: np.bincount(
+                slice[:index_k].astype(int),
+                weights=slice[index_k:]).argmax(),
+            arr=labels_with_weights,
+            axis=1
+        )
+
+    return res_labels
+
+
+def linear(abscissa: np.ndarray) -> np.ndarray:
+    function_values = 5 * abscissa + 1
+    noise = np.random.normal(size=abscissa.size)
+    ordinates = function_values + noise
+    points = np.hstack((abscissa[:, np.newaxis], ordinates[:, np.newaxis]))
+
+    return points
+
+
+def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
+    function_values = np.sin(abscissa) * abscissa
+    noise = np.random.normal(size=abscissa.size)
+    ordinates = function_values + noise
+    points = np.hstack((abscissa[:, np.newaxis], ordinates[:, np.newaxis]))
+
+    return points
