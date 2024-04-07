@@ -26,20 +26,25 @@ def visualize_results(
 
 def start() -> None:
     np_regressor = NonparametricRegressor()
-
-    abscissa = np.linspace(*BOUNDS, POINTS_AMOUNT).reshape((POINTS_AMOUNT, 1))
+    
+    abscissa = np.linspace(*BOUNDS, POINTS_AMOUNT)
     ordinates = np.sqrt(abscissa)
 
-    print(abscissa, ordinates, sep="\n\n", end="\n\n")
+    abscissa = abscissa.reshape((POINTS_AMOUNT, 1))
 
-    X_train, X_test, y_train, y_test = train_test_split(abscissa, ordinates, shuffle=True)
-    print(X_train, y_train, sep="\n\n")
+    X_train, X_test, y_train, y_test = train_test_split(abscissa, ordinates, train_ratio=0.6, shuffle=True)
 
     np_regressor.fit(X_train, y_train)
 
-    predictions = np_regressor.predict(X_test)
-    visualize_results(abscissa, ordinates, predictions)
-    print(mse(predictions, y_test), mae(predictions, y_test), dc(predictions, y_test))
+    prediction = np_regressor.predict(X_test)
+
+    indeces = np.argsort(np.sum(X_test, axis=-1))
+    X_test = X_test[indeces]
+    y_test = y_test[indeces]
+    prediction = prediction[indeces]
+
+    visualize_results(X_test, y_test, prediction)
+    print(mse(prediction, y_test), mae(prediction, y_test), dc(prediction, y_test))
 
 
 if __name__ == "__main__":

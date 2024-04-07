@@ -56,7 +56,7 @@ def visualize_comparison(
 
 def start() -> None:
     points, labels = skd.make_moons(n_samples=400, noise=0.3)
-    train_test_data = train_test_split(points, labels, train_ratio=0.5, shuffle=True)
+    train_test_data = train_test_split(points, labels, train_ratio=0.4, shuffle=True)
     features_train, features_test, targets_train, targets_test = train_test_data
 
     wknn = WKNN()
