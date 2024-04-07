@@ -56,6 +56,8 @@ def main():
     model = Regressor(k_numbers, norm)
     model.fit(x, y)
     y_pred = model.predict(x)
+    print(y_pred)
+
     print(f"norm = {norm} , k = {k_numbers}, mse = {mse(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, mae = {mae(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, r_score = {r_score(y_pred, y)}")

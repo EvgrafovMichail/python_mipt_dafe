@@ -23,6 +23,11 @@ class Regressor:
 
     def __init__(self, h: int = 4, 
                  metric: str = "l1"):
+        if h <= 0:
+            raise ValueError(
+                f"invalid k_neighbours value: {h} "
+                "k_neighbours could have only positive values"
+            )
         self._metric = metric
         self._h = h
 
@@ -43,15 +48,15 @@ class Regressor:
         if(self._metric == "l2"):
             dist = np.linalg.norm(
                 self._abscissa - abscissa[:, np.newaxis], axis = 2, ord = 1)
+            
+        window_width = np.sort(dist).T[self._h - 1]
+        dist = dist / window_width
+
+        weights = np.where(np.abs(dist).T <= 1, 
+                          pc_kernel_estimate(dist), 0)
         
-        h = np.sort(dist).T[self._h]
-
-        kernel = np.where(np.abs(dist.T/h).T <= 1, 
-                          pc_kernel_estimate(dist.T/h), 0)
-
-        numerator = np.sum(self._ordinates * kernel, axis=1) / \
-            np.sum(kernel, axis=1)
-
-        return numerator
-
+        prediction = np.sum(
+            self._ordinates * weights, axis=1)
+        
+        return prediction / np.sum(weights, axis=1)
         
