@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from nonparametric_regression import NR
+from estimation import print_estimation
+
+
+def generate_ordinates(abscissa, function, noise):
+    rng = np.random.default_rng(42)
+    return function(abscissa) * (1 + (rng.random((abscissa.shape[0])) - 0.5) * noise * 2)
+
+
+def show(abscissa, ordinates, prediction):
+    plt.scatter(abscissa, ordinates, label='input data', c='blue', s=1)
+    plt.plot(abscissa, prediction, label=prediction, c="green")
+    plt.legend(["input data", "prediction"])
+    plt.show()
+
+
+def func(x):
+    return 69 * x + 228
+
+
+def main():
+    dist_index = 7
+    metric = "l2"
+    n_abscissa = 1337
+    function = func
+    np.vectorize(function)
+    noise = 0.1
+
+    x = np.arange(n_abscissa)
+    y = generate_ordinates(x, function, noise)
+    regression = NR(dist_index, metric)
+    regression.fit(x, y)
+    prediction = regression.predict(x)
+
+    print_estimation(prediction, y)
+    show(x, y, prediction)
+
+
+main()
