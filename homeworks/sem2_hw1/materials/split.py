@@ -1,5 +1,5 @@
 import numpy as np
-from materials.Errors import ShapeMismatchError
+from additional.Errors import ShapeMismatchError
 
 
 def train_test_split_KNN(

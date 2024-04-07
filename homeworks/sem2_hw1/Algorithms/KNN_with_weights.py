@@ -1,7 +1,7 @@
 from materials.metrics import Metrics
 from typing import Union
 import numpy as np
-from materials.Errors import (
+from additional.Errors import (
     ShapeMismatchError,
     NoFitFoundError
 )
