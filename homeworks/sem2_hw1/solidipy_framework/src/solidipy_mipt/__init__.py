@@ -1,7 +1,7 @@
 from . import algorithms
 from . import utils
 
-from ._data import train_test_split
+from ._selection import train_test_split
 from ._metrics import mse, mae, dc, accuracy
 
 

@@ -1,13 +1,13 @@
-from ._predictor_abc import *
-from ._np_regressor import *
-from ._knn import *
+from ._predictor_abc import PredictorABC
+from ._np_regressor import NonparametricRegressor
+from ._wknn import WKNN
 
 from .utils import distance
 
 
 __all__ = [
-    "distance"
-    "PredicatorABC"
-    "NpRegretion"
-    "KNN"
+    "distance",
+    "PredictorABC",
+    "NonParametricRegressor",
+    "WKNN"
 ]

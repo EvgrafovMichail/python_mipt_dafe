@@ -1,12 +1,6 @@
 """Validating data.
 
-This module ...
-
-Example:
-    from solidipy.utils.validate import check_size
-
-    
-    check_size(arr_1, arr_2, axis=(0, ), min_shapes_count=0) # May throw exception!
+This module contain methods to validate data.
 """
 
 import numpy as np
@@ -25,13 +19,18 @@ def check_size(
     Check equality of sizes for given arrays.
 
     Args:
-        arr_1: 
-        arr_2:
-        axis:
-        min_shapes_count:
-    
+        arr_1: First array.
+        arr_2: Second array.
+        axis: Axes along which comparison will be made.
+        min_shapes_count: Minimum number of array axes.
+
     Returns:
-        None. This function can throw ValueError or ShapeMismatchError.
+        None
+
+    Raises:
+        ShapeMismatchError: If first and second array shapes mismatch.
+        ValueError: If given axis does not match array shapes.
+        ValueError: If array shapes are less than given min_shapes_count.
     """
 
     axis = (int(ax) for ax in axis)
@@ -39,11 +38,18 @@ def check_size(
 
     for ax in axis:
         if not (-1 <= ax < shapes_count):
-            raise ValueError("bad axis") # TODO bad message
+            raise ValueError(
+                "Given axis does not match array shapes. "
+                f"Maximum axis number: {shapes_count}."
+            )
 
         if arr_1.shape[ax] != arr_2.shape[ax]:
-            print(f"1: {arr_1.shape[ax]} 2: {arr_2.shape[ax]}")
-            raise ShapeMismatchError()
+            raise ShapeMismatchError(
+                "Shapes do not match", (arr_1.shape, arr_2.shape)
+            )
 
     if shapes_count < min_shapes_count:
-        raise ValueError() # TODO add custom error
+        raise ValueError(
+            "Array shapes are less than given min_shapes_count: "
+            f"array_{shapes_count=} {min_shapes_count=}."
+        )

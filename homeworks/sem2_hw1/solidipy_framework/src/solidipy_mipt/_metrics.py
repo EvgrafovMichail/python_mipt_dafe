@@ -1,13 +1,6 @@
 """Metrics for algorithm analysis.
 
-This module ...
-
-Example:
-    from solidipy.examples import metrics
-
-    
-    if __name__ == "__main__":
-        metrics.start()
+This module calculates evaluation metrics based on predicted and expected data.
 """
 
 import numpy as np
@@ -23,13 +16,24 @@ def mse(
     Calculate MSE(Mean Squared Value) score for given data.
 
     Args:
-        predication: 
-        expectation:
-    
+        predication: The predicted target values from a model.
+        expectation: The true (expected) target values.
+
     Returns:
         mse_score: MSE score for given data.
+
+    Raises:
+        ShapeMismatchError: If prediction and expectation shapes mismatch.
+
+    Examples:
+        >>> import numpy as np
+        >>> from solidipy_mipt import mse
+        >>> y_true = np.array([1, 0, 1, 1, 0])
+        >>> y_pred = np.array([1, 1, 1, 0, 0])
+        >>> mse_score = mse(y_pred, y_true)
+        >>> print(mse_score)
     """
-    
+
     check_size(prediction, expectation)
 
     return np.sum((prediction - expectation) ** 2) / prediction.shape[0]
@@ -43,13 +47,24 @@ def mae(
     Calculate MAE(Mean Absolute Error) score for given data.
 
     Args:
-        predication: 
-        expectation:
-    
+        predication: The predicted target values from a model.
+        expectation: The true (expected) target values.
+
     Returns:
         mae_score: MAE score for given data.
+
+    Raises:
+        ShapeMismatchError: If prediction and expectation shapes mismatch.
+
+    Examples:
+        >>> import numpy as np
+        >>> from solidipy_mipt import mae
+        >>> y_true = np.array([1, 0, 1, 1, 0])
+        >>> y_pred = np.array([1, 1, 1, 0, 0])
+        >>> mae_score = mae(y_pred, y_true)
+        >>> print(mae_score)
     """
-    
+
     check_size(prediction, expectation)
 
     return np.sum(np.absolute(prediction - expectation)) / prediction.shape[0]
@@ -63,13 +78,24 @@ def dc(
     Calculate DC(Determination Coefficient) score for given data.
 
     Args:
-        predication: 
-        expectation:
-    
+        predication: The predicted target values from a model.
+        expectation: The true (expected) target values.
+
     Returns:
         dc_score: DC score for given data.
+
+    Raises:
+        ShapeMismatchError: If prediction and expectation shapes mismatch.
+
+    Examples:
+        >>> import numpy as np
+        >>> from solidipy_mipt import dc
+        >>> y_true = np.array([1, 0, 1, 1, 0])
+        >>> y_pred = np.array([1, 1, 1, 0, 0])
+        >>> dc_score = dc(y_pred, y_true)
+        >>> print(dc_score)
     """
-    
+
     check_size(prediction, expectation)
 
     squared_error = np.sum((prediction - expectation) ** 2)
@@ -86,13 +112,24 @@ def accuracy(
     Calculate Accuracy score for given data.
 
     Args:
-        predication: 
-        expectation:
-    
+        predication: The predicted target values from a model.
+        expectation: The true (expected) target values.
+
     Returns:
-        accuracy: Accuracy score for given data.
+        accuracy_score: Accuracy score for given data.
+
+    Raises:
+        ShapeMismatchError: If prediction and expectation shapes mismatch.
+
+    Examples:
+        >>> import numpy as np
+        >>> from solidipy_mipt import accuracy
+        >>> y_true = np.array([1, 0, 1, 1, 0])
+        >>> y_pred = np.array([1, 1, 1, 0, 0])
+        >>> accuracy_score = accuracy(y_pred, y_true)
+        >>> print(accuracy_score)
     """
 
     check_size(prediction, expectation)
-    
+
     return np.sum(prediction == expectation) / prediction.shape[0]

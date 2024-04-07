@@ -1,13 +1,6 @@
-"""Common operations with distance between two points.
+"""Common operations with distance between point arrays.
 
-This module ...
-
-Example:
-    from solidipy.examples import distance
-
-    
-    if __name__ == "__main__":
-        distance.start()
+This module contain common methods to work with distance between point arrays.
 """
 
 import numpy as np
@@ -29,17 +22,23 @@ def get_distances(
         points_1: np.ndarray,
         points_2: np.ndarray,
         metric=Metric.EUCLIDEAN
-) -> np.ndarray: 
+) -> np.ndarray:
     """
     Get distances matrix between each two points from arrays with given metric.
 
     Args:
-        points_1:
-        points_2:
-        metric:
-    
+        points_1: First array of points.
+        points_2: Second array of points.
+        metric: Metric for calculating distance.
+        To see metrics options, check solidipy_mipt.algorithms.distance.Metric.
+            Defaults to Metric.EUCLIDEAN.
+
     Return:
-        distances:
+        distances: Array which contain distances between each two points from input arrays.
+
+    Raises:
+        ShapeMismatchError: If `points_1` and `points_2` shapes mismatch.
+        ValueError: If given undefined metric.
     """
 
     check_size(points_1, points_2, axis=(-1, ), min_shapes_count=2)
@@ -50,6 +49,11 @@ def get_distances(
     match metric:
         case Metric.EUCLIDEAN:
             return np.sum((point_row - point_col) ** 2, axis=2)
-        
+
         case Metric.MANHATTAN:
             return np.sum(np.abs(point_row - point_col), axis=2)
+
+        case _:
+            raise ValueError(
+                f"Undefined metric: {metric}."
+            )

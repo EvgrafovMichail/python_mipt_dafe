@@ -1,13 +1,12 @@
-from .. import *
+from solidipy_mipt import accuracy, train_test_split
+from solidipy_mipt.algorithms import WKNN
 
 import sklearn.datasets as skd
-from typing import Optional
-from itertools import cycle
-from enum import Enum
-
 import matplotlib.pyplot as plt
 import numpy as np
 
+from enum import Enum
+from itertools import cycle
 
 FIGSIZE = (16, 9)
 
@@ -20,8 +19,8 @@ class Colors(Enum):
 def visualize_scatter(
     points: np.ndarray,
     labels: np.ndarray,
-    colors: Optional[list[Colors]] = None,
-    axis: Optional[plt.Axes] = None,
+    colors: list[Colors] | None = None,
+    axis: plt.Axes | None = None,
 ) -> None:
     if colors is None:
         colors = list(Colors)
@@ -57,11 +56,15 @@ def visualize_comparison(
 
 def start() -> None:
     points, labels = skd.make_moons(n_samples=400, noise=0.3)
-    train_test_data = train_test_split(points, labels, shuffle=True)
+    train_test_data = train_test_split(points, labels, train_ratio=0.5, shuffle=True)
     features_train, features_test, targets_train, targets_test = train_test_data
 
-    knn = algorithms.KNN(k_neighbour=10)
-    knn.fit(features_train, targets_train)
-    prediction = knn.predict(features_test)
+    wknn = WKNN()
+    wknn.fit(features_train, targets_train)
+    prediction = wknn.predict(features_test)
     visualize_comparison(features_test, prediction, targets_test)
     print(accuracy(prediction, targets_test))
+
+
+if __name__ == "__main__":
+    start()

@@ -85,7 +85,7 @@ Before installing *Solidipy* make sure you have last version of Python3 and pip.
 You can install solidipy using pip:
 
 ```bash
-pip install solidipy
+pip install solidipy_mipt
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -95,9 +95,12 @@ pip install solidipy
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-...
+#### Simple Weighted KNN example
+```python
 
-_For more examples, please refer to the [solidipy.examples](https://github.com/Kynemallv/python_mipt_dafe/tree/main/homeworks/sem2_hw1/solidipy_framework/solidipy/example)_
+```
+
+_For more examples, please refer to the [solidipy_mipt examples](https://github.com/Kynemallv/python_mipt_dafe/tree/main/homeworks/sem2_hw1/solidipy_framework/examples)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

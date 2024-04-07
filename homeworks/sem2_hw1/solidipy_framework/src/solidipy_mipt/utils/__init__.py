@@ -1,4 +1,4 @@
 __all__ = [
-    "error"
+    "errors"
     "validate"
 ]
