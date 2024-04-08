@@ -35,4 +35,3 @@ def l2(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 class Metric(Enum):
     l1 = l1
     l2 = l2
-
