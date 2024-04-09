@@ -20,8 +20,6 @@ def get_determination(
     rss = np.sum((expectation - prediction) ** 2)
     result = 1 - (rss / np.sum((expectation - np.mean(expectation)) ** 2))
 
-    print(rss, "l", np.sum((expectation - np.mean(expectation)) ** 2))
-    print(rss / np.sum((expectation - np.mean(expectation)) ** 2))
     return result
 
 
@@ -29,7 +27,6 @@ def get_accuracy_score(
     prediction: np.ndarray,
     expectation: np.ndarray
 ) -> float:
-    
     matching = prediction == expectation
     accuracy = np.sum(matching) / expectation.size
 

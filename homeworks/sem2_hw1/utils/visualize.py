@@ -50,3 +50,31 @@ def visualize_comparison(
     visualize_scatter(points, expectation, axis=ax2)
 
     plt.show()
+
+def visualize_comparison_nparam(
+    abscissa: np.ndarray,
+    prediction: np.ndarray,
+    expectation: np.ndarray,
+    ) -> None:
+    _, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGSIZE)
+
+    ax1.set_title("prediction", fontsize=15, fontweight="bold", c="dimgray")
+    ax2.set_title("expectation", fontsize=15, fontweight="bold", c="dimgray")
+
+    visualize_regression(abscissa, prediction, axis=ax1)
+    visualize_regression(abscissa, expectation, axis=ax2)
+
+    plt.show()
+
+
+def visualize_regression(
+    abscissa: np.ndarray,
+    ordinates: np.ndarray,
+    axis: Optional[plt.Axes] = None,
+    ) -> None:
+
+    if axis is None:
+        _, axis = plt.subplots(figsize=FIGSIZE)
+
+    axis.scatter(abscissa, ordinates)
+    axis.grid(True)

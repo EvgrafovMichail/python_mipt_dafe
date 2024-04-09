@@ -86,7 +86,8 @@ class KNN:
         
         weight = weight[:, :self._k_neighbours]
 
-
+        #в общем суммируем -1, если 0
+        #а если 1. то суммируются 1, и знак покажет победителя
         prediction = np.where(
             np.sum((labels_k - 0.5) * 2 * weight, axis=-1) > 0,
             1, 0)

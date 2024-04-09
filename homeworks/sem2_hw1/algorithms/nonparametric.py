@@ -83,8 +83,6 @@ class nonparametric_regression:
 
         prediction = np.sum(self._ordinates * KerE, axis=-1)/ \
             np.sum(KerE, axis=-1)
-        
-        print(KerE)
 
         return prediction
     
