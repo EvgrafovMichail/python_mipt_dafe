@@ -47,6 +47,7 @@ class WKNN(PredictorABC):
     _k_neighbors: int
     _X_train: np.ndarray | None
     _y_train: np.ndarray | None
+    _metric: Metric
 
     def __init__(
         self,

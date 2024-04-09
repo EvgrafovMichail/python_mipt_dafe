@@ -51,6 +51,7 @@ class NonparametricRegressor(PredictorABC):
     _k_neighbour: int
     _X_train: np.ndarray | None
     _y_train: np.ndarray | None
+    _metric: Metric
 
     def __init__(
         self,
@@ -95,7 +96,7 @@ class NonparametricRegressor(PredictorABC):
 
     def predict(
         self,
-        points: np.ndarray
+        X_test: np.ndarray
     ) -> np.ndarray:
         """
         Predict targets for test data using the trained NPRegressor.
@@ -120,9 +121,9 @@ class NonparametricRegressor(PredictorABC):
                 self.__class__.__name__
             )
 
-        check_size(points, self._X_train, axis=(-1, ))
+        check_size(X_test, self._X_train, axis=(-1, ))
 
-        distances = get_distances(points, self._X_train, self._metric)
+        distances = get_distances(X_test, self._X_train, self._metric)
         weights = self._get_weights(distances)
 
         y = self._y_train.reshape((1, self._y_train.shape[0]))
