@@ -1,7 +1,7 @@
 import numpy as np
 from classific.Classificator import Classificator
 from preprocessing import train_test_split
-from metrics import accuracy
+from metrics import accuracy, precision_score, recall_score, f1_score
 from sklearn.datasets import make_classification, make_moons
 import itertools
 import matplotlib.pyplot as plt
@@ -41,6 +41,12 @@ def main():
 
     show(x_test, y_pred, y_test)
 
-    print(accuracy(y_pred, y_test))
+    print(f"Accuracy score is --- {accuracy(y_pred, y_test)}")
+
+    print(f"Precision score is --- {precision_score(y_pred, y_test)}")
+
+    print(f"Recall score is --- {recall_score(y_pred, y_test)}")
+
+    print(f"F1 score is --- {f1_score(y_pred, y_test)}")
 
 main()

@@ -22,6 +22,13 @@ class Classificator:
                  win_size = 4, 
                  k_neighbours = 7, 
                  metric = "l1") -> None:
+        if k_neighbours <= 0:
+            raise ValueError(
+                f"invalid k_neighbours value: {k_neighbours} "
+                "k_neighbours could have only positive values"
+            )
+        if metric != "l1" and metric != "l2":
+            raise TypeError(f"Not available metric we support only l1 and l2")
         
         self._k_neighbours = k_neighbours
         self._points = None
@@ -30,12 +37,24 @@ class Classificator:
         self._win_h = win_size
     
     def fit(self, points: np.ndarray, labels: np.ndarray) -> None:
+        if(not isinstance(points, np.ndarray)):
+            raise TypeError("x must be np.array")
+        
+        if(not isinstance(labels, np.ndarray)):
+            raise TypeError("y must be np.array")
+        
+        if points.shape[0] != labels.shape[0]:
+            raise RuntimeError("You have not filled \
+                                points or labels")
         self._points = points
         self._labels = labels
 
         
     def predict(self, points: np.ndarray):
 
+        if(not isinstance(points, np.ndarray)):
+            raise TypeError("x must be np.array")
+        
         train_points = np.repeat(self._points[np.newaxis, :, :], 
                                  points.shape[0], 
                                  axis=0)
