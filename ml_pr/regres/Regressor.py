@@ -1,17 +1,13 @@
 import numpy as np
 from typing import Union
 
+
 def epanechnikov_kernel(array):
-
-    if abs(array) <= 1:
-        return 3/4 * (1 - array**2)
-    else:
-        return 0
-
+    return (3 / 4) * (1 - array**2) if np.abs(
+        array) <= 1 else 0
 
 def pc_kernel_estimate(coord_dif):
-    kernel_func = np.vectorize(epanechnikov_kernel)
-    
+    kernel_func = np.vectorize(epanechnikov_kernel)   
     return kernel_func(coord_dif)
 
 
@@ -44,12 +40,12 @@ class Regressor:
 
         if(self._metric == "l1"):
             dist = np.linalg.norm(
-                self._abscissa - abscissa[:, np.newaxis], axis = 2)
+                self._abscissa - abscissa[:, np.newaxis], axis = 2, ord = 1)
         if(self._metric == "l2"):
             dist = np.linalg.norm(
-                self._abscissa - abscissa[:, np.newaxis], axis = 2, ord = 1)
+                self._abscissa - abscissa[:, np.newaxis], axis = 2)
             
-        window_width = np.sort(dist).T[self._h - 1]
+        window_width = np.sort(dist).T[self._h]
         dist = dist / window_width
 
         weights = np.where(np.abs(dist).T <= 1, 

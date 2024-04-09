@@ -29,12 +29,13 @@ def GridSearch(x, y, norms, k):
         print()
 
 
-def show(abscissa, ordinates, y_pred):
+def show(abscissa, ordinates, y_pred, function):
 
     plt.scatter(abscissa, ordinates, label='source', c='royalblue', s=1)
     plt.plot(abscissa, y_pred, label='prediction',
-              c='violet', linewidth=1.5)
+              c='red', linewidth=1)
     plt.legend(["sample", "prediction"])
+    plt.title(f"Regression Prediction of function {str(function.__name__)}")
     plt.show()
 
 def linear(x):
@@ -56,13 +57,12 @@ def main():
     model = Regressor(k_numbers, norm)
     model.fit(x, y)
     y_pred = model.predict(x)
-    print(y_pred)
 
     print(f"norm = {norm} , k = {k_numbers}, mse = {mse(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, mae = {mae(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, r_score = {r_score(y_pred, y)}")
     print()
-    show(x, y, y_pred)
+    show(x, y, y_pred, function)
 
 main()
 

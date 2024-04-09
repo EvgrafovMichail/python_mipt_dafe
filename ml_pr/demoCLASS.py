@@ -23,16 +23,18 @@ def show(points, labels, y_pred):
 
 def main():
 
+    width = 3
     norm = "l2"
     k_numbers = 8
     n_sample = 1000
 
     #x, y = make_classification(random_state=42)
-    x, y = make_moons(n_samples=n_sample, noise=0.6)
+    x, y = make_moons(n_samples=n_sample, noise=0.2)
 
-    knn = Classificator(k_numbers, norm)
+    knn = Classificator(width , k_numbers, norm)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle = True)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, shuffle = True)
 
     knn.fit(x_train, y_train)
     y_pred = knn.predict(x_test)
