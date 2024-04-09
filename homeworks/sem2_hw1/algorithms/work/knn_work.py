@@ -14,6 +14,7 @@ from utils import (
 freeze_random_seed()
 points, labels = skd.make_moons(n_samples=400, noise=0.3)
 
+
 def testing_knn(
         knn: KNN,
         points: np.array = points,

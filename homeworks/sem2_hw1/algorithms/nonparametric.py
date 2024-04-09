@@ -13,11 +13,11 @@ class nonparametric_regression:
         k: int = 3,
         metric: str = "l1"
     ) -> None:
-        if not(metric in ["l1", "l2"]):
+        if not (metric in ["l1", "l2"]):
             raise TypeError(
                 f"Unexpected metric: {metric}"
             )
-        
+
         try:
             if not isinstance(k, int):
                 k = int(k)
@@ -42,16 +42,16 @@ class nonparametric_regression:
             raise RuntimeError(
                 f'Len doesnt match: {len(abscissa)} != {len(ordinata)}'
             )
-        
-        if not(isinstance(abscissa, np.ndarray) and 
-               isinstance(ordinata, np.ndarray)):
+
+        if not (isinstance(abscissa, np.ndarray) and
+                isinstance(ordinata, np.ndarray)):
             raise TypeError(
                 "Unexpected abscissa/ordinates type"
             )
 
         self._abscissa = abscissa.copy()
         self._ordinates = ordinata.copy()
-        
+
     def predict(self, abscissa: np.ndarray) -> np.ndarray:
         # ваш код только после фит,расст, упорядочить, к ближ
 
@@ -59,7 +59,7 @@ class nonparametric_regression:
             raise TypeError(
                 "Unexpected abscissa type"
             )
-        
+
         if not isinstance(self._abscissa, np.ndarray):
             raise Exception(
                 'Expected fit before predict'
@@ -81,8 +81,7 @@ class nonparametric_regression:
         KerE = (0.75 * (1 - (distances/h) ** 2)) *\
             (np.abs(distances/h) <= 1)
 
-        prediction = np.sum(self._ordinates * KerE, axis=-1)/ \
+        prediction = np.sum(self._ordinates * KerE, axis=-1) /\
             np.sum(KerE, axis=-1)
 
         return prediction
-    

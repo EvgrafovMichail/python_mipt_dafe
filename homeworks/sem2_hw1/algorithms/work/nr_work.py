@@ -1,18 +1,17 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 from algorithms import nonparametric_regression
-from utils import(
+from utils import (
     visualize_comparison_nparam,
-    visualize_regression,
     get_determination,
     MAE,
     MSE
 )
 
 abscissa = np.linspace(0, 50, 200)
-rand = np.random.normal(0, 5, size=abscissa.size) 
+rand = np.random.normal(0, 5, size=abscissa.size)
 ordinates = abscissa * 3 + rand
+
 
 def testing_nr(
         nr: nonparametric_regression,
@@ -22,7 +21,7 @@ def testing_nr(
     nr.fit(abscissa, ordinates)
     predict = nr.predict(abscissa)
 
-    #Svisualize_regression(abscissa, ordinates)
+    # visualize_regression(abscissa, ordinates)
     visualize_comparison_nparam(abscissa, predict, ordinates)
 
     print(

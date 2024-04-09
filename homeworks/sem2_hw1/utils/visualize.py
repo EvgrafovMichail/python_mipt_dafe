@@ -51,11 +51,12 @@ def visualize_comparison(
 
     plt.show()
 
+
 def visualize_comparison_nparam(
     abscissa: np.ndarray,
     prediction: np.ndarray,
     expectation: np.ndarray,
-    ) -> None:
+) -> None:
     _, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGSIZE)
 
     ax1.set_title("prediction", fontsize=15, fontweight="bold", c="dimgray")
@@ -71,7 +72,7 @@ def visualize_regression(
     abscissa: np.ndarray,
     ordinates: np.ndarray,
     axis: Optional[plt.Axes] = None,
-    ) -> None:
+) -> None:
 
     if axis is None:
         _, axis = plt.subplots(figsize=FIGSIZE)

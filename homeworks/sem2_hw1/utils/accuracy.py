@@ -1,14 +1,16 @@
 import numpy as np
 
 
-def MSE(prediction: np.ndarray,
-        expectation: np.ndarray
+def MSE(
+    prediction: np.ndarray,
+    expectation: np.ndarray
 ) -> float:
     return np.sum((prediction-expectation)**2)/(prediction.shape[0])
 
 
-def MAE(prediction: np.ndarray,
-        expectation: np.ndarray
+def MAE(
+    prediction: np.ndarray,
+    expectation: np.ndarray
 ) -> float:
     return np.sum(np.abs(prediction-expectation))/(prediction.shape[0])
 
