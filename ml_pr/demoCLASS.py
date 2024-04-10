@@ -19,12 +19,12 @@ def show(points, labels, y_pred):
 
 def main():
 
-    width = 3
+    width = 10
     norm = "l2"
-    k_numbers = 8
+    k_numbers = 100
     n_sample = 1000
 
-    x, y = make_moons(n_samples=n_sample, noise=0.1)
+    x, y = make_moons(n_samples=n_sample, noise=0.5)
 
     knn = Classificator(width, k_numbers, norm)
 
