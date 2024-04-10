@@ -24,8 +24,6 @@ class KNN:
         self._k_neighbours = k_neighbours
 
     def fit(self, points, labels):
-        if points.shape[0] != labels.shape[0]:
-            raise ValueError("Wrong amount of input")
         self._points = points
         self._labels = labels
         self._fit = True
@@ -33,9 +31,12 @@ class KNN:
     def predict(self, points):
         if not self._fit:
             raise RuntimeError("Fit the data")
+
         # попытался сделать как в регрессии, через транспоны, не вышло
         a = np.repeat(self._points[np.newaxis, :, :], points.shape[0], axis=0)
         b = np.repeat(points[:, np.newaxis, :], self._points.shape[0], axis=1)
+
+        # наверно проще сделать одну проверку за весь код ради красоты, вместо else
         if self._metric == 'l1':
             distances = np.linalg.norm(a-b, axis=2, ord=1)
         if self._metric == 'l2':
@@ -43,7 +44,8 @@ class KNN:
 
         # по непонятным причинам не даёт назвать её distances
         dists = np.sort(distances)
-        win_width = np.transpose(np.atleast_2d(dists.T[self._k_neighbours]))
+
+        win_width = np.transpose(np.atleast_2d(dists.T))[self._k_neighbours]
         arrCore = np.vectorize(Core)
         weights = arrCore(dists / win_width)[::, 0:self._k_neighbours]
         colors = self._labels[np.argsort(distances)][::, 0:self._k_neighbours]

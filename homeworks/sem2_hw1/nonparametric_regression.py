@@ -24,6 +24,7 @@ class NR:
     def fit(self, abscissa: np.ndarray, ordinates: np.ndarray) -> None:
         if abscissa.shape[0] != ordinates.shape[0]:
             raise RuntimeError("Not enough abscissa or ordinates")
+
         self._abscissa = np.transpose(np.atleast_2d(abscissa))  # сразу в правильном виде
         self._ordinates = ordinates
         self._fit = True
@@ -31,6 +32,7 @@ class NR:
     def predict(self, abscissa):
         abscissa = np.transpose(np.atleast_2d(abscissa))    # привожу к правильному виду
 
+        # наверно проще сделать одну проверку за весь код ради красоты, вместо else
         if (self._metric == "l1"):
             distances = np.linalg.norm(
                 self._abscissa - abscissa[:, np.newaxis], axis=2, ord=1)

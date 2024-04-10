@@ -5,13 +5,13 @@ from estimation import print_estimation
 
 
 def generate_ordinates(abscissa, function, noise):
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(42)     # шум: умножает (от 1 - noise) до (1 + nose)
     return function(abscissa) * (1 + (rng.random((abscissa.shape[0])) - 0.5) * noise * 2)
 
 
 def show(abscissa, ordinates, prediction):
-    plt.scatter(abscissa, ordinates, label='input data', c='blue', s=1)
-    plt.plot(abscissa, prediction, label=prediction, c="green")
+    plt.scatter(abscissa, ordinates, label='input data', c='#5353ff', s=1)
+    plt.plot(abscissa, prediction, label=prediction, c="#ff3131")
     plt.legend(["input data", "prediction"])
     plt.show()
 

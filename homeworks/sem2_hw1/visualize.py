@@ -5,8 +5,6 @@ from enum import Enum
 import matplotlib.pyplot as plt
 import numpy as np
 
-# я пытался засунуть их в utils, нщ импорты октазывались работать, не успел
-
 FIGSIZE = (16, 9)
 
 

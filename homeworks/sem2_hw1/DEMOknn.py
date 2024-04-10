@@ -6,7 +6,7 @@ from random_seed import freeze_random_seed
 from visualize import visualize_comparison
 
 
-def main():
+def main():     # написан Евграфовым в первом семестре
     freeze_random_seed()
 
     points, labels = skd.make_moons(n_samples=400, noise=0.2)

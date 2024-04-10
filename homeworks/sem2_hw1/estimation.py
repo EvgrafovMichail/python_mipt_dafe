@@ -10,7 +10,7 @@ def mae(prediction, expectation):
 
 
 def determination(prediction, expectation):
-    return 1 - (np.sum((prediction - expectation) ** 2) / \
+    return 1 - (np.sum((prediction - expectation) ** 2) /
                 np.sum((prediction - np.mean(prediction)) ** 2))
 
 
