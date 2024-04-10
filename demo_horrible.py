@@ -4,7 +4,7 @@ class Colors:
 
 
 def linear(x_):
-    return 5 * x_ + 1
+    return 2 * x_ + 0.4
 
 
 def make_regression_data(function_, n_sample_, noise_):
