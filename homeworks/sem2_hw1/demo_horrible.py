@@ -3,40 +3,50 @@ class Colors:
     ENDC = '\033[0m'
 
 
+def linear(x_):
+    return 2 * x_ + 0.4
+
+
+def make_regression_data(function_, n_sample_, noise_):
+    x_ = np.linspace(1, 10, n_sample_)
+    y_ = function_(x_)
+    if noise_:
+        y_ += np.random.normal(size=x_.size)
+    return x_, y_
+
+
 if __name__ == "__main__":
     from TrainTestSplit import train_test_split
     from QualityMetrics import mse, mae, r_pow_2, accuracy
     import sklearn.datasets as skd
     from Algorithms import NPR, KNN, DistanceMetrics
     import numpy as np
-    print(Colors.RED, "----NPR----", Colors.ENDC)
-    test_npr = NPR(DistanceMetrics.MANHATTAN)
-    values = np.arange(0, 1, 0.1).reshape(-1, 1)
-    z = np.tan(values).reshape(-1, 1)
-    test_npr.fit(values, z, 9)
-    predicted = test_npr.predict(values)
 
-    print(mae(z, predicted))  # честно, функции правильно написаны
-    print(mse(z, predicted))  # ну мы же numpy всетаке делаем...
-    print(r_pow_2(z, predicted))  # тут прикол
-    print(accuracy(z, predicted))
+    print(Colors.RED, "----NPR----", Colors.ENDC)
+    metric_ = DistanceMetrics.MANHATTAN
+    k_numbers = 9
+    n_sample = 1000
+    noise = True
+    function = linear
+
+    x, y = make_regression_data(function, n_sample, noise)
+
+    model = NPR(metric_)
+    model.fit(x, y, k_numbers)
+    y_pred = model.predict(x)
+    for func in [mse, mae, r_pow_2]:
+        print(f"{metric_=} , {k_numbers=}, {func.__name__} = {func(y_pred, y)}")
 
     print(Colors.RED, "----KNN----", Colors.ENDC)
-    points, labels = skd.make_moons(n_samples=200, noise=0.2)
-    points_train, points_test, labels_train, labels_test = train_test_split(
-        shuffle=True,
-        features=points,
-        targets=labels,
-        train_ratio=0.8,
-    )
-    knn = KNN(4)
-    # print(labels_train, points_train)
-    knn.fit(points_train, labels_train)
-    predicted = knn.predict(points_test)
+    norm = DistanceMetrics.L2
+    k_numbers = 8
+    n_sample = 1000
 
-    # visualize_comparison(points_test, prediction, labels_test)
+    x, y = skd.make_moons(n_samples=n_sample, noise=0.6)
+    knn = KNN(5, k_numbers, norm)
+    x_train, x_test, y_train, y_test = train_test_split(x, y)
 
-    print(mae(labels_test, predicted))  # честно, функция правильно работает
-    print(mse(labels_test, predicted))  # ну мы же numpy
-    print(r_pow_2(labels_test, predicted))
-    print(accuracy(labels_test, predicted))
+    knn.fit(x_train, y_train)
+    y_pred = knn.predict(x_test)
+
+    print(f"{metric_=} , {k_numbers=}, accuracy = {accuracy(y_pred, y_test)}")
