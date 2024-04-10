@@ -27,9 +27,9 @@ class NPR:
 
         h = np.sort(self._metric(x, self._abscissa), axis=-1)[:, self._width]
 
-        K = self._kernel(self._metric(x, self._abscissa) / h.reshape(h.shape[0], 1))
+        K = self._kernel(self._metric(x, self._abscissa)/h.reshape(h.shape[0], 1))
 
-        res = np.sum(self._ordinates.reshape(1, self._ordinates.shape[0]) * K, axis=-1) / np.sum(K, axis=-1)
+        res = np.sum(self._ordinates.reshape(1, self._ordinates.shape[0])*K, axis=-1) / np.sum(K, axis=-1)
 
         return res
 

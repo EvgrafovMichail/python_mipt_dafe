@@ -11,8 +11,10 @@ import os
 dir = os.path.dirname(os.path.abspath(__file__))
 
 
+K_NEIGHBOURS = 8
 POINTS_AMOUNT = 1000
 BOUNDS = (-10, 10)
+FIGSIZE = (16, 8)
 
 
 def visualize_results(
@@ -21,9 +23,9 @@ def visualize_results(
     ordinates: list,
     predictions: list,
 ) -> None:
-    axis.scatter(abscissa, ordinates, label='source', c='royalblue', s=1)
+    axis.scatter(abscissa, ordinates, label='source', c='r', s=1)
     axis.plot(abscissa, predictions, label='prediction',
-              c='violet', linewidth=1.5)
+              c='royalblue', linewidth=1.5)
 
     axis.set_xlim(min(abscissa), max(abscissa))
     axis.legend()
@@ -37,11 +39,12 @@ def get_demonstration(
     abscissa = np.linspace(*BOUNDS, POINTS_AMOUNT)
     ordinates = function(abscissa)
 
-    X_train, X_test, Y_train, Y_test = train_test_split(abscissa,
-                                                        ordinates,
-                                                        shuffle=True,
-                                                        train_ratio=0.5
-                                                    )
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        abscissa,
+        ordinates,
+        shuffle=True,
+        train_ratio=0.5
+    )
 
     for regressor in regressors:
 
@@ -106,5 +109,5 @@ def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
 
     return function_values + noise
 
-
-main()
+if __name__ == "__main__":
+    main()
