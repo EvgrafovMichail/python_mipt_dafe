@@ -30,7 +30,8 @@ class NPR:
 
     @staticmethod
     def _get_arrayed_kernel(u):
-        return 3 / 4 * (1 - u ** 2)
+        tmp = 3 / 4 * (1 - u ** 2)
+        return tmp if tmp <= 1 else 0
 
     def change_metric(self, metric: str):
         if metric not in self._supported_metrics:
@@ -69,7 +70,7 @@ class NPR:
             (predict_from.shape[0], predict_from.shape[0])
         ))
 
-        h_windows = (np.sort(distances, axis=1))[
+        h_windows = np.sort(distances, axis=1)[
             (
                     (np.arange(distances.size) - self._k) %
                     (distances.shape[1]) == 0
@@ -92,23 +93,26 @@ class NPR:
 class KNN:
     _supported_metrics = [DistanceMetrics.MANHATTAN, DistanceMetrics.CLASSIC]
 
-    def __init__(self, win_size=4, k: int = 4, metric: str = DistanceMetrics.MANHATTAN) -> None:
+    def __init__(
+            self, win_index=4, neighbours: int = 4,
+            metric: str = DistanceMetrics.MANHATTAN
+    ) -> None:
         if metric not in self._supported_metrics:
             raise TypeError(f"wrong metric, supported metrics are {self._supported_metrics}")
 
-        if not isinstance(k, int):
+        if not isinstance(neighbours, int):
             raise TypeError("neighbours must be integer")
-        if k <= 0:
+        if neighbours <= 0:
             raise ValueError("neighbours must be greater than zero")
 
-        if not isinstance(win_size, int):
+        if not isinstance(win_index, int):
             raise TypeError("win_size must be integer")
-        if win_size <= 0:
+        if win_index <= 0:
             raise ValueError("win_size must be greater than zero")
 
         self._metric = metric
-        self._k = k
-        self._win_size = win_size
+        self._neighbours_amount = neighbours
+        self._win_index = win_index
         self._axis_x = None
         self._axis_y = None
 
@@ -139,13 +143,13 @@ class KNN:
             axis=2, ord=1 if self._metric == DistanceMetrics.MANHATTAN else 2
         )
 
-        h_windows = np.sort(distances).T[self._win_size]
+        h_windows = np.sort(distances).T[self._win_index]
 
         kernels = np.where(
             np.abs(np.sort(distances).T / h_windows).T <= 1,
             3 / 4 * (1 - (np.sort(distances).T / h_windows).T ** 2
                      ), 0
-        )[::, :self._k]
-        closest_points = self._axis_y[np.argsort(distances)][::, :self._k]
+        )[::, :self._neighbours_amount]
+        closest_points = self._axis_y[np.argsort(distances)][::, :self._neighbours_amount]
 
         return np.where(((closest_points != self._axis_y[0]) * kernels).sum(axis=1) >= 0.5, 1, 0)
