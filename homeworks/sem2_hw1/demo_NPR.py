@@ -109,5 +109,6 @@ def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
 
     return function_values + noise
 
+
 if __name__ == "__main__":
     main()
