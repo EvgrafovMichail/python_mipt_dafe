@@ -37,14 +37,17 @@ def GridSearch(x, y, norms, k: np.array):
 
 
 def show(abscissa, ordinates, y_pred, function):
+    plt.figure(facecolor='#94F008')
 
     plt.scatter(abscissa, ordinates, label='source',
-                 c='royalblue', marker='o', s=1)
+                 c='blue', marker='o', s=1)
     plt.plot(abscissa, y_pred, label='prediction',
               c='red', linewidth=3, markersize=12,
               alpha = 0.8)
     plt.legend(["sample", "prediction"])
     plt.title(f"Regression Prediction of function {str(function.__name__)}")
+    
+
     plt.show()
 
 def linear(x):
