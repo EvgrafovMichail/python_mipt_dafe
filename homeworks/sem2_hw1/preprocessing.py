@@ -29,4 +29,12 @@ def train_test_split(
     targets_train = targets[:train_count]
     targets_test = targets[train_count:]
 
-    return features_train, features_test, targets_train, targets_test
+    mask_train = np.argsort(features_train)
+    mask_test = np.argsort(features_test)
+
+    return(
+        features_train[mask_train],
+        features_test[mask_test],
+        targets_train[mask_train],
+        targets_test[mask_test]
+    )

@@ -1,99 +1,62 @@
-from algorithm.np_regression import NPR
-from metrics.grade_metric import MAE, MSE, R_2
-from metrics.metric import Metric
+from algorithm.np_regression import NonparametricRegression
+from metrics import Metric
 from preprocessing import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Callable
 import os
 
 
 dir = os.path.dirname(os.path.abspath(__file__))
-
-
-K_NEIGHBOURS = 8
 POINTS_AMOUNT = 1000
 BOUNDS = (-10, 10)
-FIGSIZE = (16, 8)
+FIGSIZE = (8, 8)
+K = 50
 
 
-def visualize_results(
-    axis: plt.Axes,
-    abscissa: list,
-    ordinates: list,
-    predictions: list,
-) -> None:
-    axis.scatter(abscissa, ordinates, label='source', c='r', s=1)
-    axis.plot(abscissa, predictions, label='prediction',
+def _visualize(abscissa, ordinates, predict, save_path):
+    _, axis = plt.subplots(1, 1, figsize=FIGSIZE)
+
+    axis.set_title('NonparametricRegression')
+
+    axis.scatter(abscissa, ordinates, label='source', c='r', s=1, alpha=0.5)
+    axis.plot(abscissa, predict, label='prediction',
               c='royalblue', linewidth=1.5)
 
     axis.set_xlim(min(abscissa), max(abscissa))
     axis.legend()
 
+    plt.savefig(save_path)
 
-def get_demonstration(
-    function: Callable[[np.ndarray], np.ndarray],
-    regressors: list[NPR],
-) -> None:
 
+def test_NPR():
     abscissa = np.linspace(*BOUNDS, POINTS_AMOUNT)
-    ordinates = function(abscissa)
+    ordinates = linear_modulated(abscissa)
 
-    X_train, X_test, Y_train, Y_test = train_test_split(
+    regressor = NonparametricRegression(k=K)
+
+    train_X, test_X, train_Y, test_Y = train_test_split(
         abscissa,
         ordinates,
         shuffle=True,
-        train_ratio=0.5
+        train_ratio=0.7
     )
 
-    for regressor in regressors:
+    regressor.fit(abscissa, ordinates)
+    train_predict = regressor.predict(train_X)
+    test_predict = regressor.predict(test_X)
 
-        regressor.fit(X_train, Y_train)
+    print(
+        f'train_MAE={Metric.MAE(train_Y, train_predict)}',
+        f'test_MAE={Metric.MAE(test_Y, test_predict)}',
+        f'train_MSE={Metric.MSE(train_Y, train_predict)}',
+        f'test_MSE={Metric.MSE(test_Y, test_predict)}',
+        f'train_R_2={Metric.R_2(train_Y, train_predict)}',
+        f'test_R_2={Metric.R_2(test_Y, test_predict)}',
+        sep='\n'
+    )
 
-    _, axes = plt.subplots(1, 2, figsize=(16, 8))
-
-    axes[0].set_title("NPR(l1)", fontweight='bold')
-    axes[1].set_title("NPR(l2)", fontweight='bold')
-
-    for ax, regressor in zip(axes, regressors):
-        predictions = regressor.predict(X_train)
-        mask = np.argsort(X_train)
-        X_train = X_train[mask]
-        Y_train = Y_train[mask]
-
-        visualize_results(ax, X_train, Y_train, predictions)
-        print(f'MAE={MAE(predictions, Y_train):.4f}',
-              f'MSE={MSE(predictions, Y_train):.4f}',
-              f'R_2={R_2(predictions, Y_train):.4f}',
-              sep='\n')
-
-    plt.savefig(f"{dir}/images/npr_train.png")
-
-    _, axes = plt.subplots(1, 2, figsize=(16, 8))
-
-    axes[0].set_title("NPR(l1)", fontweight='bold')
-    axes[1].set_title("NPR(l2)", fontweight='bold')
-
-    for ax, regressor in zip(axes, regressors):
-        predictions = regressor.predict(X_test)
-        mask = np.argsort(X_test)
-        X_test = X_test[mask]
-        Y_test = Y_test[mask]
-
-        visualize_results(ax, X_test, Y_test, predictions)
-        print(f'TEST_MAE={MAE(predictions, Y_test):.4f}',
-              f'TEST_MSE={MSE(predictions, Y_test):.4f}',
-              f'TEST_R_2={R_2(predictions, Y_test):.4f}',
-              sep='\n')
-
-    plt.savefig(f"{dir}/images/npr_test.png")
-
-
-def main() -> None:
-    functions = [linear, linear_modulated]
-    regressors = [NPR(metric=Metric.l1), NPR()]
-
-    get_demonstration(functions[1], regressors)
+    _visualize(train_X, train_Y, train_predict, save_path=f'{dir}/images/train_NPR')
+    _visualize(test_X, test_Y, test_predict, save_path=f'{dir}/images/test_NPR')
 
 
 def linear(abscissa: np.ndarray) -> np.ndarray:
@@ -111,4 +74,4 @@ def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    main()
+    test_NPR()

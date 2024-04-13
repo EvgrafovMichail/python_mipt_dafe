@@ -1,13 +1,13 @@
 import numpy as np
 from typing import Union
-from metrics.metric import Metric
+from metrics import Metric
 
 
 class ShapeMismatchError(Exception):
     pass
 
 
-class NPR:
+class NonparametricRegression:
     _metric: callable
     _abscissa: Union[np.ndarray, None]
     _ordinates: Union[np.ndarray, None]
@@ -41,7 +41,7 @@ class NPR:
         self._abscissa = abscissa
         self._ordinates = ordinates
 
-    def __init__(self, metric: Metric = Metric.l2, k: int = 4) -> None:
+    def __init__(self, metric: Metric = Metric.l2, k: int = 100) -> None:
 
         if (k < 1):
             raise ValueError("k can't be < 1")

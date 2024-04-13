@@ -1,6 +1,5 @@
 from algorithm.knn import KNN
-from metrics.grade_metric import accuracy
-from metrics.metric import Metric
+from metrics import Metric
 from preprocessing import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,11 +47,11 @@ def test_KNN() -> None:
 
     knn.fit(X_train, Y_train)
     prediction = knn.predict(X_train)
-    print(f'train_accuracy={accuracy(Y_train, prediction)}')
+    print(f'train_accuracy={Metric.accuracy(Y_train, prediction)}')
     visualize(X_train, Y_train, prediction, f"{dir}/images/knn_train")
 
     prediction = knn.predict(X_test)
-    print(f'test_accuracy={accuracy(Y_test, prediction)}')
+    print(f'test_accuracy={Metric.accuracy(Y_test, prediction)}')
     visualize(X_test, Y_test, prediction, f'{dir}/images/knn_test')
 
 

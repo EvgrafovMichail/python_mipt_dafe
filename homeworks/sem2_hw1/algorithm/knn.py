@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Union
-from metrics.metric import Metric
+from metrics import Metric
 
 
 class ShapeMismatchError(Exception):
@@ -51,7 +51,7 @@ class KNN:
         self._abscissa = abscissa
         self._ordinates = ordinates
 
-    def __init__(self, metric: Metric = Metric.l2, k: int = 4, n: int = 1) -> None:
+    def __init__(self, metric: Metric = Metric.l2, k: int = 100, n: int = 1) -> None:
 
         if (k < 1):
             raise ValueError("k can't be < 1")
