@@ -42,7 +42,7 @@ def get_boxplot_outliers(
 - Сортировать переданные данные в порядке возрастания;
 - Определить 1 и 3 квартили: $q_1$ = `data_sorted[size * 0.25]`, $q_3$ = `data_sorted[size * 0.75]`.;
 - Вычислить $\epsilon = (q_3 - q_1) \times 1.5$;
-- Вычислить индексы элементов, лежащих вне $[data_{sorted}[0] - \epsilon, data_{sorted}[-1] + \epsilon]$;
+- Вычислить индексы элементов, лежащих вне $[q_1 - \epsilon, q_3 + \epsilon]$;
 - Вернуть вычисленные индексы - индексы выбросов.
 
 Подробнее про boxplot [тут](https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8).
