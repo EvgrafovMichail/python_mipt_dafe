@@ -15,18 +15,20 @@ class KNN:
 
     def __init__(self, k_neighbours: int = 5, metric: str = "l1") -> None:
         if isinstance(k_neighbours, int) and metric in Metrics:
-            self._k_neighbours = k_neighbours
+            self._k_neighbours = k_neighbours #посмотреть enum + lowercase
             self._points, self._labels = None, None
             self._metric = metric
         else:
             if isinstance(k_neighbours, int):
-                raise TypeError('metric from Metric is requred',
-                                f'got {metric} instead'
-                                )
+                raise TypeError(
+                    'metric from Metric is requred',
+                    f'got {metric} instead'
+                )
             elif metric in Metrics:
-                raise TypeError("Integer is requred",
-                                f'got {k_neighbours} instead'
-                                )
+                raise ValueError(
+                    "Integer is requred",
+                    f'got {k_neighbours} instead'
+                )
 
     def fit(self, points: np.ndarray, labels: np.ndarray) -> None:
         if (points.shape[0] != labels.shape[0] and points.shape[0] == 0):
@@ -34,7 +36,7 @@ class KNN:
                 f"Features shape {points.shape[0]} != targets shape {labels.shape[0]}",
                 "or it has a shape = 0"
             )
-        self._points = points
+        self._points = points #///
         self._labels = labels
 
     def predict(self, points: np.ndarray) -> np.ndarray:
@@ -52,10 +54,9 @@ class KNN:
 
         resulted_points = points_knn[resulted_indeces.flatten()]
         resulted_points = resulted_points[::, :2]
-        resulted_points = resulted_points.reshape(resulted_indeces.shape[0],
-                                                  resulted_indeces.shape[1],
-                                                  2
-                                                  )
+        resulted_points = resulted_points.reshape(
+            resulted_indeces.shape[0], resulted_indeces.shape[1], 2
+        )
 
         dist_for_core = np.sort(distances, axis=1)[:, :self._k_neighbours]
         dist_for_width_window = np.sort(distances, axis=1)[:, self._k_neighbours - 1]
@@ -84,6 +85,7 @@ class KNN:
 
     def _distance(self, points_from: np.ndarray, points_to: np.ndarray):
         points_from_extended = np.tile(points_from, points_to.shape[0])
+        
         points_ans = points_from_extended - points_to.flatten()
 
         if self._metric == Metrics[0]:

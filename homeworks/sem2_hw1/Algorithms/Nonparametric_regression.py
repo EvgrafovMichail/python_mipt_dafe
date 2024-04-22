@@ -8,7 +8,7 @@ from additional.Errors import (
 
 class Nonparametric_regression():
     _points: np.ndarray
-    _k: np.ndarray
+    _k: int
     _metric: str
 
     def __init__(self, k: int = 5, metric: str = "l1") -> None:

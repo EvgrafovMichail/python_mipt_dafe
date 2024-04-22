@@ -13,7 +13,6 @@ import sklearn.datasets as skd
 from materials.split import train_test_split_nparam
 from utils import (
     visualize_regression,
-    freeze_random_seed,
     visualize_comparison_nparam
 )
 
