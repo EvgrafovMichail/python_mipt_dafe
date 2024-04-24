@@ -19,15 +19,15 @@ def mean_absolute_error(
     return mae
 
 
-def rss(
+def determination_coef(
         original: np.ndarray,
         predicted: np.ndarray,
 ) -> float:
     numerator = np.sum((original - predicted) ** 2)
     denominator = np.sum((original - np.mean(predicted)) ** 2)
-    rss = np.round(1 - numerator / denominator, 2)
+    determination_coef = np.round(1 - numerator / denominator, 2)
 
-    return rss
+    return determination_coef
 
 
 def accuracy(

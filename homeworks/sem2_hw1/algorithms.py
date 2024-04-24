@@ -68,7 +68,7 @@ def find_distances(
     if metric == Metric.CLASSIC:
         distances = np.sqrt(np.sum((to_find_points[:, np.newaxis] - points) ** 2, axis=2))
     else:
-        distances = np.abs((to_find_points[:, np.newaxis] - points))
+        distances = np.abs(np.sum((to_find_points[:, np.newaxis] - points), axis=2))
 
     sorted_distances = np.sort(distances, axis=1)
 

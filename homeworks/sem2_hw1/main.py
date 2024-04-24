@@ -18,7 +18,7 @@ from quality_control import (
     mean_absolute_error,
     mean_squared_error,
     accuracy,
-    rss,
+    determination_coef,
 )
 
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     )
     linear_mae = mean_absolute_error(linear_points[::, 1], linear_pred_points[::, 1])
     linear_mse = mean_squared_error(linear_points[::, 1], linear_pred_points[::, 1])
-    linear_rss = rss(linear_points[::, 1], linear_pred_points[::, 1])
+    linear_determination_coef = determination_coef(linear_points[::, 1], linear_pred_points[::, 1])
 
     # linear_modulated prediction
     linear_modulated_points = linear_modulated(to_find_abscissa)
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     )
     linear_modulated_mae = mean_absolute_error(linear_points[::, 1], linear_pred_points[::, 1])
     linear_modulated_mse = mean_squared_error(linear_points[::, 1], linear_pred_points[::, 1])
-    linear_modulated_rss = rss(linear_points[::, 1], linear_pred_points[::, 1])
+    linear_modulated_determination_coef = determination_coef(linear_points[::, 1], linear_pred_points[::, 1])
 
     # regression visualisation
     visual_regression(
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         linear_modulated_points,
         linear_mae,
         linear_mse,
-        linear_rss,
+        linear_determination_coef,
         "Non Linear Function",
     )
     visual_regression(
@@ -71,25 +71,22 @@ if __name__ == "__main__":
         linear_points,
         linear_modulated_mae,
         linear_modulated_mse,
-        linear_modulated_rss,
+        linear_modulated_determination_coef,
         "Linear Function",
     )
 
     # constants for generating points
-    train_ratio = 0.99
-    amount_of_points = 1
+    train_ratio = 0.8
+    amount_of_points = 400
     noise = 0.3
-    index_k = 1
+    index_k = 20
     shuffle = True
 
     # knn prediction
     points, labels = skd.make_moons(n_samples=amount_of_points, noise=noise)
     train_points, train_label, test_points, test_labels = train_test_split(
-                                                            labels,
-                                                            points,
-                                                            train_ratio,
-                                                            shuffle,
-                                                        )
+        labels, points, train_ratio, shuffle,
+    )
     pred_labels = knn(test_points, train_points, train_label, index_k, Metric.CLASSIC)
     knn_accuracy = accuracy(test_labels, pred_labels)
 
