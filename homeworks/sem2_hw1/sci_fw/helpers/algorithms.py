@@ -32,8 +32,9 @@ def kernel_foreach(
     values: np.ndarray,
     k_neighbours: int
 ) -> np.ndarray:
-    window_reference = \
+    window_reference = (
         k_neighbours if k_neighbours < values.shape[1] else -1
+    )
     window_widths = values[:, window_reference]
     kernel_args = values[:, :k_neighbours] / \
         window_widths[:, np.newaxis]

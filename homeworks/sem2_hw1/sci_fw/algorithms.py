@@ -14,10 +14,12 @@ class NonparametricRegressor:
     _abscissa: Union[np.ndarray, None]
     _ordinate: Union[np.ndarray, None]
 
-    def __init__(self, k_neighbours: int = 5, metric: Metric = Metric.EUCLIDEAN) -> None:
+    def __init__(self, k_neighbours: int = K_NEIGHBOURS, metric: Metric = Metric.EUCLIDEAN) -> None:
         self._k_neighbours = check_natural(
             k_neighbours, K_NEIGHBOURS, "Number of neighbours")
         self._metric = Metric(metric)
+        self._abscissa = None
+        self._ordinate = None
 
     def fit(self, abscissa: np.ndarray, ordinate: np.ndarray) -> None:
         abscissa = check_array(abscissa)
@@ -36,11 +38,11 @@ class NonparametricRegressor:
 
         # sort known points and corresponding ordinates by distance
         ind_sorted = np.argsort(dists)
-        dists = np.take_along_axis(
-            dists, ind_sorted, axis=-1)
+        dists = np.take_along_axis(dists, ind_sorted, axis=-1)
         ordinates = np.tile(self._ordinate, (dists.shape[0], 1))
         ordinates = np.take_along_axis(
-            ordinates, ind_sorted, axis=-1)[:, :self._k_neighbours]
+            ordinates, ind_sorted, axis=-1
+        )[:, :self._k_neighbours]
 
         # calculate weight for each point
         weights = kernel_foreach(dists, self._k_neighbours)
@@ -57,10 +59,12 @@ class KNN:
     _points: Union[np.ndarray, None]
     _labels: Union[np.ndarray, None]
 
-    def __init__(self, k_neighbours: int = 5, metric: Metric = Metric.EUCLIDEAN) -> None:
+    def __init__(self, k_neighbours: int = K_NEIGHBOURS, metric: Metric = Metric.EUCLIDEAN) -> None:
         self._k_neighbours = check_natural(
             k_neighbours, K_NEIGHBOURS, "Number of neighbours")
         self._metric = Metric(metric)
+        self._points = None
+        self._labels = None
 
     def fit(self, points: np.ndarray, labels: np.ndarray) -> None:
         points = check_array(points)
