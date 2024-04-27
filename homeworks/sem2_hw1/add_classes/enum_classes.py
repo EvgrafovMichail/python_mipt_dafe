@@ -7,5 +7,8 @@ class Metric(Enum):
 
 
 class Colors(Enum):
-    BLUE = "b",
-    RED = "r"
+    BLUE = "blue",
+    RED = "red",
+    GREEN = "green",
+    ORANGE = "orange",
+    VIOLET = "violet",

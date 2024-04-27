@@ -1,6 +1,12 @@
-from error_classes import ShapeMismatchError
-from enum_classes import Metric
+from typing import Callable, Any
 import numpy as np
+
+from add_classes.error_classes import ShapeMismatchError
+from add_classes.enum_classes import Metric
+from algorithms.help_functions import (
+    find_distances,
+    find_kernel
+)
 
 
 def train_test_split(
@@ -52,42 +58,6 @@ def train_test_split(
             )
 
     return train_targets, train_features, test_targets, test_features
-
-
-def find_distances(
-        to_find_points: np.ndarray,
-        points: np.ndarray,
-        metric: Metric,
-):
-    if len(to_find_points.shape) != len(points.shape):
-        to_find_points = to_find_points[:, np.newaxis]
-
-    find_points_dim = to_find_points.shape[-1]
-    points = points[:, 0:find_points_dim]
-
-    if metric == Metric.CLASSIC:
-        distances = np.sqrt(np.sum((to_find_points[:, np.newaxis] - points) ** 2, axis=2))
-    else:
-        distances = np.abs(np.sum((to_find_points[:, np.newaxis] - points), axis=2))
-
-    sorted_distances = np.sort(distances, axis=1)
-
-    return (distances, sorted_distances)
-
-
-def find_kernel(
-        to_find_points: np.ndarray,
-        points: np.ndarray,
-        index_k: int,
-        metric: Metric,
-) -> np.ndarray:
-    distances, sorted_distances = find_distances(to_find_points, points, metric)
-
-    kernel_elem = sorted_distances[::, index_k - 1].reshape(len(sorted_distances), 1)
-    kernel_argument = distances / kernel_elem
-    kernel = (np.abs(kernel_argument) <= 1) * (0.75 * (1 - kernel_argument ** 2))
-
-    return kernel
 
 
 def nonparam_regression(
@@ -165,19 +135,50 @@ def knn(
     return res_labels
 
 
-def linear(abscissa: np.ndarray) -> np.ndarray:
-    function_values = 5 * abscissa + 1
-    noise = np.random.normal(size=abscissa.size)
-    ordinates = function_values + noise
-    points = np.hstack((abscissa[:, np.newaxis], ordinates[:, np.newaxis]))
+def get_boxplot_outliers(
+    data: np.ndarray,
+    key: Callable[[Any], Any] = "quicksort",
+) -> np.ndarray:
+    if not (isinstance(data, np.ndarray)):
+        raise ValueError("data must be a np.ndarray")
 
-    return points
+    keys = ["quicksort", "mergesort", "heapsort", "stable"]
+    if not (key in keys):
+        raise ValueError(f"{key} doesn't exist")
 
+    indexes_sorted = np.argsort(data, kind=key, axis=0)
+    data_sorted = np.sort(data, kind=key, axis=0)
 
-def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
-    function_values = np.sin(abscissa) * abscissa
-    noise = np.random.normal(size=abscissa.size)
-    ordinates = function_values + noise
-    points = np.hstack((abscissa[:, np.newaxis], ordinates[:, np.newaxis]))
+    # abscissa
+    abscissa_indexes_sorted = indexes_sorted[::, 0]
+    abscissa_sorted = data_sorted[::, 0]
 
-    return points
+    abscissa_quartile1 = int(abscissa_sorted[int(len(abscissa_sorted) * 0.25)])
+    abscissa_quartile3 = int(abscissa_sorted[int(len(abscissa_sorted) * 0.75)])
+    abscissa_epsilon = int((abscissa_quartile3 - abscissa_quartile1) * 1.5)
+
+    abscissa_lower = abscissa_sorted < abscissa_quartile1 - abscissa_epsilon
+    abscissa_upper = abscissa_sorted > abscissa_quartile3 + abscissa_epsilon
+
+    abscissa_indexes_cut = np.append(
+        abscissa_indexes_sorted[abscissa_lower],
+        abscissa_indexes_sorted[abscissa_upper],
+    )
+
+    # ordinates
+    ordinates_indexes_sorted = indexes_sorted[::, 1]
+    ordinates_sorted = data_sorted[::, 1]
+
+    ordinates_quartile1 = round(ordinates_sorted[int(len(ordinates_sorted) * 0.25)])
+    ordinates_quartile3 = round(ordinates_sorted[int(len(ordinates_sorted) * 0.75)])
+    ordinates_epsilon = int((ordinates_quartile3 - ordinates_quartile1) * 1.5)
+
+    ordinates_lower = ordinates_sorted < ordinates_quartile1 - ordinates_epsilon
+    ordinates_upper = ordinates_sorted > ordinates_quartile3 + ordinates_epsilon
+
+    ordinates_indexes_cut = np.append(
+        ordinates_indexes_sorted[ordinates_lower],
+        ordinates_indexes_sorted[ordinates_upper],
+    )
+
+    return abscissa_indexes_cut, ordinates_indexes_cut
