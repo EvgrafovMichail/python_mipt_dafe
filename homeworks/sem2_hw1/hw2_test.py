@@ -28,7 +28,7 @@ def draw_visualize():
     )
     axises = [axis_scatter, axis_hist_vert, axis_hist_hor]
 
-    visualize_distribution(axises, data, "violin", path_to_save)
+    visualize_distribution(axises, data, "violin", path_to_save=path_to_save)
 
     # 1-dim data
     data = np.random.normal(10, 10, 500)

@@ -22,6 +22,7 @@ def visual_regression(
         mse: float,
         rss: float,
         title: str,
+        path_to_save: str = "",
 ):
     _, axis = plt.subplots(figsize=(16, 9))
 
@@ -59,6 +60,9 @@ def visual_regression(
     axis.set_title(f"{title}\nMAE: {mae}, MSE: {mse}, rss: {rss}", fontsize=20)
     # axis.grid()
     plt.legend()
+
+    save_file(path_to_save)
+
     plt.show()
 
 
@@ -69,6 +73,7 @@ def visual_knn(
     *,
     accuracy: float,
     colors: Optional[list[Colors]] = None,
+    path_to_save: str = "",
 ):
     _, axis = plt.subplots(1, 2, figsize=(16, 9))
 
@@ -94,6 +99,8 @@ def visual_knn(
         )
         axis[1].set_title(f"Predicted\n accuracy: {accuracy}", fontsize=18)
 
+    save_file(path_to_save)
+
     plt.show()
 
 
@@ -101,6 +108,7 @@ def visualize_distribution(
     axis: plt.Axes,
     data: np.ndarray,
     diagram_type: Any,
+    *,
     path_to_save: str = "",
 ) -> None:
     if not (isinstance(data, np.ndarray)):

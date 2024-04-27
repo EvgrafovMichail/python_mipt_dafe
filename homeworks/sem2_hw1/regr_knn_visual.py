@@ -103,6 +103,6 @@ def draw_knn():
     pred_labels[:10] = 2
     test_labels[-10:] = 3
     pred_labels[-10:] = 3
-    
+
     # knn visualisation
     visual_knn(test_points, test_labels, pred_labels, accuracy=knn_accuracy)
