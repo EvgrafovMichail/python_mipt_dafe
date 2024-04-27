@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from nonparametric_regression import NR
-from estimation import print_estimation
+from NonparametricRegression.nonparametric_regression import NR
+from utils.random_seed import freeze_random_seed
+from utils.quality_control import print_estimation
 
 
 def generate_ordinates(abscissa, function, noise):
@@ -21,6 +22,7 @@ def func(x):
 
 
 def main():
+    freeze_random_seed()
     dist_index = 7
     metric = "l2"
     n_abscissa = 1337

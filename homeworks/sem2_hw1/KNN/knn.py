@@ -4,8 +4,6 @@ import numpy as np
 
 def Core(x):
     return 0.75 * (1 - x**2) if abs(x) <= 1 else 0
-# по непонятным причинам копипаст кода из регрессии перестаёт работать
-# броадкаст (80,) на (80,320) не удаётся (хотя камон, просто скопируй это строчку 320 раз)
 
 
 class KNN:
@@ -42,12 +40,11 @@ class KNN:
         if self._metric == 'l2':
             distances = np.linalg.norm(a-b, axis=2, ord=None)
 
-        # по непонятным причинам не даёт назвать её distances
-        dists = np.sort(distances)
+        np.sort(distances)
 
-        win_width = np.transpose(np.atleast_2d(dists.T))[self._k_neighbours]
+        win_width = np.transpose(np.atleast_2d(distances.T))[self._k_neighbours]
         arrCore = np.vectorize(Core)
-        weights = arrCore(dists / win_width)[::, 0:self._k_neighbours]
+        weights = arrCore(distances / win_width)[::, 0:self._k_neighbours]
         colors = self._labels[np.argsort(distances)][::, 0:self._k_neighbours]
         # colors имеет 1 и 0 в зависимости от цвета точки, -0.5 делает их либо с +, либо с -
         return np.where(np.sum((colors - 0.5) * weights, axis=1) > 0, 1, 0)

@@ -1,12 +1,12 @@
 import sklearn.datasets as skd
-from preprocessing import test_split
-from knn import KNN
-from estimation import print_estimation
-from random_seed import freeze_random_seed
-from visualize import visualize_comparison
+from KNN.knn import KNN
+from utils.preprocessing import test_split
+from utils.quality_control import print_estimation
+from utils.random_seed import freeze_random_seed
+from utils.visualize import visualize_comparison
 
 
-def main():     # написан Евграфовым в первом семестре
+def main():
     freeze_random_seed()
 
     points, labels = skd.make_moons(n_samples=400, noise=0.2)

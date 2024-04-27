@@ -3,7 +3,7 @@ import numpy as np
 
 
 def Core(x):
-    return 3/4 * (1 - x ** 2) if abs(x) <= 1 else 0
+    return 3/4 * (1 - x ** 2) * (abs(x) <= 1)
 
 
 class NR:
@@ -33,15 +33,14 @@ class NR:
         abscissa = np.transpose(np.atleast_2d(abscissa))    # привожу к правильному виду
 
         # наверно проще сделать одну проверку за весь код ради красоты, вместо else
-        if (self._metric == "l1"):
+        if self._metric == "l1":
             distances = np.linalg.norm(
                 self._abscissa - abscissa[:, np.newaxis], axis=2, ord=1)
-        if (self._metric == "l2"):
+        if self._metric == "l2":
             distances = np.linalg.norm(
                 self._abscissa - abscissa[:, np.newaxis], axis=2, ord=None)
 
         win_width = np.sort(distances).T[self._dist_index]
-        arrCore = np.vectorize(Core)
-        weights = arrCore(distances / win_width)
+        weights = Core(distances / win_width)
 
         return np.sum(self._ordinates * weights, axis=1) / np.sum(weights, axis=1)

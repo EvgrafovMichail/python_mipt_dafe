@@ -21,8 +21,7 @@ def test_split(
         raise ValueError("train ration must be float between 0 and 1")
 
     if (shuffle):
-        size = targets.shape[0]
-        rand_num = np.random.shuffle(np.arange(size))
+        rand_num = np.random.shuffle(np.arange(targets.shape[0]))
         features, targets = features[rand_num], targets[rand_num]
 
     features_train, features_test = None, None

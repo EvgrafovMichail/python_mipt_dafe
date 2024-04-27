@@ -1,7 +1,6 @@
 from typing import Optional
 from itertools import cycle
 from enum import Enum
-
 import matplotlib.pyplot as plt
 import numpy as np
 
