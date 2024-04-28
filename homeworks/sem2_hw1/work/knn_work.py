@@ -12,13 +12,14 @@ from utils import (
 )
 
 freeze_random_seed()
-points, labels = skd.make_moons(n_samples=400, noise=0.3)
-
 
 def testing_knn(
         knn: KNN,
-        points: np.array = points,
-        labels: np.array = labels):
+        points: np.array = None,
+        labels: np.array = None):
+    if points is None or labels is None:
+        points, labels = skd.make_moons(n_samples=400, noise=0.3)
+        print("Points and labels were created")
 
     points_train, points_test, labels_train, labels_test = train_test_split(
         features=points,

@@ -13,7 +13,7 @@ class nonparametric_regression:
         k: int = 3,
         metric: str = "l1"
     ) -> None:
-        if not (metric in ["l1", "l2"]):
+        if not (metric in ["l1", "l2"]):  # метрики махэтенская и обычная
             raise TypeError(
                 f"Unexpected metric: {metric}"
             )
@@ -76,10 +76,10 @@ class nonparametric_regression:
             distances = np.linalg.norm(
                 abscissa_from - abscissa_to, axis=2, ord=1)
 
-        h = np.sort(distances)[:, self._k]
+        h = np.sort(distances)[:, self._k]  # ширина окна
 
         KerE = (0.75 * (1 - (distances/h) ** 2)) *\
-            (np.abs(distances/h) <= 1)
+            (np.abs(distances/h) <= 1)  # ядро
 
         prediction = np.sum(self._ordinates * KerE, axis=-1) /\
             np.sum(KerE, axis=-1)

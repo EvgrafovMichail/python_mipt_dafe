@@ -10,8 +10,11 @@ FIGSIZE = (16, 9)
 
 
 class Colors(Enum):
+    GREEN = "g"
     BLUE = "b"
     RED = "r"
+    WHITE = "w"
+    BLACK = "b"
 
 
 def visualize_scatter(
