@@ -3,19 +3,41 @@ import matplotlib.pyplot as plt
 import sklearn.datasets as skd
 
 from sci_fw.data import train_test_split
-from sci_fw.enumerations import Metric
+from sci_fw.enumerations import Metric, Plot_Type
 from sci_fw.algorithms import NonparametricRegressor, KNN
 from sci_fw.evaluation import accuracy_ratio, MSE, MAE, determination_coef
+from sci_fw.visualisation import (
+    visualize_distribution, visualize_classification, visualize_regression
+)
 
-COLORS = ("royalblue", "darkorange")
+# Distribution
+mean = [2, 3]
+cov = [[1, 1], [1, 2]]
+space = 0.2
 
+abscissa, ordinates = np.random.multivariate_normal(mean, cov, size=1000).T
 
-def visualize_scatter(points, labels, axis):
-    unique_labes = np.unique(labels)
-    for label, color in zip(unique_labes, COLORS):
-        mask = labels == label
-        axis.scatter(points[mask][:, 0], points[mask][:, 1], c=color)
+data = np.vstack((abscissa, ordinates)).T
 
+figure = plt.figure(figsize=(8, 8))
+figure.suptitle("Distibution visualization example", fontweight="bold")
+grid = plt.GridSpec(4, 4, wspace=space, hspace=space)
+
+axis_scatter = figure.add_subplot(grid[:-1, 1:])
+axis_hist_vert = figure.add_subplot(
+    grid[:-1, 0],
+    sharey=axis_scatter,
+)
+axis_hist_hor = figure.add_subplot(
+    grid[-1, 1:],
+    sharex=axis_scatter,
+)
+
+axis = [axis_scatter, axis_hist_vert, axis_hist_hor]
+axis[1].invert_xaxis()
+axis[2].invert_yaxis()
+visualize_distribution(axis, data, Plot_Type.VIOLIN, "test.png")
+plt.show()
 
 # Nonparametric regressor
 abscissa = np.linspace(-10, 10, 1000)
@@ -33,8 +55,10 @@ figure, axis = plt.subplots(figsize=(16, 8))
 axis.set_title(
     f"Nonparametic regression\nMSE: {mse:.3f} MAE: {mae:.3f} R^2: {r2:.3f}",
     fontweight="bold")
-axis.plot(abscissa, prediction, c=COLORS[0])
-axis.scatter(abscissa, ordinate, c=COLORS[1])
+points = np.vstack((abscissa, ordinate)).T
+prediction = np.vstack((abscissa, prediction)).T
+error = np.ones(abscissa.shape)
+visualize_regression(axis, points, prediction, error)
 plt.show()
 
 # KNN
@@ -48,8 +72,17 @@ acc = accuracy_ratio(prediction, targ_test)
 
 _, axes = plt.subplots(ncols=2, figsize=(16, 8))
 axes[0].set_title("Actual", fontweight="bold")
-visualize_scatter(points, labels, axis=axes[0])
+visualize_classification(axes[0], points, labels)
 axes[1].set_title(f"Predicted\nAccuracy: {acc:.3f}", fontweight="bold")
-visualize_scatter(feat_train, targ_train, axis=axes[1])
-visualize_scatter(feat_test, prediction, axis=axes[1])
+visualize_classification(axes[1], feat_train, targ_train)
+visualize_classification(axes[1], feat_test, prediction)
+plt.show()
+
+# Classification
+features = [[1, 1], [2, 2], [3, 3], [4, 4]]
+labels = [1, 2, 3, 2]
+colors = ("r", "g", "b")
+_, axes = plt.subplots(figsize=(8, 8))
+axes.set_title("Classification example", fontweight="bold")
+visualize_classification(axes, features, labels, colors)
 plt.show()

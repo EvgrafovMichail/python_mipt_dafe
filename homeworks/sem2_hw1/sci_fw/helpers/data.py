@@ -26,7 +26,7 @@ def check_array(
     allow_empty: bool = False
 ) -> np.ndarray:
     arr = np.array(arr)
-    if not allow_empty and arr.shape[0] == 0:
+    if not allow_empty and arr.size == 0:
         raise ValueError("Input array can't be empty")
     return arr
 
