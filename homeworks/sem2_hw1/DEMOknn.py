@@ -1,5 +1,5 @@
 import sklearn.datasets as skd
-from KNN.knn import KNN
+from Algorithms import KNN
 from utils.preprocessing import test_split
 from utils.quality_control import print_estimation
 from utils.random_seed import freeze_random_seed
