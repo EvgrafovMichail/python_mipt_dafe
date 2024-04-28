@@ -1,5 +1,6 @@
 import numpy as np
-from typing import Iterable, Union
+from typing import Union
+from ast import Slice
 from numbers import Real
 
 from regressors.regressor_abc import RegressorABC
@@ -31,7 +32,7 @@ class NonparametricRegressor(RegressorABC):
         self._distance = distance
         self._k_neighbours = k_neighbours
 
-    def fit(self, features: Iterable, targets: Iterable) -> None:
+    def fit(self, features: Slice, targets: Slice) -> None:
         if not isinstance(features, np.ndarray):
             _features = np.ndarray(features, type=float)
         else:
@@ -49,24 +50,27 @@ class NonparametricRegressor(RegressorABC):
         self._features = _features
         self._targets = _targets
 
-    def predict(self, features: Union[Real, Iterable]
+    def predict(self, features: Union[Real, Slice]
                 ) -> Union[float, np.ndarray]:
         if np.any([self._features is None, self._targets is None]):
             raise RuntimeError(
                 'method fit() should be called before predict():'
             )
+        if self._targets.size <= self._k_neighbours:
+            raise ValueError(
+                'amount of targets should be more than k_neighbours'
+            )
         if isinstance(features, Real):
-            return self._compute_predict(float(features))
+            return self._compute_predict(np.array(features))[0]
         elif not isinstance(features, np.ndarray):
             features = np.ndarray(features)
 
-        return np.array([self._compute_predict(i) for i in features])
+        return self._compute_predict(features)
 
-    def _get_weights(self, features: np.ndarray[float]) -> np.ndarray[float]:
-        distances = np.array([Metric.get_distance(features, i, self._distance)
-                              for i in self._features])
-        window = np.sort(distances)[self._k_neighbours - 1]
-        distances = np.divide(distances, window)
+    def _get_weights(self, features: np.ndarray) -> np.ndarray[float]:
+        distances = Metric.get_distances(features, self._features, self._distance)
+        window = np.sort(distances, axis=1)[:, self._k_neighbours - 1]
+        distances = np.divide(distances, window[..., np.newaxis])
 
         weights = np.subtract(1, np.power(distances, 2))
         weights[weights < 0] = 0
@@ -74,8 +78,8 @@ class NonparametricRegressor(RegressorABC):
 
         return weights
 
-    def _compute_predict(self, features: np.ndarray[float]) -> float:
+    def _compute_predict(self, features: np.ndarray) -> np.ndarray[float]:
         return (
-            np.sum(np.multiply(self._targets, self._get_weights(features)))
-            / np.sum(self._get_weights(features))
-            )
+            np.sum(np.multiply(self._targets, self._get_weights(features)), axis=1)
+            / np.sum(self._get_weights(features), axis=1)
+        ).flatten()

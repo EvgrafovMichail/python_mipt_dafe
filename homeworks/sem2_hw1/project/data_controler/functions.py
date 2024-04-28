@@ -3,6 +3,7 @@
 """
 
 import numpy as np
+from typing import Any, Callable
 from data_controler.exceptions import ShapeMismatchError
 
 
@@ -17,6 +18,10 @@ def train_test_split(
         raise ShapeMismatchError(
             f'features shape: {features.shape[0]} / targets shape: {targets.shape[0]}'
             )
+    if not (0 < train_ratio < 1):
+        raise ValueError(
+            "Train ratio must be a float in range (0, 1)"
+        )
     features_train, features_test, targets_train, targets_test = None, None, None, None
 
     if classification:
@@ -63,3 +68,16 @@ def train_test_split(
         targets_test = _targets[target_count:]
 
     return features_train, features_test, targets_train, targets_test
+
+
+def get_boxplot_outliers(
+    data: np.ndarray,
+    key: Callable[[Any], Any],
+) -> np.ndarray:
+    index_sorted = np.argsort(np.apply_along_axis(key, -1, data))
+    data_sorted = np.sort(np.apply_along_axis(key, -1, data))
+    q1 = data_sorted[int(data.shape[0] * 0.25)]
+    q3 = data_sorted[int(data.shape[0] * 0.75)]
+    e = (q3 - q1) * 1.5
+
+    return np.sort(index_sorted[np.add(data_sorted < q1 - e, data_sorted > q3 + e)])

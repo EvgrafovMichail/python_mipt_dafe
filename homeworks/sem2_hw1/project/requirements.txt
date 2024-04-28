@@ -1,2 +1,5 @@
 matplotlib
 numpy
+pytest
+scikit-learn
+scipy
