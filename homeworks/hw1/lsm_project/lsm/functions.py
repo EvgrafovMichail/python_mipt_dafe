@@ -6,6 +6,7 @@ from typing import Optional
 from numbers import Real
 from pathlib import Path
 from inspect import stack
+from numpy import mean
 
 from lsm_project.lsm.enumerations import MismatchStrategies
 from lsm_project.lsm.models import (
@@ -14,13 +15,21 @@ from lsm_project.lsm.models import (
     LSMLines,
 )
 
-from lsm_project.lsm.math import mean, line
+# from lsm_project.lsm.math import mean, line
 from lsm_project.event_logger.event_logger import EventLogger
 from lsm_project.event_logger.utils import log_errors
 
 
 PRECISION = 3                 # константа для точности вывода
 event_loger = EventLogger()
+
+
+def line(k, b, data):
+    res = []
+    for d in data:
+        res.append(d*k + b)
+    
+    return res
 
 
 @log_errors(event_loger)

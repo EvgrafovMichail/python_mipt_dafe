@@ -13,7 +13,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="solidipy_mipt",
-    version="1.1.3",
+    version="1.2.0",
     description="Make your ML solid!",
     long_description=long_description,
     long_description_content_type="text/markdown",
