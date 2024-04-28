@@ -9,7 +9,7 @@ def train_test_split(
     features: np.ndarray,
     targets: np.ndarray,
     train_ratio: float = 0.8,
-    shuffle=False
+    shuffle: bool = False 
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     if features.shape[0] != targets.shape[0]:
         raise ShapeMismatchError(
@@ -20,7 +20,7 @@ def train_test_split(
     if train_ratio <= 0 or 1 <= train_ratio:
         raise ValueError("train ration must be float between 0 and 1")
 
-    if (shuffle):
+    if shuffle:
         size = targets.shape[0]
         rand_num = np.random.shuffle(np.arange(size))
         features, targets = features[rand_num], targets[rand_num]

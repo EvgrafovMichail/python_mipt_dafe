@@ -3,13 +3,16 @@ from regres.Regressor import Regressor
 from metrics import mae, mse, r_score, rmse
 import itertools
 import matplotlib.pyplot as plt
-
+from graphics.visualize_distribution import visualize_distribution
+from graphics.regression_plot import regression_plot
+from preprocessing.get_boxplot_outliers import get_boxplot_outliers
+from preprocessing.get_boxplot_outliers import visualize_results
 
 def make_regression_data(function, n_sample, noise):
     x = np.linspace(1, 10, n_sample)
     y = function(x)
     if (noise):
-        y += np.random.normal(size=x.size)
+        y += np.random.normal(size=x.size, scale=5)
     return x, y
 
 
@@ -60,9 +63,15 @@ def main():
 
     n_sample = 1000
     noise = True
-    function = megazavr
+    function = linear
 
     x, y = make_regression_data(function, n_sample, noise)
+
+    #visualization_hw2
+    visualize_distribution(1, np.array([x,y]), "violin", "images/regression.png")
+    regression_plot(np.array([x,y]), True, "images/regression.png")
+    visualize_results(x, y, y_pred)
+    
 
     best_params = GridSearch(x, y, ["l1", "l2"], np.arange(5, 6))
 
@@ -72,13 +81,19 @@ def main():
     model = Regressor(k_numbers, norm)
     model.fit(x, y)
     y_pred = model.predict(x)
+    visualize_results(x, y, y_pred)
 
     print(f"norm = {norm} , k = {k_numbers}, mse = {mse(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, mae = {mae(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, rmse = {rmse(y_pred, y)}")
     print(f"norm = {norm} , k = {k_numbers}, r_score = {r_score(y_pred, y)}")
     print()
-    show(x, y, y_pred, function)
+
+    #show(x, y, y_pred, function)
+
+    #visualize_distribution(1, np.array([x,y]), "hist", "images/regression.png")
+
+    #regression_plot(np.array([x,y]), True, "images/regression.png")
 
 
 main()

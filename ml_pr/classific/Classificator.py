@@ -31,6 +31,10 @@ class Classificator:
         if metric != "l1" and metric != "l2":
             raise TypeError("Not available metric we support only l1 and l2")
 
+        if (not isinstance(win_size, int) or
+                not isinstance(k_neighbours, int)):
+            raise TypeError("knn wait int numbers win_size and k")
+
         self._k_neighbours = k_neighbours
         self._points = None
         self._labels = None
@@ -55,18 +59,18 @@ class Classificator:
         if (not isinstance(points, np.ndarray)):
             raise TypeError("x must be np.array")
 
-        train_points = np.repeat(self._points[np.newaxis, :, :],
+        train_points = np.repeat(self._points[None, :, :],
                                  points.shape[0],
                                  axis=0)
-        new_points = np.repeat(points[:, np.newaxis, :],
+        new_points = np.repeat(points[:, None, :],
                                self._points.shape[0],
                                axis=1)
 
         difference = train_points - new_points
 
         if (self._metric == "l1"):
-            dist = np.linalg.norm(
-                difference, axis=2, ord=1)
+            dist = np.linalg.norm(difference, axis=2, ord=1)
+    
         if (self._metric == "l2"):
             dist = np.linalg.norm(
                 difference, axis=2)
@@ -74,7 +78,6 @@ class Classificator:
         sort_dist = np.sort(dist)
 
         h_windows = sort_dist.T[self._k_neighbours]
-
         h_windows = h_windows.reshape(h_windows.shape[0], 1)
 
         weights = pc_kernel_estimate(sort_dist / h_windows

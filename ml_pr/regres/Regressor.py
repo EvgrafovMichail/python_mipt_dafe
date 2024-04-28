@@ -18,18 +18,19 @@ class Regressor:
     _abscissa: Union[np.ndarray, None]
     _ordinates: Union[np.ndarray, None]
 
-    def __init__(self, k: int = 4,
-                 metric: str = "l1"):
+    def __init__(
+        self, k: int = 4, metric: str = "l1"
+    ):
         if k <= 0:
             raise ValueError(
                 f"invalid k_neighbours value: {k} "
                 "k_neighbours could have only positive values"
             )
         if metric != "l1" and metric != "l2":
-            raise TypeError("Not available metric we support only l1 and l2")
+            raise ValueError("Not available metric we support only l1 and l2")
 
         self._metric = metric
-        self._k_neighbours = k
+        self._k_neighbours = int(k)
 
     def fit(self, abscissa: np.ndarray,
             ordinates: np.ndarray):
@@ -41,8 +42,9 @@ class Regressor:
             raise TypeError("y must be np.array")
 
         if abscissa.shape[0] != ordinates.shape[0]:
-            raise RuntimeError("You have not filled \
-                                abscissa or ordinates")
+            raise RuntimeError(
+                "You have not filled abscissa or ordinates"
+            )
 
         self._abscissa = abscissa
         self._ordinates = ordinates
@@ -59,10 +61,10 @@ class Regressor:
 
         if (self._metric == "l1"):
             dist = np.linalg.norm(
-                self._abscissa - abscissa[:, np.newaxis], axis=2, ord=1)
+                self._abscissa - abscissa[:, None], axis=2)
         if (self._metric == "l2"):
             dist = np.linalg.norm(
-                self._abscissa - abscissa[:, np.newaxis], axis=2)
+                self._abscissa - abscissa[:, None], axis=2, ord=1)
 
         window_width = np.sort(dist).T[self._k_neighbours]
 
@@ -71,6 +73,7 @@ class Regressor:
         weights = np.where(np.abs(dist).T <= 1, pc_kernel_estimate(dist), 0)
 
         prediction = np.sum(
-            self._ordinates * weights, axis=1)
+            self._ordinates * weights, axis=1
+        )
 
         return prediction / np.sum(weights, axis=1)
