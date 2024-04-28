@@ -18,7 +18,7 @@ class Colors(Enum):
     RED = "red"
     GREEN = "green"
     ORANGE = "orange"
-    
+
 
 def visualize_scatter(
     points: np.ndarray,
@@ -48,15 +48,15 @@ def visualize_comparison(
     prediction: np.ndarray,
     expectation: np.ndarray,
     colors: Optional[list[str]] = None,
-    path_to_save: str=''
+    path_to_save: str = ''
 ) -> None:
     _, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGSIZE)
 
     ax1.set_title("prediction", fontsize=15, fontweight="bold", c="dimgray")
     ax2.set_title("expectation", fontsize=15, fontweight="bold", c="dimgray")
 
-    visualize_scatter(points, prediction,colors=colors ,axis=ax1)
-    visualize_scatter(points, expectation,colors=colors, axis=ax2)
+    visualize_scatter(points, prediction, colors=colors, axis=ax1)
+    visualize_scatter(points, expectation, colors=colors, axis=ax2)
 
     if len(path_to_save) != 0:
         if os.path.isfile(path_to_save):

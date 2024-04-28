@@ -8,13 +8,17 @@ def visualize_results(
         abscissa: list,
         ordinates: list,
         predictions: list,
-        abcissa_error: list=[],
-        ordinates_error_lower: list=[],
-        ordinates_error_upper: list=[],
-        path_to_save: str=''
+        abcissa_error: list = [],
+        ordinates_error_lower: list = [],
+        ordinates_error_upper: list = [],
+        path_to_save: str = ''
 ) -> None:
-    if len(abcissa_error) != 0 and len(ordinates_error_lower) != 0 and len(ordinates_error_upper) != 0:
-        axis.fill_between(abcissa_error, ordinates_error_lower, ordinates_error_upper,label='errors', color='red',linestyle='dashed', alpha=0.1)
+    # if len(abcissa_error)!=0 and len(ordinates_error_lower)!=0 and len(ordinates_error_upper)!=0:
+    if len(abcissa_error) * len(ordinates_error_upper) * len(ordinates_error_lower) != 0:
+        axis.fill_between(
+            abcissa_error, ordinates_error_lower, ordinates_error_upper,
+            label='errors', color='red', linestyle='dashed', alpha=0.1
+        )
     axis.scatter(abscissa, ordinates, label='source', c='royalblue', s=1)
     axis.plot(abscissa, predictions, label='prediction', c='steelblue')
 

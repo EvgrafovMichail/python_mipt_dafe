@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Union
-from main import ShapeMismatchError, distance
+from metrics_distance import ShapeMismatchError, distance
 
 
 class KNN:
