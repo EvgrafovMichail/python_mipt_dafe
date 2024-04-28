@@ -6,6 +6,8 @@ from utils.random_seed import freeze_random_seed
 from utils.quality_control import print_estimation
 from utils.models import RegressionVisualizeSettings
 
+from Algorithms import get_boxplot_outliers
+
 DIST_INDEX = 7
 METRIC = "l2"
 N_ABSCISSA = 1337
@@ -45,6 +47,7 @@ def main():
     regression = NR(DIST_INDEX, METRIC)
     regression.fit(x, y)
     prediction = regression.predict(x)
+
 
     print_estimation(prediction, y)
     show(x, y, prediction)

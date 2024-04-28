@@ -1,17 +1,10 @@
 from typing import Union, Callable, Any
 import numpy as np
-from enum import Enum
 
+from utils.models import SotingKeys
 
 def Core(x):
     return 3/4 * (1 - x ** 2) * (abs(x) <= 1)
-
-
-class SotingKeys(Enum):
-    QUICKSORT = 'quicksort'
-    MERGESORT = 'mergesort'
-    HEAPSORT = 'heapsort'
-    STABLE = 'stable'
 
 
 class NR:
@@ -100,7 +93,7 @@ class KNN:
 
 def get_boxplot_outliers(
     data: np.ndarray,
-    key: Callable[[Any], Any] = max
+    key: Callable[[Any], Any] = 'quicksort'
 ) -> np.ndarray:
     if key not in [i.value for i in SotingKeys]:
         raise ValueError("Invalid sorting key")

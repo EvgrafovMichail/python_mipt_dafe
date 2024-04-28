@@ -1,6 +1,13 @@
 from enum import Enum
 
 
+class SotingKeys(Enum):
+    QUICKSORT = 'quicksort'
+    MERGESORT = 'mergesort'
+    HEAPSORT = 'heapsort'
+    STABLE = 'stable'
+
+
 class Colors(Enum):
     RED = 'r'
     GREEN = 'g'
