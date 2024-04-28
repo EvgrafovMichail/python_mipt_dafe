@@ -7,8 +7,6 @@ class ShapeMismatchError(Exception):
 
 
 def l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    a = a.copy()
-    b = b.copy()
 
     if a.ndim == 1:
         a = a.reshape(a.shape[0], 1)
@@ -20,8 +18,6 @@ def l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def l2(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    a = a.copy()
-    b = b.copy()
 
     if a.ndim == 1:
         a = a.reshape(a.shape[0], 1)
@@ -41,7 +37,7 @@ def MAE(ordinates: np.ndarray, predict: np.ndarray):
 
 
 def R_2(ordinates: np.ndarray, predict: np.ndarray):
-    return 1 - np.sum((predict - ordinates) ** 2) / np.std(ordinates)
+    return 1 - np.sum((predict - ordinates) ** 2) / np.var(ordinates)
 
 
 def accuracy(ordinates: np.ndarray, predict: np.ndarray):

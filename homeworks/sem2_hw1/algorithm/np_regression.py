@@ -18,7 +18,7 @@ class NonparametricRegression:
         res = np.zeros(u.shape)
         res[mask] = 3 / 4 * (1 - u[mask] ** 2)
 
-        return res
+        return 3 / 4 * (1 - u ** 2) * (abs(u) <= 1)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
 

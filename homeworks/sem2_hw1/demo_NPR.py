@@ -7,10 +7,10 @@ import os
 
 
 dir = os.path.dirname(os.path.abspath(__file__))
-POINTS_AMOUNT = 1000
+POINTS_AMOUNT = 10000
 BOUNDS = (-10, 10)
 FIGSIZE = (8, 8)
-K = 50
+K = 400
 
 
 def _visualize(abscissa, ordinates, predict, save_path):
@@ -18,7 +18,7 @@ def _visualize(abscissa, ordinates, predict, save_path):
 
     axis.set_title('NonparametricRegression')
 
-    axis.scatter(abscissa, ordinates, label='source', c='r', s=1, alpha=0.5)
+    axis.scatter(abscissa, ordinates, label='source', c='cornflowerblue', s=1, alpha=0.5)
     axis.plot(abscissa, predict, label='prediction',
               c='royalblue', linewidth=1.5)
 

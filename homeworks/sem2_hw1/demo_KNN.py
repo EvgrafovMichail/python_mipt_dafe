@@ -13,13 +13,13 @@ dir = os.path.dirname(os.path.abspath(__file__))
 def generate_data() -> list[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
 
     x, y = make_classification(
-        n_samples=1000,
-        n_features=4,
+        n_samples=5000,
+        n_features=2,
         n_redundant=0,
-        n_informative=4,
+        n_informative=2,
         random_state=1,
-        n_clusters_per_class=3,
-        n_classes=4
+        n_clusters_per_class=1,
+        n_classes=3
     )
 
     return train_test_split(x, y, shuffle=True, train_ratio=0.5)
@@ -43,7 +43,7 @@ def visualize(x: np.ndarray, y: np.ndarray, predict: np.ndarray, name: str) -> N
 def test_KNN() -> None:
     X_train, X_test, Y_train, Y_test = generate_data()
 
-    knn = KNN(Metric.l2, k=11, n=7)
+    knn = KNN(Metric.l2, k=15, n=20)
 
     knn.fit(X_train, Y_train)
     prediction = knn.predict(X_train)
