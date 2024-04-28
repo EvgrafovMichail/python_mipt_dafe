@@ -3,7 +3,6 @@ from typing import Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 from algorithm.knn import KNN
 from algorithm.nonparam import NREGR
 from metrics_distance import MAE, MSE, rr, accuracy
@@ -14,13 +13,52 @@ from utils import (
     visualize_comparison,
     freeze_random_seed,
     Colors,
-    visualize_results
+    visualize_results,
+    visualize_distribution
 )
 
 K_NEIGHBOURS = 5
 POINTS_AMOUNT = 1000
 BOUNDS = (-10, 10)
 FIGSIZE = (16, 8)
+
+
+def preporc_viz(counts, graph: str = '') -> None:
+    data = np.random.normal(size=1000)
+    if counts == 1:
+        if graph == 'hist':
+            figure, axis = plt.subplots(figsize=(16, 9))
+            visualize_distribution([axis], data, graph, path_to_save="./images/hist")
+        elif graph == 'boxplot':
+            figure, axis = plt.subplots(figsize=(16, 4))
+            visualize_distribution([axis], data, graph, path_to_save="./images/boxplot")
+        elif graph == 'violin':
+            figure, axis = plt.subplots(figsize=(16, 4))
+            visualize_distribution([axis], data, graph, path_to_save="./images/violin")
+    elif counts == 2:
+        mean = [2, 3]
+        cov = [[1, 1], [1, 2]]
+        space = 0.2
+        abscissa, ordinates = np.random.multivariate_normal(mean, cov, size=1000).T
+        figure = plt.figure(figsize=(8, 8))
+        grid = plt.GridSpec(4, 4, wspace=space, hspace=space)
+
+        axis_scatter = figure.add_subplot(grid[:-1, 1:])
+        axis_hist_vert = figure.add_subplot(
+            grid[:-1, 0],
+            sharey=axis_scatter,
+        )
+        axis_hist_hor = figure.add_subplot(
+            grid[-1, 1:],
+            sharex=axis_scatter,
+        )
+        abcissa = np.reshape(abscissa, (len(abscissa), 1))
+        ordinate = np.reshape(ordinates, (len(ordinates), 1))
+        data = np.concatenate((abcissa, ordinate), axis=-1)
+        visualize_distribution(
+            [axis_scatter, axis_hist_hor, axis_hist_vert],
+            data, graph, path_to_save="./images/2Dprecomp}"
+        )
 
 
 # подразумевается что эту функцию написал пользователь,
@@ -83,6 +121,7 @@ def linear_modulated(abscissa: np.ndarray) -> np.ndarray:
 
 
 if __name__ == '__main__':
+    preporc_viz(1, 'boxplot')
     freeze_random_seed()
     points, labels = skd.make_moons(n_samples=400, noise=0.3)
     # visualize_scatter(points, labels)

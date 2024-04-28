@@ -33,7 +33,7 @@ def violin(data: np.ndarray, axis: plt.axes) -> None:
 
 
 def visualize_distribution(
-    axis: plt.Axes,
+    axis: list[plt.Axes],
     data: np.ndarray,
     diagram_type: Any,
     path_to_save: str = "",
@@ -42,21 +42,22 @@ def visualize_distribution(
     #     raise ValueError('{diagram_type} не может быть аргументом')
     if (len(data.shape) == 1):
         if diagram_type == Graphs.HIST.value:
-            axis.hist(
+            axis[0].hist(
                 data,
                 color="cornflowerblue",
                 edgecolor="blue",
+                density=True
             )
 
         elif diagram_type == Graphs.BOXPLOT.value:
-            axis.boxplot(
+            axis[0].boxplot(
                 data,
                 boxprops=dict(facecolor="lightsteelblue"),
                 medianprops=dict(color="k"),
             )
-            axis.set_yticks([])  # так как одномерный случай не нужен y
+            axis[0].set_yticks([])  # так как одномерный случай не нужен y
         elif diagram_type == Graphs.VIOLIN.value:
-            violin(data, axis)
+            violin(data, axis[0])
         else:
             raise ValueError(f'{diagram_type} не может быть аргументом')
 

@@ -8,4 +8,7 @@ from .visualize_nregr import (
     visualize_results
 )
 
+from .visualize_precompiliation import (
+    visualize_distribution
+)
 from .random_seed import freeze_random_seed
