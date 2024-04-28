@@ -1,7 +1,7 @@
 from materials.metrics import Metrics
 from typing import Union
 import numpy as np
-from additional.Errors import (
+from Errors.Errors import (
     ShapeMismatchError,
     NoFitFoundError
 )
@@ -83,7 +83,7 @@ class KNN:
 
     def _distance(self, points_from: np.ndarray, points_to: np.ndarray):
         points_from_extended = np.tile(points_from, points_to.shape[0])
-        
+
         points_ans = points_from_extended - points_to.flatten()
 
         if self._metric == Metrics.Regular:

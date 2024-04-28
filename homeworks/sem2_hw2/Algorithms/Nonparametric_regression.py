@@ -1,6 +1,6 @@
 from materials.metrics import Metrics
 import numpy as np
-from additional.Errors import (
+from Errors.Errors import (
     NoFitFoundError,
     ShapeMismatchError
 )

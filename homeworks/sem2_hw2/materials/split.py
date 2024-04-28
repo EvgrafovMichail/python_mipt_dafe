@@ -1,5 +1,5 @@
 import numpy as np
-from additional.Errors import ShapeMismatchError
+from Errors.Errors import ShapeMismatchError
 
 
 def train_test_split_KNN(
