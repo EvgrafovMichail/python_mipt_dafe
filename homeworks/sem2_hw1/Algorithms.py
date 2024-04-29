@@ -3,6 +3,7 @@ import numpy as np
 
 from utils.models import OutliersSettings
 
+
 def Core(x):
     return 3/4 * (1 - x ** 2) * (abs(x) <= 1)
 
@@ -92,13 +93,13 @@ class KNN:
 
 
 def get_boxplot_outliers(
-    data: np.ndarray,   
+    data: np.ndarray,
     key: Callable[[Any], Any],
     settings: OutliersSettings = OutliersSettings(),
 ) -> np.ndarray:
     index_sorted = np.argsort(np.apply_along_axis(key, -1, data))
     data_sorted = np.sort(np.apply_along_axis(key, -1, data))
-    
+
     q1 = data_sorted[int(data.shape[0] * settings._low_border)]
     q3 = data_sorted[int(data.shape[0] * settings._high_border)]
     e = (q3 - q1) * settings._epsilon

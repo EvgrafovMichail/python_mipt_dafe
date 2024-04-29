@@ -6,11 +6,11 @@ from utils.random_seed import freeze_random_seed
 from utils.quality_control import print_estimation
 from utils.models import RegressionVisualizeSettings
 
-from Algorithms import get_boxplot_outliers
 
 DIST_INDEX = 7
 METRIC = "l2"
 N_ABSCISSA = 1337
+
 
 def generate_ordinates(abscissa, function, noise):
     rng = np.random.default_rng(42)     # шум: умножает (от 1 - noise) до (1 + nose)
@@ -24,16 +24,28 @@ def show(
     error: Optional[list[np.ndarray]] = None,
     settings: RegressionVisualizeSettings = RegressionVisualizeSettings()
 ):
-    plt.scatter(abscissa, ordinates, label='input data', c=settings._points_color, s=settings._points_size)
+    plt.scatter(
+        abscissa,
+        ordinates,
+        label='input data',
+        c=settings._points_color,
+        s=settings._points_size
+        )
     plt.plot(abscissa, prediction, label='prediction', c=settings._prediction_color)
     if (error is not None):
-        plt.plot(abscissa, error, label = 'error', c=settings.error_color, linestyle=settings.error_linestyle)
+        plt.plot(
+            abscissa,
+            error,
+            label='error',
+            c=settings.error_color,
+            linestyle=settings.error_linestyle
+            )
     plt.legend(["input data", "prediction"])
     plt.show()
 
 
 def func(x):
-    return 5 * x + 3
+    return 69 * x + 228
 
 
 def main():
@@ -47,7 +59,6 @@ def main():
     regression = NR(DIST_INDEX, METRIC)
     regression.fit(x, y)
     prediction = regression.predict(x)
-
 
     print_estimation(prediction, y)
     show(x, y, prediction)

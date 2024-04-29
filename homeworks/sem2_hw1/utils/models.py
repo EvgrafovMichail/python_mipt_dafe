@@ -55,9 +55,6 @@ class ComparisonSettings:
 
 
 class OutliersSettings:
-    _low_border: int
-    _high_border: int
-    _epsilon: int
     def __init__(
         self,
         low_border=0.25,
