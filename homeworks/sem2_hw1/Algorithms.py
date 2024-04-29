@@ -1,7 +1,7 @@
 from typing import Union, Callable, Any
 import numpy as np
 
-from utils.models import SotingKeys
+from utils.models import OutliersSettings
 
 def Core(x):
     return 3/4 * (1 - x ** 2) * (abs(x) <= 1)
@@ -92,30 +92,15 @@ class KNN:
 
 
 def get_boxplot_outliers(
-    data: np.ndarray,
-    key: Callable[[Any], Any] = 'quicksort'
+    data: np.ndarray,   
+    key: Callable[[Any], Any],
+    settings: OutliersSettings = OutliersSettings(),
 ) -> np.ndarray:
-    if key not in [i.value for i in SotingKeys]:
-        raise ValueError("Invalid sorting key")
-    else:
-        pass  # vs code не читает дальше функцию ьез этой строчки :'(
+    index_sorted = np.argsort(np.apply_along_axis(key, -1, data))
+    data_sorted = np.sort(np.apply_along_axis(key, -1, data))
+    
+    q1 = data_sorted[int(data.shape[0] * settings._low_border)]
+    q3 = data_sorted[int(data.shape[0] * settings._high_border)]
+    e = (q3 - q1) * settings._epsilon
 
-    if len(data.shape) == 1:
-        data = data.reshape(data.shape[0], 1)
-
-    key = np.vectorize(key)
-    data_sorted = key(data.copy())
-
-    q1 = np.array(data_sorted[int(data_sorted.size * 0.25)])
-    q3 = np.array(data_sorted[int(data_sorted.size * 0.75)])
-
-    e = (q3 - q1) * 1.5
-    lower_border = np.where(data >= q1 - e, 1, 0)
-    lower_border = np.where(np.sum(lower_border, axis=1) != lower_border.shape[1], 0, 1)
-    upper_border = np.where(data <= q3 + e, 1, 0)
-    upper_border = np.where(np.sum(upper_border, axis=1) != lower_border.shape[1], 0, 1)
-    result = np.where(lower_border + upper_border == 2, 1, 0)
-
-    # result = np.where((data <= q1 - e) or (data >= q3 + e), 1, 0)
-
-    return np.argwhere(result == 1)[:, 0]
+    return np.sort(index_sorted[np.add(data_sorted < q1 - e, data_sorted > q3 + e)])

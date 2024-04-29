@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SotingKeys(Enum):
+class SortingKeys(Enum):
     QUICKSORT = 'quicksort'
     MERGESORT = 'mergesort'
     HEAPSORT = 'heapsort'
@@ -52,6 +52,21 @@ class ComparisonSettings:
         self._fontweight = fontweight
         self._title_color = title_color
         self._colors = colors
+
+
+class OutliersSettings:
+    _low_border: int
+    _high_border: int
+    _epsilon: int
+    def __init__(
+        self,
+        low_border=0.25,
+        high_border=0.75,
+        epsilon=1.5
+    ):
+        self._low_border = low_border
+        self._high_border = high_border
+        self._epsilon = epsilon
 
 
 class HistogramSettings:
