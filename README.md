@@ -39,9 +39,11 @@
 - [Линейная алгебра в NumPy](./lessons/sem2_lesson06/sem6_313/);
 - [Введение в Matplotlib](./lessons/sem2_lesson07/sem7_313/);
 - [Работа с диаграммами и распределениями](./lessons/sem2_lesson08/sem8_313/);
+- [Введение в Pandas](./lessons/sem2_lesson09/sem9_313/);
 
 **Домашние работы:**
 - [Домашнее задание 1: Алгоритмы и все, что рядом](./homeworks/sem2_hw1/);
+- [Домашнее задание 2: Домашнее задание 2: Визуализация и немного анализа](./homeworks/sem2_hw2/);
 
 
 ## Источники
@@ -54,3 +56,4 @@
 - [Real Python](https://realpython.com/);
 - [NumPy documentation](https://numpy.org/doc/stable/index.html);
 - [Matplotlib documentation](https://matplotlib.org/stable/);
+- [Pandas documentation](https://pandas.pydata.org/);
