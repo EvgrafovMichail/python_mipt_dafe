@@ -56,17 +56,20 @@ def get_boxplot_outliers(
     q1 = data[int(data.shape[0] * 0.25)]
     q3 = data[int(data.shape[0] * 0.75)]
     e = (q3 - q1) * 1.5
-    res = np.argwhere((cmp(data, (q1-e).reshape(1, *e.shape)) == 1) * (cmp(data, (q3+e).reshape(1, *e.shape) == 0)))
+    res = np.argwhere((cmp(data, (q1-e).reshape(1, *e.shape)) == False) + (cmp(data, (q3+e).reshape(1, *e.shape))))
 
     return res
 
 
 def key(a):
-    return np.sort(a, axis=0)
+    return a[np.argsort(a[:, 0], axis=0)]
 
 
 def cmp(a, b):
-    return a[:, 1] > b[0, 1]
+    return a[:, 0] > b[0, 0]
+
+
+from vizualize.vizualize_data import*
 
 
 if __name__ == "__main__":
@@ -74,4 +77,7 @@ if __name__ == "__main__":
     cov = [[1, 1], [1, 2]]
     space = 0.2
 
-    print(get_boxplot_outliers(np.random.multivariate_normal(mean, cov, size=1000), key, cmp))
+    data = np.random.multivariate_normal(mean, cov, size=1000)
+
+    print(get_boxplot_outliers(data, key, cmp))
+    visualize_distribution(data, diagram_type=DiagramType.boxplot, path_to_save="./homeworks/sem2_hw1/images/kartinka")

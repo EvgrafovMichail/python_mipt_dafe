@@ -85,9 +85,7 @@ def visualize_distribution(
         _visualise(axis_diagram_vertical, data[:, 1], diagram_type, True)
         _visualise(axis_diagram_horizontal, data[:, 0], diagram_type)
         axis_diagram_vertical.invert_xaxis()
-#        axis_diagram_vertical.set_xticks([])
         axis_diagram_horizontal.invert_yaxis()
-#        axis_diagram_horizontal.set_yticks([])
 
     if path_to_save != "":
         if os.path.exists(path_to_save + '.png'):
@@ -105,4 +103,4 @@ if __name__ == "__main__":
     cov = [[1, 1], [1, 2]]
     space = 0.2
 
-    visualize_distribution(np.random.multivariate_normal(mean, cov, size=1000), DiagramType.hist, path_to_save)
+    visualize_distribution(np.random.multivariate_normal(mean, cov, size=1000), DiagramType.boxplot, path_to_save)
