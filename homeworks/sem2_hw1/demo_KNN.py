@@ -4,6 +4,7 @@ from preprocessing import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
+from vizualize.vizualize_result import vizualize_classification
 import os
 
 
@@ -53,6 +54,8 @@ def test_KNN() -> None:
     prediction = knn.predict(X_test)
     print(f'test_accuracy={Metric.accuracy(Y_test, prediction)}')
     visualize(X_test, Y_test, prediction, f'{dir}/images/knn_test')
+
+    vizualize_classification(X_test, Y_test, f'{dir}/images/knn_test', ['r', 'b'])
 
 
 if __name__ == "__main__":

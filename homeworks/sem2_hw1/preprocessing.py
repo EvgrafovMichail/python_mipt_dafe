@@ -50,16 +50,28 @@ def train_test_split(
 def get_boxplot_outliers(
     data: np.ndarray,
     key: Callable[[Any], Any],
+    cmp: Callable[[Any], Any]    
 ) -> np.ndarray:
-    mask = np.argsort(data, key=key)
-    q1 = data[mask][data.size * 0.25]
-    q3 = data[mask][data.size * 0.75]
-    key = np.vectorize(key)
+    data = key(data)
+    q1 = data[int(data.shape[0] * 0.25)]
+    q3 = data[int(data.shape[0] * 0.75)]
     e = (q3 - q1) * 1.5
-    res = np.argwhere(key(data, q1-e) or key(q3+e, data))
+    res = np.argwhere((cmp(data, (q1-e).reshape(1, *e.shape)) == 1) * (cmp(data, (q3+e).reshape(1, *e.shape) == 0)))
 
     return res
 
 
+def key(a):
+    return np.sort(a, axis=0)
+
+
+def cmp(a, b):
+    return a[:, 1] > b[0, 1]
+
+
 if __name__ == "__main__":
-    pass
+    mean = [2, 3]
+    cov = [[1, 1], [1, 2]]
+    space = 0.2
+
+    print(get_boxplot_outliers(np.random.multivariate_normal(mean, cov, size=1000), key, cmp))

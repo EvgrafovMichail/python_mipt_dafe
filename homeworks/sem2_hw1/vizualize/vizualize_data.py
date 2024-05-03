@@ -31,7 +31,7 @@ def _vizualize_hist(axis: plt.Axes, data: np.ndarray, vert=False) -> None:
         data,
         bins=50,
         color="cornflowerblue",
-        orientation= "vertical" if not vert else "horizontal",
+        orientation="vertical" if not vert else "horizontal",
         density=True,
         alpha=0.5,
     )
@@ -59,7 +59,6 @@ def _visualise(axis: plt.Axes, data: np.ndarray, diagram_type: DiagramType, vert
 
 
 def visualize_distribution(
-#    axis: plt.Axes, /не понятно как юзать в двумерном случае
     data: np.ndarray,
     diagram_type: DiagramType,
     path_to_save: str = "",
@@ -79,7 +78,7 @@ def visualize_distribution(
 
         axis_scatter = figure.add_subplot(grid[:2, -2:])
         axis_scatter.scatter(data[:, 0], data[:, 1], color="cornflowerblue", alpha=0.5)
-        
+
         axis_diagram_vertical = figure.add_subplot(grid[:2, 0], sharey=axis_scatter)
         axis_diagram_horizontal = figure.add_subplot(grid[-1, -2:], sharex=axis_scatter)
 
@@ -105,6 +104,5 @@ if __name__ == "__main__":
     mean = [2, 3]
     cov = [[1, 1], [1, 2]]
     space = 0.2
-
 
     visualize_distribution(np.random.multivariate_normal(mean, cov, size=1000), DiagramType.hist, path_to_save)
