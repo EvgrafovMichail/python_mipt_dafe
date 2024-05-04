@@ -155,17 +155,16 @@ def get_boxplot_outliers(
     key: Callable[[Any], Any],
 ) -> np.ndarray:
     data = check_array(data)
-    if data.ndim == 1:
-        data = data[:, np.newaxis]
-    elif data.ndim != 2:
-        raise ValueError("Invalid dimension for computing outliers")
+    data = np.apply_along_axis(key, 1, data)
+    if data.ndim != 1:
+        raise ValueError("Data must be one-dimensional after applying the key")
 
-    size = data.shape[0]
-    quartile_data = np.apply_along_axis(key, 1, data.T)
-    first_quartile = quartile_data[:, int(size * .25)]
-    third_quartile = quartile_data[:, int(size * .75)]
+    size = data.size
+    quartile_data = np.sort(data)
+    first_quartile = quartile_data[int(size * .25)]
+    third_quartile = quartile_data[int(size * .75)]
     epsilon = (third_quartile - first_quartile) * 1.5
-    outliers_lower = (data < (first_quartile - epsilon)).any(axis=1)
-    outliers_upper = (data > (third_quartile + epsilon)).any(axis=1)
+    outliers_lower = (data < (first_quartile - epsilon))
+    outliers_upper = (data > (third_quartile + epsilon))
     outliers = outliers_lower | outliers_upper
     return np.nonzero(outliers)

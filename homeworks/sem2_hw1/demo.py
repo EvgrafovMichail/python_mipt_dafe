@@ -47,7 +47,9 @@ data = np.vstack((abscissa, ordinates)).T
 for plot_type in list(PlotType):
     plot_distribution(data, plot_type, f"{plot_type.value} distribution example")
 
-outliers = get_boxplot_outliers(data,  sorted)
+outliers_x = get_boxplot_outliers(data, lambda arr: arr[0])
+outliers_y = get_boxplot_outliers(data, lambda arr: arr[1])
+outliers = np.unique(np.hstack((outliers_x, outliers_y)))
 outliers = data[outliers]
 plot_distribution(outliers, PlotType.HIST, "boxplot outliers example")
 
@@ -101,6 +103,8 @@ features = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]]
 labels = [1, 2, 3, 4, 3]
 colors = ("r", "g", "b")
 _, axes = plt.subplots(figsize=(8, 8))
-axes.set_title("Classification example", fontweight="bold")
+axes.set_title(f"Classification example\n{colors=}", fontweight="bold")
 visualize_classification(axes, features, labels, colors)
+for feat, label in zip(features, labels):
+    axes.annotate(f"Label {label}", (feat[0]-.17, feat[1]+.05))
 plt.show()
