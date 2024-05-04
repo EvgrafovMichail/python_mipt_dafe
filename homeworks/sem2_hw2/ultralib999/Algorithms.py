@@ -153,9 +153,6 @@ class KNN:
 
 
 # новое
-def pyth(arr):
-    return np.sum(arr * arr)
-
 def get_boxplot_outliers(
         data: np.ndarray,
         key: Callable[[Any], Any],
@@ -176,7 +173,7 @@ def get_boxplot_outliers(
     if not (key in keys):
         raise ValueError(f"Unexpected key {key}, supported keys are: {keys}")
 
-    data_dist = np.apply_along_axis(pyth, axis=1, arr=data)
+    data_dist = np.apply_along_axis(lambda arr: np.sum(arr * arr), axis=1, arr=data)
     data_dist = data_dist.reshape(len(data_dist), 1)
     sorted_data = np.argsort(data_dist, kind=key, axis=0)
 
