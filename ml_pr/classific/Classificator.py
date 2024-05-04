@@ -70,7 +70,7 @@ class Classificator:
 
         if (self._metric == "l1"):
             dist = np.linalg.norm(difference, axis=2, ord=1)
-    
+
         if (self._metric == "l2"):
             dist = np.linalg.norm(
                 difference, axis=2)

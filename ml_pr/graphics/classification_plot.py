@@ -5,15 +5,19 @@ import warnings
 
 
 def classification_plot(
-    points: np.ndarray, 
+    points: np.ndarray,
     lables: np.ndarray,
-    path_to_save: str="", 
-    colors = []
+    path_to_save: str = "",
+    colors=list[str],
+    outliers=False
 ) -> None:
-    
+
     figure = plt.figure(figsize=(8, 8))
     axis = figure.add_subplot()
-    axis.set_title("classification", fontweight='bold')
+    axis.set_title("Classification", fontweight='bold')
+
+    if (outliers):
+        axis.scatter(points, lables)
 
     if len(colors) == 0:
         for label in np.unique(lables):
@@ -23,7 +27,7 @@ def classification_plot(
             color = colors[i % len(colors)]
             axis.scatter(*points[lables == label].T, color=color, alpha=0.5)
 
-    if(len(path_to_save) != 0):
+    if (len(path_to_save) != 0):
         if os.path.isfile(path_to_save):
             warnings.warn(
                 "\nFile with same name already exist\n"

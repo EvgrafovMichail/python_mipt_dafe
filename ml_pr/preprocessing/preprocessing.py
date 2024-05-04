@@ -9,7 +9,7 @@ def train_test_split(
     features: np.ndarray,
     targets: np.ndarray,
     train_ratio: float = 0.8,
-    shuffle: bool = False 
+    shuffle: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     if features.shape[0] != targets.shape[0]:
         raise ShapeMismatchError(

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from graphics.visualize_distribution import visualize_distribution
 from graphics.regression_plot import regression_plot
 from preprocessing.get_boxplot_outliers import get_boxplot_outliers
-from preprocessing.get_boxplot_outliers import visualize_results
+
 
 def make_regression_data(function, n_sample, noise):
     x = np.linspace(1, 10, n_sample)
@@ -65,35 +65,53 @@ def main():
     noise = True
     function = linear
 
-    x, y = make_regression_data(function, n_sample, noise)
+    x_data, y_data = make_regression_data(function, n_sample, noise)
 
-    #visualization_hw2
-    visualize_distribution(1, np.array([x,y]), "violin", "images/regression.png")
-    regression_plot(np.array([x,y]), True, "images/regression.png")
-    visualize_results(x, y, y_pred)
-    
+    mean = [2, 3]
+    cov = [[1, 1], [1, 2]]
+    data = np.random.multivariate_normal(mean, cov, size=1000).T
 
-    best_params = GridSearch(x, y, ["l1", "l2"], np.arange(5, 6))
+    # outliters = get_outliers(np.array([x,y]), lambda x: x)
+    print(x_data.shape)
+    outliters = get_boxplot_outliers(data, np.sort)
+
+    x = data[0]
+    y = data[1]
+    x_out = data[0][outliters]
+    y_out = data[1][outliters]
+
+    print(x.shape, y.shape)
+
+    best_params = GridSearch(x_data, y_data, ["l1", "l2"], np.arange(5, 6))
 
     k_numbers = best_params["k"]
     norm = best_params["norm"]
 
-    model = Regressor(k_numbers, norm)
-    model.fit(x, y)
-    y_pred = model.predict(x)
-    visualize_results(x, y, y_pred)
+    model = Regressor(100, norm)
+    model.fit(x_data, y_data)
+    y_pred = model.predict(x_data)
+    # visualize_results(x, y, y_pred)
 
-    print(f"norm = {norm} , k = {k_numbers}, mse = {mse(y_pred, y)}")
-    print(f"norm = {norm} , k = {k_numbers}, mae = {mae(y_pred, y)}")
-    print(f"norm = {norm} , k = {k_numbers}, rmse = {rmse(y_pred, y)}")
-    print(f"norm = {norm} , k = {k_numbers}, r_score = {r_score(y_pred, y)}")
+    print(f"norm = {norm} , k = {k_numbers}, mse = {mse(y_pred, y_data)}")
+    print(f"norm = {norm} , k = {k_numbers}, mae = {mae(y_pred, y_data)}")
+    print(f"norm = {norm} , k = {k_numbers}, rmse = {rmse(y_pred, y_data)}")
+    print(f"norm = {norm} , k ={k_numbers}, r_score={r_score(y_pred, y_data)}")
     print()
 
-    #show(x, y, y_pred, function)
+    # visualization_hw2
 
-    #visualize_distribution(1, np.array([x,y]), "hist", "images/regression.png")
+    visualize_distribution(np.array([x, y]), "violin",
+                           "images/regression.png")
+    regression_plot(np.array([x, y]), False, "images/regression.png")
+    visualize_distribution(np.array([x_out, y_out]),
+                           "violin", "images/regression_out1.png")
 
-    #regression_plot(np.array([x,y]), True, "images/regression.png")
+    regression_plot(np.array([x_data, y_data]), True, "images/regression.png")
+
+    visualize_distribution(x, "boxplot",
+                           "images/regression.png")
+
+    show(x_data, y_data, y_pred, function)
 
 
 main()
