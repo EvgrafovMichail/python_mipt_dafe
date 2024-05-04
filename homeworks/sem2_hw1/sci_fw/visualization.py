@@ -6,9 +6,7 @@ from warnings import warn
 from os.path import isdir, exists
 
 from sci_fw.helpers.data import check_array, check_shapes
-from sci_fw.enumerations import Plot_Type
-
-DEFAULT_COLORS = ("royalblue", "darkorange")
+from sci_fw.enumerations import PlotType, DEFAULT_COLORS
 
 
 def save_plot(
@@ -25,11 +23,48 @@ def save_plot(
     plt.savefig(path_to_save)
 
 
+def plot_distribution_1d(
+    axis: plt.Axes,
+    data: np.ndarray,
+    diagram_type: PlotType,
+    ** kwargs
+) -> None:
+    """
+    Kwargs are forwarded to the plotting function
+    """
+    if not isinstance(axis, plt.Axes):
+        raise ValueError("Axis is of an incorrect type")
+    data = check_array(data)
+    diagram_type = PlotType(diagram_type)
+
+    if diagram_type == PlotType.HIST:
+        kwargs.setdefault("edgecolor", DEFAULT_COLORS[0])
+        kwargs.setdefault("alpha", .5)
+        kwargs.setdefault("color", DEFAULT_COLORS[0])
+        kwargs.setdefault("bins", 50)
+        kwargs.setdefault("orientation", "vertical")
+        axis.hist(data, **kwargs)
+    elif diagram_type == PlotType.BOX:
+        kwargs.setdefault("vert", False)
+        kwargs.setdefault("patch_artist", True)
+        kwargs.setdefault("boxprops", dict(facecolor=DEFAULT_COLORS[0], alpha=.5))
+        kwargs.setdefault("medianprops", dict(color="k"))
+        axis.boxplot(data, **kwargs)
+    elif diagram_type == PlotType.VIOLIN:
+        kwargs.setdefault("vert", False)
+        kwargs.setdefault("showmedians", True)
+        violin_parts = axis.violinplot(data, **kwargs)
+        for vp in violin_parts["bodies"]:
+            vp.set_facecolor(DEFAULT_COLORS[0])
+            vp.set_alpha(.5)
+
+
 def visualize_classification(
     axis: plt.Axes,
     features: np.ndarray,
     labels: np.ndarray,
-    colors: Optional[list] = None
+    colors: Optional[list] = None,
+    save_path: str = ""
 ) -> None:
     features = check_array(features)
     labels = check_array(labels)
@@ -43,12 +78,15 @@ def visualize_classification(
         mask = labels == label
         axis.scatter(features[mask][:, 0], features[mask][:, 1], c=next(colors))
 
+    save_plot(save_path)
+
 
 def visualize_regression(
     axis: plt.Axes,
     points: np.ndarray,
     prediction: np.ndarray,
-    error: Optional[np.ndarray] = None
+    error: Optional[np.ndarray] = None,
+    save_path: str = ""
 ) -> None:
     points = check_array(points)
     if points.ndim == 1:
@@ -63,49 +101,15 @@ def visualize_regression(
     axis.margins(x=0)
 
     axis.scatter(points[:, 0], points[:, 1], c=DEFAULT_COLORS[1], alpha=.5)
-    plot_data_1d(axis, prediction, Plot_Type.LINE)
+    axis.plot(prediction[:, 0], prediction[:, 1], color=DEFAULT_COLORS[0])
     if error is not None:
         bound = prediction
         bound[:, 1] += error
-        plot_data_1d(axis, bound, Plot_Type.LINE, linestyle="--")
+        axis.plot(bound[:, 0], bound[:, 1], linestyle="--", color=DEFAULT_COLORS[0])
         bound[:, 1] -= 2 * error
-        plot_data_1d(axis, bound, Plot_Type.LINE, linestyle="--")
+        axis.plot(bound[:, 0], bound[:, 1], linestyle="--", color=DEFAULT_COLORS[0])
 
-
-def plot_data_1d(
-    axis: plt.Axes,
-    data: np.ndarray,
-    diagram_type: Plot_Type,
-    ** kwargs
-) -> None:
-    """
-    Kwargs are forwarded to the plotting function
-    """
-    if not isinstance(axis, plt.Axes):
-        raise ValueError("Axis is of an incorrect type")
-    data = check_array(data)
-    diagram_type = Plot_Type(diagram_type)
-
-    if diagram_type == Plot_Type.HIST:
-        kwargs.setdefault("edgecolor", DEFAULT_COLORS[0])
-        kwargs.setdefault("alpha", .5)
-        kwargs.setdefault("color", DEFAULT_COLORS[0])
-        kwargs.setdefault("bins", 50)
-        kwargs.setdefault("orientation", "vertical")
-        axis.hist(data, **kwargs)
-    elif diagram_type == Plot_Type.BOX:
-        kwargs.setdefault("vert", False)
-        kwargs.setdefault("patch_artist", True)
-        kwargs.setdefault("boxprops", dict(facecolor=DEFAULT_COLORS[0]))
-        kwargs.setdefault("medianprops", dict(color="k"))
-        axis.boxplot(data, **kwargs)
-    elif diagram_type == Plot_Type.LINE:
-        kwargs.setdefault("color", DEFAULT_COLORS[0])
-        axis.plot(data[:, 0], data[:, 1], **kwargs)
-    elif diagram_type == Plot_Type.VIOLIN:
-        kwargs.setdefault("vert", False)
-        kwargs.setdefault("showmedians", True)
-        axis.violinplot(data, **kwargs)
+    save_plot(save_path)
 
 
 def visualize_distribution(
@@ -128,20 +132,20 @@ def visualize_distribution(
         ax.margins(x=0, y=0)
 
     if (data.ndim == 1) or (data.ndim == 2 and data.shape[1] == 1):
-        plot_data_1d(axis[0], data, diagram_type)
+        plot_distribution_1d(axis[0], data, diagram_type)
     elif data.ndim == 2 and data.shape[1] == 2:
         if axis.size < 3:
             raise ValueError("Not enough axes to plot data")
         axis[0].scatter(data[:, 0], data[:, 1], color=DEFAULT_COLORS[0], alpha=0.5)
         kwargs = dict()
-        plot_data_1d(axis[2], data[:, 0], diagram_type, **kwargs)
-        if diagram_type == Plot_Type.HIST:
+        plot_distribution_1d(axis[2], data[:, 0], diagram_type, **kwargs)
+        if diagram_type == PlotType.HIST:
             kwargs.setdefault("orientation", "horizontal")
-        elif diagram_type == Plot_Type.BOX:
+        elif diagram_type == PlotType.BOX:
             kwargs.setdefault("vert", True)
-        elif diagram_type == Plot_Type.VIOLIN:
+        elif diagram_type == PlotType.VIOLIN:
             kwargs.setdefault("vert", True)
-        plot_data_1d(axis[1], data[:, 1], diagram_type, **kwargs)
+        plot_distribution_1d(axis[1], data[:, 1], diagram_type, **kwargs)
 
     save_plot(path_to_save)
 

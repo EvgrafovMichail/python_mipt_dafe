@@ -3,41 +3,59 @@ import matplotlib.pyplot as plt
 import sklearn.datasets as skd
 
 from sci_fw.data import train_test_split
-from sci_fw.enumerations import Metric, Plot_Type
+from sci_fw.enumerations import Metric, PlotType
 from sci_fw.algorithms import NonparametricRegressor, KNN
 from sci_fw.evaluation import accuracy_ratio, MSE, MAE, determination_coef
-from sci_fw.visualisation import (
-    visualize_distribution, visualize_classification, visualize_regression
+from sci_fw.visualization import (
+    visualize_distribution, visualize_classification, visualize_regression, get_boxplot_outliers
 )
+
 
 # Distribution
+
+def plot_distribution(
+    data: np.ndarray,
+    plot_type: PlotType,
+    suptitle: str
+) -> None:
+    figure = plt.figure(figsize=(8, 8))
+    figure.suptitle(suptitle, fontweight="bold")
+    grid = plt.GridSpec(4, 4, wspace=.2, hspace=.2)
+
+    axis_scatter = figure.add_subplot(grid[:-1, 1:])
+    axis_hist_vert = figure.add_subplot(
+        grid[:-1, 0],
+        sharey=axis_scatter,
+    )
+    axis_hist_hor = figure.add_subplot(
+        grid[-1, 1:],
+        sharex=axis_scatter,
+    )
+
+    axes = [axis_scatter, axis_hist_vert, axis_hist_hor]
+    axes[1].invert_xaxis()
+    axes[2].invert_yaxis()
+    visualize_distribution(axes, data, plot_type, "")
+    plt.show()
+
+
 mean = [2, 3]
 cov = [[1, 1], [1, 2]]
-space = 0.2
-
 abscissa, ordinates = np.random.multivariate_normal(mean, cov, size=1000).T
-
 data = np.vstack((abscissa, ordinates)).T
 
-figure = plt.figure(figsize=(8, 8))
-figure.suptitle("Distibution visualization example", fontweight="bold")
-grid = plt.GridSpec(4, 4, wspace=space, hspace=space)
+for plot_type in list(PlotType):
+    plot_distribution(data, plot_type, f"{plot_type.value} distribution example")
 
-axis_scatter = figure.add_subplot(grid[:-1, 1:])
-axis_hist_vert = figure.add_subplot(
-    grid[:-1, 0],
-    sharey=axis_scatter,
-)
-axis_hist_hor = figure.add_subplot(
-    grid[-1, 1:],
-    sharex=axis_scatter,
-)
+outliers = get_boxplot_outliers(data,  sorted)
+outliers = data[outliers]
+plot_distribution(outliers, PlotType.HIST, "boxplot outliers example")
 
-axis = [axis_scatter, axis_hist_vert, axis_hist_hor]
-axis[1].invert_xaxis()
-axis[2].invert_yaxis()
-visualize_distribution(axis, data, Plot_Type.VIOLIN, "test.png")
+_, axes = plt.subplots(figsize=(8, 8))
+axes.set_title("1d distribution example", fontweight="bold")
+visualize_distribution(axes, abscissa, PlotType.HIST)
 plt.show()
+
 
 # Nonparametric regressor
 abscissa = np.linspace(-10, 10, 1000)
@@ -79,8 +97,8 @@ visualize_classification(axes[1], feat_test, prediction)
 plt.show()
 
 # Classification
-features = [[1, 1], [2, 2], [3, 3], [4, 4]]
-labels = [1, 2, 3, 2]
+features = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]]
+labels = [1, 2, 3, 4, 3]
 colors = ("r", "g", "b")
 _, axes = plt.subplots(figsize=(8, 8))
 axes.set_title("Classification example", fontweight="bold")
