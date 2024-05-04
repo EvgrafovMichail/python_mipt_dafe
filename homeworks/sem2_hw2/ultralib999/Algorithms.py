@@ -173,6 +173,8 @@ def get_boxplot_outliers(
     if not (key in keys):
         raise ValueError(f"Unexpected key {key}, supported keys are: {keys}")
 
+    data += 2 * abs(data.min())  # мега крутой трюк жееееееееесть
+
     data_dist = np.apply_along_axis(lambda arr: np.sum(arr * arr), axis=1, arr=data)
     data_dist = data_dist.reshape(len(data_dist), 1)
     sorted_data = np.argsort(data_dist, kind=key, axis=0)
@@ -182,6 +184,11 @@ def get_boxplot_outliers(
 
     epsilon = ((data_dist[quart_third] - data_dist[quart_first]) * 1.5)[0]
 
-    left_extra = sorted_data[data_dist < (data_dist[quart_first] - epsilon)]
-    right_extra = sorted_data[data_dist > (data_dist[quart_third] + epsilon)]
+    left_extra = np.argwhere(data_dist < (data_dist[quart_first] - epsilon))
+    right_extra = np.argwhere(data_dist > (data_dist[quart_third] + epsilon))
+
+    if left_extra.size == 0:
+        return right_extra
+    if right_extra.size == 0:
+        return left_extra
     return np.hstack((left_extra, right_extra))
