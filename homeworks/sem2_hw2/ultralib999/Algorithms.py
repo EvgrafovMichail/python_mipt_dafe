@@ -153,6 +153,9 @@ class KNN:
 
 
 # новое
+def pyth(arr):
+    return np.sum(arr * arr)
+
 def get_boxplot_outliers(
         data: np.ndarray,
         key: Callable[[Any], Any],
