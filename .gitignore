@@ -1,6 +1,9 @@
 # VS code Folders
 *.vscode/
 
+# Configs data
+configs/sem.json
+
 # Python Folders
 *__pycache__/
 *.pytest_cache
