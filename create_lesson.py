@@ -23,7 +23,7 @@ parser.add_argument(
 )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     path_to_config = os.path.join("config", "sem.json")
     lesson_creater = LessonTemplateCreator(path_to_config)
 
