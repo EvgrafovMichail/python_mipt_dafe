@@ -35,11 +35,10 @@ class LessonTemplateCreator:
 
         Args:
             lesson_id: natural number - id of lesson to create.
-            sem_id: natural number - id of sem, which contains lesson.
+            sem_id: positive number - id of sem, which contains lesson.
 
         Raises:
-            ValueError if lesson_id or sem_id are not valid ints or
-                are not natural numbers.
+            ValueError if lesson_id or sem_id are not valid ints.
             RuntimeError if sem and lesson folders are already exist.
         """
         self._validate_arguments(lesson_id, sem_id)
@@ -51,15 +50,13 @@ class LessonTemplateCreator:
         lesson_id = int(lesson_id)
         sem_id = int(sem_id)
 
-        if lesson_id < 1:
+        if lesson_id < lowest_possible_value:
             raise ValueError(
                 f"lesson id must be greater than {lowest_possible_value}"
             )
 
-        if sem_id < 1:
-            raise ValueError(
-                f"sem id must be greater than {lowest_possible_value}"
-            )
+        if sem_id < 0:
+            raise ValueError("sem id must be positive")
 
     def _create_lesson_template(self, lesson_id: int, sem_id: int) -> None:
         object_id_max_len = 2
