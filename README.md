@@ -9,6 +9,7 @@
 Данная часть курса посвящена знакомству с синтаксисом и основам языка программирования Python. Материалы этой части курса являются необязательными к прохождению, ученики, знакомые с языком Python, могут смело игнорировать их.
 
 **Содержание:**
+- [Введение в Git](./lessons/sem_00/lesson_01/);
 
 ## Осенний семестр
 
@@ -37,3 +38,4 @@
 - `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;    
 - `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;    
 - [Real Python](https://realpython.com/);
+- [Официальная документация](https://docs.python.org/3.11/);
