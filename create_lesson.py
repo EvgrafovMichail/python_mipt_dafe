@@ -24,7 +24,7 @@ parser.add_argument(
 
 
 if __name__ == "__main__":
-    path_to_config = os.path.join("config", "sem.json")
+    path_to_config = os.path.join("configs", "sem.json")
     lesson_creater = LessonTemplateCreator(path_to_config)
 
     args = parser.parse_args()
