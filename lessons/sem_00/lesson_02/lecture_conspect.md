@@ -361,7 +361,7 @@ False
 >>> bool(3)
 True
 
-bool(-3)
+>>> bool(-3)
 True
 
 >>> bool(0.5)
@@ -514,10 +514,10 @@ if expression1:
     do_something1()
 
 elif expression2:
-    do_somethin2()
+    do_something2()
 
 elif expression3:
-    do_somethong3()
+    do_something3()
 
 else:
     do_another_thing()
