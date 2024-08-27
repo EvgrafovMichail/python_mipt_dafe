@@ -11,6 +11,10 @@
 **Содержание:**
 - [Введение в Git](./lessons/sem_00/lesson_01/);
 - [Структура языка. Логический тип данных](./lessons/sem_00/lesson_02/);
+- [Числа и функции](./lessons/sem_00/lesson_03/);
+
+**Контесты:**
+- [Числа и функции](https://contest.yandex.ru/contest/67077/enter/?retPage=);
 
 ## Осенний семестр
 
