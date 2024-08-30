@@ -13,10 +13,12 @@
 - [Структура языка. Логический тип данных](./lessons/sem_00/lesson_02/);
 - [Числа и функции](./lessons/sem_00/lesson_03/);
 - [Последовательности: списки и кортежи](./lessons/sem_00/lesson_04/);
+- [Последовательности: строки](./lessons/sem_00/lesson_05/);
 
 **Контесты:**
 - [Числа и функции](https://contest.yandex.ru/contest/67077/enter/?retPage=);
 - [Списки и кортежи](https://contest.yandex.ru/contest/67095/enter/?retPage=);
+- [Строки](https://contest.yandex.ru/contest/67162/enter/?retPage=);
 
 ## Осенний семестр
 
