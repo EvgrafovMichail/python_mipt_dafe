@@ -24,10 +24,7 @@ class LessonTemplateCreator:
         with open(path_to_config, "r") as file:
             config: dict[str, Any] = json.load(file)
 
-        if not (groups := config.get("groups", [])):
-            raise ValueError(f"invalid groups value: {groups}")
-
-        self._groups = groups
+        self._groups = config.get("groups", [])
 
     def __call__(self, lesson_id: int, sem_id: int = 1) -> None:
         """
@@ -71,6 +68,8 @@ class LessonTemplateCreator:
 
         if os.path.exists(path_to_folder):
             raise RuntimeError(f"{path_to_folder} is already exist")
+
+        os.makedirs(path_to_folder)
 
         for group in self._groups:
             path_to_group_lesson = os.path.join(path_to_folder, group)
