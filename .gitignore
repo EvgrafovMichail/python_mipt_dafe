@@ -17,3 +17,4 @@ venv
 # Other files
 *.docx
 *.doc
+*.puml
