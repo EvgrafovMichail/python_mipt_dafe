@@ -28,6 +28,7 @@
 - [Вводное занятие](./lessons/sem_01/lesson_01/);
 - [Функции](./lessons/sem_01/lesson_02/);
 - [Декораторы](./lessons/sem_01/lesson_03/);
+- [Классы](./lessons/sem_01/lesson_04/);
 
 **Домашние работы:**
 
