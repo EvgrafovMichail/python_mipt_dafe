@@ -18,3 +18,6 @@ venv
 *.docx
 *.doc
 *.puml
+
+# Hidden tests
+*tests/
