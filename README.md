@@ -47,6 +47,7 @@
 - [Введение в NumPy](./lessons/sem_02/lesson_02/);
 - [Операции над массивами NumPy](./lessons/sem_02/lesson_03/);
 - [Агрегирование и сортировка](./lessons/sem_02/lesson_04/);
+- [Линейная алгебра в NumPy](./lessons/sem_02/lesson_05/);
 
 **Домашние работы:**
 
