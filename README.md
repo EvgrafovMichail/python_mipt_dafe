@@ -50,6 +50,7 @@
 - [Линейная алгебра в NumPy](./lessons/sem_02/lesson_05/);
 - [Введение в Matplotlib](./lessons/sem_02/lesson_06/);
 - [Диаграммы](./lessons/sem_02/lesson_07/);
+- [Построение трехмерных графиков и анимации](./lessons/sem_02/lesson_08/);
 
 **Домашние работы:**
 
