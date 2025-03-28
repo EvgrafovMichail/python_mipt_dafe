@@ -51,6 +51,7 @@
 - [Введение в Matplotlib](./lessons/sem_02/lesson_06/);
 - [Диаграммы](./lessons/sem_02/lesson_07/);
 - [Построение трехмерных графиков и анимации](./lessons/sem_02/lesson_08/);
+- [Введение в Pandas](./lessons/sem_02/lesson_09/);
 
 **Домашние работы:**
 
