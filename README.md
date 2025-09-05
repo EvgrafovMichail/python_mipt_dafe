@@ -15,7 +15,7 @@
 ## Архивные материалы
 
 - [Материалы 2023-2024 учебного года](https://github.com/EvgrafovMichail/python_mipt_dafe/tree/2023-2024-archive);
-- [Материалы 2023-2024 учебного года](https://github.com/EvgrafovMichail/python_mipt_dafe/tree/2024-2025-archive);
+- [Материалы 2024-2025 учебного года](https://github.com/EvgrafovMichail/python_mipt_dafe/tree/2024-2025-archive);
 
 ## Источники
 
