@@ -13,6 +13,9 @@
 - [Введение в Python](./lessons/sem01/lesson01/);
 - [Анатомия Python-программы](./lessons/sem01/lesson02/);
 
+## Практические задания:
+
+Все практические задания хранятся в [отдельном репозитории](https://github.com/EvgrafovMichail/python_mipt_dafe_tasks).
 
 ## Архивные материалы
 
