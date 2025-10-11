@@ -13,6 +13,7 @@
 - [Введение в Python](./lessons/sem01/lesson01/);
 - [Анатомия Python-программы](./lessons/sem01/lesson02/);
 - [Числовые типы данных](./lessons/sem01/lesson03/);
+- [Последовательности: списки и кортежи](./lessons/sem01/lesson04/);
 
 ## Практические задания:
 
