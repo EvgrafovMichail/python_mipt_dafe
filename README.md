@@ -20,6 +20,7 @@
 - [Замыкания и Декораторы](./lessons/sem01/lesson08/);
 - [Исключения](./lessons/sem01/lesson09/);
 - [Пользовательские классы](./lessons/sem01/lesson10/);
+- [ООП в Python](./lessons/sem01/lesson11/);
 
 **Домашние задания**:
 - [Домашнее задание 1](https://github.com/EvgrafovMichail/python_mipt_dafe_tasks/tree/main/homeworks/hw1);
