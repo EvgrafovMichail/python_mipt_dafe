@@ -8,6 +8,7 @@ configs/sem.json
 *__pycache__/
 *.pytest_cache
 venv
+.venv
 
 # Solution data
 *solved.ipynb
