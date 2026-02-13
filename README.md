@@ -49,6 +49,8 @@
 Данный курс во многом основан на материале следующих источников:
 
 - `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;    
-- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;    
+- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;
+- `Python Data Science Handbook`. Jake VanderPlas. O’Reilly. 2020;    
 - [Real Python](https://realpython.com/);
 - [Официальная документация](https://docs.python.org/3.11/);
+- [Официальная документация NumPy](https://numpy.org/);
