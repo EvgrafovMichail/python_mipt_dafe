@@ -21,9 +21,19 @@
 - [Исключения](./lessons/sem01/lesson09/);
 - [Пользовательские классы](./lessons/sem01/lesson10/);
 - [ООП в Python](./lessons/sem01/lesson11/);
+- [Протоколы в Python](./lessons/sem01/lesson12/);
+- [Модули](./lessons/sem01/lesson13/);
 
 **Домашние задания**:
 - [Домашнее задание 1](https://github.com/EvgrafovMichail/python_mipt_dafe_tasks/tree/main/homeworks/hw1);
+
+## Весенний семестр
+
+Эта часть курса посвящена научным вычислениям и работе с данными на языке Python.
+
+**Содержание**:
+- [Менеджер пакетов и виртуальное окружение](./lessons/sem02/lesson01);
+- [Введение в NumPy](./lessons/sem02/lesson02/);
 
 ## Практические задания:
 
@@ -39,6 +49,8 @@
 Данный курс во многом основан на материале следующих источников:
 
 - `Python in a Nutshell`. Third Edition. Alex Martelli, Anna Ravenscroft, Steve Holden. O’Reilly. 2017;    
-- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;    
+- `Fluent Python`. Luciano Ramalho. O’Reilly. 2016;
+- `Python Data Science Handbook`. Jake VanderPlas. O’Reilly. 2020;    
 - [Real Python](https://realpython.com/);
 - [Официальная документация](https://docs.python.org/3.11/);
+- [Официальная документация NumPy](https://numpy.org/);
