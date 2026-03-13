@@ -35,6 +35,8 @@
 - [Менеджер пакетов и виртуальное окружение](./lessons/sem02/lesson01);
 - [Введение в NumPy](./lessons/sem02/lesson02/);
 - [Операции над массивами NumPy](./lessons/sem02/lesson03/);
+- [Агрегирование и сортировка в NumPy](./lessons/sem02/lesson04/);
+- [Линейная алгебра в NumPy](./lessons/sem02/lesson05/);
 
 ## Практические задания:
 
