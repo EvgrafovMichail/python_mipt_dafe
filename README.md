@@ -37,6 +37,7 @@
 - [Операции над массивами NumPy](./lessons/sem02/lesson03/);
 - [Агрегирование и сортировка в NumPy](./lessons/sem02/lesson04/);
 - [Линейная алгебра в NumPy](./lessons/sem02/lesson05/);
+- [Введение в Matplotlib](./lessons/sem02/lesson06/);
 
 ## Практические задания:
 
