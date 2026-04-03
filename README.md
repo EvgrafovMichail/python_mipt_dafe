@@ -38,6 +38,7 @@
 - [Агрегирование и сортировка в NumPy](./lessons/sem02/lesson04/);
 - [Линейная алгебра в NumPy](./lessons/sem02/lesson05/);
 - [Введение в Matplotlib](./lessons/sem02/lesson06/);
+- [Диаграммы в Matplotlib](./lessons/sem02/lesson07/);
 
 ## Практические задания:
 
